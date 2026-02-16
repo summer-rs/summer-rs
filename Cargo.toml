@@ -22,25 +22,25 @@ default-members = ["spring", "spring-*"]
 exclude = ["examples/**"]
 
 [workspace.package]
-version = "0.4.0"
+version = "0.5.0"
 edition = "2021"
 license = "MIT"
 authors = ["holmofy"]
 repository = "https://github.com/spring-rs/spring-rs"
 
 [workspace.dependencies]
-aide = "0.16.0-alpha.1"
+aide = "0.16.0-alpha.2"
 anyhow = "1.0"
-apalis = "1.0.0-rc.3"
+apalis = "1.0.0-rc.4"
 apalis-redis = "1.0.0-rc.3"
 apalis-amqp = "1.0.0-rc.3"
 apalis-postgres = { version = "1.0.0-rc.3", default-features = false }
 apalis-mysql = { version = "1.0.0-rc.3", default-features = false }
 apalis-sqlite = { version = "1.0.0-rc.3", default-features = false }
-apalis-workflow = "0.1.0-rc.3"
+apalis-workflow = "0.1.0-rc.4"
 apalis-cron = "1.0.0-rc.3"
 apalis-board = "1.0.0-rc.3"
-async-trait = "0.1.81"
+async-trait = "0.1"
 axum = "0.8"
 byte-unit = "5.1"
 chrono = "0.4"
