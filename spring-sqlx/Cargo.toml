@@ -31,7 +31,7 @@ runtime-tokio-native-tls = ["sqlx?/runtime-tokio-native-tls", "runtime-tokio"]
 runtime-tokio-rustls = ["sqlx?/runtime-tokio-rustls", "runtime-tokio"]
 
 [dependencies]
-spring = { path = "../spring", version = "0.4" }
+spring = { path = "../spring", version = "0.5" }
 serde = { workspace = true, features = ["derive"] }
 anyhow = { workspace = true }
 tracing = { workspace = true, features = ["log"] }

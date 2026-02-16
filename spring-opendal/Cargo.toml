@@ -11,7 +11,7 @@ authors.workspace = true
 repository.workspace = true
 
 [dependencies]
-spring = { path = "../spring", version = "0.4" }
+spring = { path = "../spring", version = "0.5" }
 schemars = { workspace = true }
 serde = { workspace = true, features = ["derive"] }
 anyhow = { workspace = true }

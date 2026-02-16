@@ -26,7 +26,7 @@ with-uuid-0_8 = ["tokio-postgres/with-uuid-0_8"]
 with-uuid-1 = ["tokio-postgres/with-uuid-1"]
 
 [dependencies]
-spring = { path = "../spring", version = "0.4" }
+spring = { path = "../spring", version = "0.5" }
 serde = { workspace = true, features = ["derive"] }
 anyhow = { workspace = true }
 tracing = { workspace = true, features = ["log"] }

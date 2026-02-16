@@ -9,8 +9,8 @@ authors.workspace = true
 repository.workspace = true
 
 [dependencies]
-spring = { path = "../spring", version = "0.4" }
-spring-macros = { path = "../spring-macros", version = "0.4" }
+spring = { path = "../spring", version = "0.5" }
+spring-macros = { path = "../spring-macros", version = "0.5" }
 serde = { workspace = true, features = ["derive"] }
 anyhow = { workspace = true }
 tracing = { workspace = true, features = ["log"] }

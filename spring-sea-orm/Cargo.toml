@@ -19,7 +19,7 @@ with-web-openapi = ["spring-web/openapi"]
 
 [dependencies]
 spring-web = { path = "../spring-web", version = "0.4", optional = true }
-spring = { path = "../spring", version = "0.4" }
+spring = { path = "../spring", version = "0.5" }
 serde = { workspace = true, features = ["derive"] }
 anyhow = { workspace = true }
 thiserror = { workspace = true }

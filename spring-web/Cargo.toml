@@ -38,8 +38,8 @@ openapi-scalar = ["aide/scalar"]
 openapi-swagger = ["aide/swagger"]
 
 [dependencies]
-spring = { path = "../spring", version = "0.4" }
-spring-macros = { path = "../spring-macros", version = "0.4" }
+spring = { path = "../spring", version = "0.5" }
+spring-macros = { path = "../spring-macros", version = "0.5" }
 axum = { workspace = true, features = ["macros"] }
 serde = { workspace = true, features = ["derive"] }
 serde_json = { workspace = true }

@@ -14,8 +14,8 @@ postgres_storage = ["tokio-cron-scheduler/postgres_storage"]
 nats_storage = ["tokio-cron-scheduler/nats_storage"]
 
 [dependencies]
-spring = { path = "../spring", version = "0.4" }
-spring-macros = { path = "../spring-macros", version = "0.4" }
+spring = { path = "../spring", version = "0.5" }
+spring-macros = { path = "../spring-macros", version = "0.5" }
 tokio-cron-scheduler = { workspace = true }
 anyhow = { workspace = true }
 serde = { workspace = true, features = ["derive"] }

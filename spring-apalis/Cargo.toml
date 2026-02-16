@@ -21,7 +21,7 @@ board = ["apalis-board"]
 board-web = ["apalis-board/web"]
 
 [dependencies]
-spring = { path = "../spring", version = "0.4" }
+spring = { path = "../spring", version = "0.5" }
 tower-service = { workspace = true }
 tower-layer = { workspace = true }
 tokio = { workspace = true }
