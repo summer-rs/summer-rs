@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.5.0
+
+- **changed**: upgrade `spring` 0.4 to 0.5 ([#217])
+
+[#217]: https://github.com/spring-rs/spring-rs/pull/217
+
 ## 0.4.2
 
 - **changed**: upgrade `apalis` 0.7 to 1.0.0 ([#199])

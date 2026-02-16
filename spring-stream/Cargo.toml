@@ -1,7 +1,7 @@
 [package]
 name = "spring-stream"
 description = "Integrate sea-streamer with spring-rs"
-version = "0.4.3"
+version = "0.5.0"
 categories = ["concurrency"]
 keywords = ["stream-processing", "stream", "redis-stream", "kafka", "spring"]
 edition.workspace = true

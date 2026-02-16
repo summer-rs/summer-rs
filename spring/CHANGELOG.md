@@ -1,5 +1,50 @@
 # Changelog
 
+## 0.5.0
+
+- **changed**: Refactor component ([#216])
+- **added**: add component macro for declarative component ([#214])
+- **breaking**: migrate `spring-job` & `spring-stream` extractor to `spring` crate ([#214], [#216])
+
+[#216]: https://github.com/spring-rs/spring-rs/pull/216
+[#214]: https://github.com/spring-rs/spring-rs/pull/214
+
+**Migrating from 0.4 to 0.5**
+
+```diff
+-use spring_job::extractor::Component;
++use spring::extractor::Component;
+-use spring_job::extractor::Config;
++use spring::extractor::Config;
+ 
+ #[cron("1/10 * * * * *")]
+ async fn cron_job(Component(db): Component<ConnectPool>) {
+     let time: String = sqlx::query("select TO_CHAR(now(),'YYYY-MM-DD HH24:MI:SS') as time")
+         .fetch_one(&db)
+         .await
+         .context("query failed")
+         .unwrap()
+         .get("time");
+     println!("cron scheduled: {:?}", time)
+ }
+```
+
+
+```diff
+-use spring_stream::extractor::Component;
++use spring::extractor::Component;
+-use spring_stream::extractor::Config;
++use spring::extractor::Config;
+
+ #[stream_listener(
+     "topic",
+     kafka_consumer_options = fill_kafka_consumer_options
+ )]
+ async fn listen_topic_do_something(Component(db): Component<ConnectPool>, topic: StreamKey, Json(payload): Json<Payload>) {
+     tracing::info!("received msg from topic#{}: {:#?}", topic, payload);
+ }
+```
+
 ## 0.4.7
 
 - **changed**: upgrade `schemars` 0.9 to 1.1 ([#197])

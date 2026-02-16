@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.5.0
+
+- **changed**: upgrade `spring` 0.4 to 0.5 ([#217])
+
+[#217]: https://github.com/spring-rs/spring-rs/pull/217
+
 ## 0.4.6
 
 - **changed**: upgrade `tokio-cron-scheduler` 0.14 to 0.15 ([#197])

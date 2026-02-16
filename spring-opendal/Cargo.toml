@@ -1,7 +1,7 @@
 [package]
 name = "spring-opendal"
 description = "OpenDAL plugin for spring-rs"
-version = "0.4.1"
+version = "0.5.0"
 categories = ["filesystem"]
 keywords = ["storage", "spring"]
 homepage = "https://spring-rs.github.io/"
