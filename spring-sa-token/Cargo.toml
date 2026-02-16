@@ -10,10 +10,10 @@ authors.workspace = true
 repository.workspace = true
 
 [dependencies]
-spring = { path = "../spring", version = "0.5.0" }
-spring-web = { path = "../spring-web", version = "0.4.16", optional = true }
-spring-macros = { path = "../spring-macros", version = "0.4.10", features = ["sa-token"] }
-spring-redis = { path = "../spring-redis", version = "0.5.0", optional = true }
+spring = { path = "../spring", version = "0.5" }
+spring-web = { path = "../spring-web", version = "0.5", optional = true }
+spring-macros = { path = "../spring-macros", version = "0.5", features = ["sa-token"] }
+spring-redis = { path = "../spring-redis", version = "0.5", optional = true }
 sa-token-plugin-axum = { workspace = true }
 sa-token-core = { workspace = true }
 sa-token-adapter = { workspace = true }
