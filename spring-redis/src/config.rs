@@ -24,11 +24,6 @@ pub struct RedisConfig {
     /// where `n` denotes the number of past attempts.
     pub exponent_base: Option<u64>,
 
-    /// A multiplicative factor that will be applied to the retry delay.
-    ///
-    /// For example, using a factor of `1000` will make each delay in units of seconds.
-    pub factor: Option<u64>,
-
     /// Apply a maximum delay between connection attempts. The delay between attempts won't be longer than max_delay milliseconds.
     pub max_delay: Option<u64>,
 }

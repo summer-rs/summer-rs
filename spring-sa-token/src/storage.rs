@@ -92,7 +92,10 @@ impl SaStorage for SpringRedisStorage {
     async fn mget(&self, keys: &[&str]) -> StorageResult<Vec<Option<String>>> {
         let mut conn = self.client.clone();
 
-        conn.get(keys)
+        // Use mget command for multiple keys
+        spring_redis::redis::cmd("MGET")
+            .arg(keys)
+            .query_async(&mut conn)
             .await
             .map_err(|e| StorageError::OperationFailed(e.to_string()))
     }

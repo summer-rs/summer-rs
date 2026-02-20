@@ -360,7 +360,7 @@ pub fn enable_socketio(socketio_config: SocketIOConfig, app: &mut AppBuilder, ro
     
     let ns_path = socketio_config.default_namespace.clone();
     let ns_path_for_closure = ns_path.clone();
-    io.ns(ns_path, move |socket: socketioxide::extract::SocketRef| {
+    io.ns(ns_path, move |socket: socketioxide::extract::SocketRef| async move {
         use spring::tracing::info;
         
         info!(socket_id = ?socket.id, "New socket connected to namespace: {}", ns_path_for_closure);

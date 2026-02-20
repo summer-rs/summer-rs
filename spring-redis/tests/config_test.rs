@@ -5,7 +5,6 @@ fn test_redis_config_creation() {
     let config = RedisConfig {
         uri: "redis://localhost:6379".to_string(),
         exponent_base: Some(2),
-        factor: Some(100),
         number_of_retries: Some(3),
         max_delay: Some(5000),
         response_timeout: Some(3000),
@@ -14,7 +13,6 @@ fn test_redis_config_creation() {
     
     assert_eq!(config.uri, "redis://localhost:6379");
     assert_eq!(config.exponent_base, Some(2));
-    assert_eq!(config.factor, Some(100));
     assert_eq!(config.number_of_retries, Some(3));
 }
 
@@ -23,7 +21,6 @@ fn test_redis_config_default_values() {
     let config = RedisConfig {
         uri: "redis://localhost:6379".to_string(),
         exponent_base: None,
-        factor: None,
         number_of_retries: None,
         max_delay: None,
         response_timeout: None,
@@ -32,7 +29,7 @@ fn test_redis_config_default_values() {
     
     assert_eq!(config.uri, "redis://localhost:6379");
     assert!(config.exponent_base.is_none());
-    assert!(config.factor.is_none());
+    assert!(config.number_of_retries.is_none());
 }
 
 #[test]
@@ -40,7 +37,6 @@ fn test_redis_config_toml_deserialization() {
     let toml_str = r#"
         uri = "redis://127.0.0.1:6379"
         exponent_base = 2
-        factor = 100
         number_of_retries = 3
     "#;
     
@@ -70,7 +66,6 @@ fn test_redis_config_with_auth() {
     let config = RedisConfig {
         uri: "redis://:password@localhost:6379".to_string(),
         exponent_base: None,
-        factor: None,
         number_of_retries: None,
         max_delay: None,
         response_timeout: None,
@@ -85,7 +80,6 @@ fn test_redis_config_with_db_number() {
     let config = RedisConfig {
         uri: "redis://localhost:6379/2".to_string(),
         exponent_base: None,
-        factor: None,
         number_of_retries: None,
         max_delay: None,
         response_timeout: None,
@@ -100,7 +94,6 @@ fn test_redis_config_clone() {
     let config = RedisConfig {
         uri: "redis://localhost:6379".to_string(),
         exponent_base: Some(2),
-        factor: Some(100),
         number_of_retries: Some(3),
         max_delay: Some(5000),
         response_timeout: Some(3000),
@@ -117,7 +110,6 @@ fn test_redis_config_timeouts() {
     let config = RedisConfig {
         uri: "redis://localhost:6379".to_string(),
         exponent_base: None,
-        factor: None,
         number_of_retries: None,
         max_delay: Some(5000),
         response_timeout: Some(3000),
@@ -134,15 +126,14 @@ fn test_redis_config_retry_settings() {
     let config = RedisConfig {
         uri: "redis://localhost:6379".to_string(),
         exponent_base: Some(2),
-        factor: Some(150),
         number_of_retries: Some(5),
-        max_delay: None,
+        max_delay: Some(10000),
         response_timeout: None,
         connection_timeout: None,
     };
     
     assert_eq!(config.exponent_base, Some(2));
-    assert_eq!(config.factor, Some(150));
     assert_eq!(config.number_of_retries, Some(5));
+    assert_eq!(config.max_delay, Some(10000));
 }
 
