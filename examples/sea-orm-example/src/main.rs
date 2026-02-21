@@ -35,9 +35,9 @@ struct TodoListQuery {
     title: Option<String>,
 }
 
-impl IntoCondition for TodoListQuery {
-    fn into_condition(self) -> sea_orm::Condition {
-        match self.title {
+impl From<TodoListQuery> for Condition {
+    fn from(query: TodoListQuery) -> Self {
+        match query.title {
             Some(title) => todo_list::Column::Title.starts_with(title).into_condition(),
             None => Condition::all(),
         }
