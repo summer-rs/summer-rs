@@ -22,7 +22,7 @@ pub struct RedisConfig {
 
     /// The resulting duration is calculated by taking the base to the `n`-th power,
     /// where `n` denotes the number of past attempts.
-    pub exponent_base: Option<u64>,
+    pub exponent_base: Option<f32>,
 
     /// Apply a maximum delay between connection attempts. The delay between attempts won't be longer than max_delay milliseconds.
     pub max_delay: Option<u64>,

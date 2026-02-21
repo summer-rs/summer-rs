@@ -41,20 +41,20 @@ impl RedisPlugin {
         let mut conn_config = ConnectionManagerConfig::new();
 
         if let Some(exponent_base) = config.exponent_base {
-            conn_config = conn_config.set_exponent_base(exponent_base as u64);
+            conn_config = conn_config.set_exponent_base(exponent_base);
         }
         if let Some(number_of_retries) = config.number_of_retries {
             conn_config = conn_config.set_number_of_retries(number_of_retries);
         }
         if let Some(max_delay) = config.max_delay {
-            conn_config = conn_config.set_max_delay(max_delay);
+            conn_config = conn_config.set_max_delay(Duration::from_millis(max_delay));
         }
         if let Some(response_timeout) = config.response_timeout {
-            conn_config = conn_config.set_response_timeout(Duration::from_millis(response_timeout));
+            conn_config = conn_config.set_response_timeout(Some(Duration::from_millis(response_timeout)));
         }
         if let Some(connection_timeout) = config.connection_timeout {
             conn_config =
-                conn_config.set_connection_timeout(Duration::from_millis(connection_timeout));
+                conn_config.set_connection_timeout(Some(Duration::from_millis(connection_timeout)));
         }
 
         Ok(client
