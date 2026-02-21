@@ -4,7 +4,7 @@ use spring_redis::config::RedisConfig;
 fn test_redis_config_creation() {
     let config = RedisConfig {
         uri: "redis://localhost:6379".to_string(),
-        exponent_base: Some(2),
+        exponent_base: Some(2.0),
         number_of_retries: Some(3),
         max_delay: Some(5000),
         response_timeout: Some(3000),
@@ -12,7 +12,7 @@ fn test_redis_config_creation() {
     };
     
     assert_eq!(config.uri, "redis://localhost:6379");
-    assert_eq!(config.exponent_base, Some(2));
+    assert_eq!(config.exponent_base, Some(2.0));
     assert_eq!(config.number_of_retries, Some(3));
 }
 
@@ -36,7 +36,7 @@ fn test_redis_config_default_values() {
 fn test_redis_config_toml_deserialization() {
     let toml_str = r#"
         uri = "redis://127.0.0.1:6379"
-        exponent_base = 2
+        exponent_base = 2.0
         number_of_retries = 3
     "#;
     
@@ -45,7 +45,7 @@ fn test_redis_config_toml_deserialization() {
     
     let config = config.unwrap();
     assert_eq!(config.uri, "redis://127.0.0.1:6379");
-    assert_eq!(config.exponent_base, Some(2));
+    assert_eq!(config.exponent_base, Some(2.0));
 }
 
 #[test]
@@ -93,7 +93,7 @@ fn test_redis_config_with_db_number() {
 fn test_redis_config_clone() {
     let config = RedisConfig {
         uri: "redis://localhost:6379".to_string(),
-        exponent_base: Some(2),
+        exponent_base: Some(2.0),
         number_of_retries: Some(3),
         max_delay: Some(5000),
         response_timeout: Some(3000),
@@ -125,14 +125,14 @@ fn test_redis_config_timeouts() {
 fn test_redis_config_retry_settings() {
     let config = RedisConfig {
         uri: "redis://localhost:6379".to_string(),
-        exponent_base: Some(2),
+        exponent_base: Some(2.0),
         number_of_retries: Some(5),
         max_delay: Some(10000),
         response_timeout: None,
         connection_timeout: None,
     };
     
-    assert_eq!(config.exponent_base, Some(2));
+    assert_eq!(config.exponent_base, Some(2.0));
     assert_eq!(config.number_of_retries, Some(5));
     assert_eq!(config.max_delay, Some(10000));
 }
