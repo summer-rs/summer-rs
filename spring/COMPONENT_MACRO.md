@@ -129,7 +129,7 @@ fn create_db_connection(
 
 ## Parameter Types
 
-**Config<T> - Configuration Injection**
+**`Config<T>` - Configuration Injection**
 
 Injects configuration from `config/app.toml`:
 
@@ -143,10 +143,11 @@ fn create_component(
 ```
 
 **Requirements:**
+
 - `T` must implement `Configurable + Deserialize`
 - Configuration must exist in `config/app.toml` under the prefix specified by `#[config_prefix]`
 
-**Component<T> - Component Injection**
+**`Component<T>` - Component Injection**
 
 Injects another component:
 
@@ -160,6 +161,7 @@ fn create_service(
 ```
 
 **Requirements:**
+
 - `T` must be a registered component
 - The dependency will be automatically added to the plugin's `dependencies()` list
 
@@ -190,6 +192,7 @@ fn create_component() -> MyComponent {
 ```
 
 **Requirements:**
+
 - Must implement `Clone + Send + Sync + 'static`
 
 **Result Type**

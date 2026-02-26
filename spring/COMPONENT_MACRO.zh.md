@@ -126,7 +126,7 @@ fn create_db_connection(
 
 ## 参数类型
 
-* Config<T> - 配置注入
+* `Config<T>` - 配置注入
 
 从 `config/app.toml` 注入配置：
 
@@ -140,10 +140,11 @@ fn create_component(
 ```
 
 **要求：**
+
 - `T` 必须实现 `Configurable + Deserialize`
 - 配置必须存在于 `config/app.toml` 中，位于 `#[config_prefix]` 指定的前缀下
 
-* Component<T> - 组件注入
+* `Component<T>` - 组件注入
 
 注入另一个组件：
 
