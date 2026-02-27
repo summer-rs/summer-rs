@@ -19,9 +19,6 @@ use std::{
     sync::Arc,
 };
 
-// Re-export inventory::submit for use in submit_component_plugin! macro
-pub use inventory::submit;
-
 // Define inventory collection for auto-registered plugins
 inventory::collect!(&'static dyn Plugin);
 
@@ -37,7 +34,7 @@ inventory::collect!(&'static dyn Plugin);
 #[macro_export]
 macro_rules! submit_component_plugin {
     ($ty:ident) => {
-        $crate::plugin::submit! {
+        $crate::submit_inventory! {
             &$ty as &dyn $crate::plugin::Plugin
         }
     };

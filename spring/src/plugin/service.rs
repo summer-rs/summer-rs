@@ -5,7 +5,6 @@ use crate::config::ConfigRegistry;
 use crate::error::Result;
 use crate::plugin::ComponentRegistry;
 
-pub use inventory::submit;
 pub use spring_macros::Service;
 
 /// Service is a special Component that can inject dependent Components as field members
@@ -39,7 +38,7 @@ inventory::collect!(&'static dyn ServiceRegistrar);
 #[macro_export]
 macro_rules! submit_service {
     ($ty:ident) => {
-        ::spring::plugin::service::submit! {
+        ::spring::submit_inventory! {
             &$ty as &dyn ::spring::plugin::service::ServiceRegistrar
         }
     };
