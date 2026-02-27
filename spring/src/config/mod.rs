@@ -6,7 +6,6 @@ pub mod env;
 /// Implement reading toml configuration
 pub mod toml;
 
-pub use inventory::submit;
 pub use schemars::schema_for;
 pub use schemars::Schema;
 pub use spring_macros::Configurable;
@@ -66,7 +65,7 @@ inventory::collect!(ConfigSchema);
 #[macro_export]
 macro_rules! submit_config_schema {
     ($prefix:expr, $ty:ty) => {
-        ::spring::config::submit! {
+        ::spring::submit_inventory! {
             ::spring::config::ConfigSchema {
                 prefix: $prefix,
                 schema: || ::spring::config::schema_for!($ty),

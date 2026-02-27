@@ -9,7 +9,7 @@ impl Configurable for LoggerConfig {
     }
 }
 
-crate::config::submit! {
+crate::submit_inventory! {
     crate::config::ConfigSchema {
         prefix: "logger",
         schema: || crate::config::schema_for!(LoggerConfig),
