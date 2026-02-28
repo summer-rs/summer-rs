@@ -22,7 +22,7 @@ jobs:
     - name: Checkout contrib-plugins as a subdirectory
       uses: actions/checkout@v4
       with:
-        repository: spring-rs/contrib-plugins
+        repository: summer-rs/contrib-plugins
         path: contrib-plugins
 
     - name: Install protoc
@@ -45,4 +45,4 @@ jobs:
       env:
         BUILD_DIR: ./docs/
         GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-        REPOSITORY: spring-rs/spring-rs.github.io
+        REPOSITORY: summer-rs/summer-rs.github.io

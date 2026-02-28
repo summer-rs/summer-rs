@@ -2,7 +2,7 @@
 title = "Component Macro"
 description = "The #[component] macro provides declarative component registration for spring-rs applications, eliminating the need to manually implement the Plugin trait."
 draft = false
-weight = 2
+weight = 6
 sort_by = "weight"
 template = "docs/page.html"
 

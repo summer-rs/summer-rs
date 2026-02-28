@@ -74,7 +74,7 @@ async fn main() {
 
 The `#[component]` macro transforms your component creation function into a Plugin implementation:
 
-### Input
+**Input**
 
 ```rust
 #[component]
@@ -85,7 +85,7 @@ fn create_db_connection(
 }
 ```
 
-### Generated Code (Conceptual)
+**Generated Code (Conceptual)**
 
 ```rust
 struct __CreateDbConnectionPlugin;
@@ -129,7 +129,7 @@ fn create_db_connection(
 
 ## Parameter Types
 
-### Config<T> - Configuration Injection
+**`Config<T>` - Configuration Injection**
 
 Injects configuration from `config/app.toml`:
 
@@ -143,10 +143,11 @@ fn create_component(
 ```
 
 **Requirements:**
+
 - `T` must implement `Configurable + Deserialize`
 - Configuration must exist in `config/app.toml` under the prefix specified by `#[config_prefix]`
 
-### Component<T> - Component Injection
+**`Component<T>` - Component Injection**
 
 Injects another component:
 
@@ -160,10 +161,11 @@ fn create_service(
 ```
 
 **Requirements:**
+
 - `T` must be a registered component
 - The dependency will be automatically added to the plugin's `dependencies()` list
 
-### Multiple Parameters
+**Multiple Parameters**
 
 You can mix and match parameter types:
 
@@ -180,7 +182,7 @@ fn create_service(
 
 ## Return Types
 
-### Simple Type
+**Simple Type**
 
 ```rust
 #[component]
@@ -190,9 +192,10 @@ fn create_component() -> MyComponent {
 ```
 
 **Requirements:**
+
 - Must implement `Clone + Send + Sync + 'static`
 
-### Result Type
+**Result Type**
 
 For fallible initialization:
 
@@ -208,7 +211,7 @@ fn create_component(
 
 **Note:** If the function returns an error, the application will panic with the error message.
 
-### Async Functions
+**Async Functions**
 
 For async initialization:
 
@@ -222,7 +225,7 @@ async fn create_db_connection(
 }
 ```
 
-### Async + Result
+**Async + Result**
 
 Combine async and Result:
 
@@ -238,7 +241,7 @@ async fn create_db_connection(
 
 ## Dependency Resolution
 
-### Automatic Dependency Detection
+**Automatic Dependency Detection**
 
 The macro automatically detects dependencies from `Component<T>` parameters:
 
@@ -258,7 +261,7 @@ fn dependencies(&self) -> Vec<&str> {
 }
 ```
 
-### Initialization Order
+**Initialization Order**
 
 Components are initialized in dependency order:
 
@@ -276,7 +279,7 @@ fn create_repo(Component(db): Component<DbConnection>) -> UserRepository { ... }
 fn create_service(Component(repo): Component<UserRepository>) -> UserService { ... }
 ```
 
-### Circular Dependencies
+**Circular Dependencies**
 
 Circular dependencies are **not supported** and will cause a panic:
 
@@ -293,7 +296,7 @@ fn create_b(Component(a): Component<A>) -> B { ... }
 
 ## Advanced Usage
 
-### Custom Plugin Names
+**Custom Plugin Name**
 
 Use custom names when you need multiple components of the same type:
 
@@ -319,7 +322,7 @@ fn create_secondary_db(
 }
 ```
 
-### Explicit Dependencies
+**Explicit Dependencies**
 
 Use `#[inject("PluginName")]` to specify explicit dependencies:
 
@@ -336,7 +339,7 @@ This is useful when:
 - The dependency has a custom name
 - You want to be explicit about which plugin to depend on
 
-### NewType Pattern for Multiple Instances
+**NewType Pattern for Multiple Instances**
 
 When you need multiple instances of the same type, use the NewType pattern:
 
@@ -373,7 +376,7 @@ fn create_service(
 }
 ```
 
-### Using Arc for Large Components
+**Using Arc for Large Components**
 
 For large components, use `Arc` to reduce clone overhead:
 
@@ -395,7 +398,7 @@ fn create_large_component() -> LargeComponent {
 
 ## Best Practices
 
-### 1. Keep Component Functions Simple
+**1. Keep Component Functions Simple**
 
 Component functions should only create and configure the component:
 
@@ -420,7 +423,7 @@ fn create_db_connection(
 }
 ```
 
-### 2. Use Configuration for All Configurable Values
+**2. Use Configuration for All Configurable Values**
 
 ```rust
 // ✅ Good
@@ -438,7 +441,7 @@ fn create_service() -> MyService {
 }
 ```
 
-### 3. Prefer Explicit Names for Clarity
+**3. Prefer Explicit Names for Clarity**
 
 ```rust
 // ✅ Good - clear intent
@@ -450,7 +453,7 @@ fn create_primary_db(...) -> PrimaryDb { ... }
 fn create_db1(...) -> Db1 { ... }
 ```
 
-### 4. Document Component Dependencies
+**4. Document Component Dependencies**
 
 ```rust
 /// Creates the UserService component.
@@ -467,7 +470,7 @@ fn create_user_service(
 }
 ```
 
-### 5. Use Result for Fallible Initialization
+**5. Use Result for Fallible Initialization**
 
 ```rust
 // ✅ Good - explicit error handling
@@ -489,7 +492,7 @@ fn create_db_connection(
 
 ## Troubleshooting
 
-### Error: "Config X not found"
+**Error: "Config X not found"**
 
 **Cause:** Configuration is missing from `config/app.toml`
 
@@ -500,13 +503,13 @@ fn create_db_connection(
 key = "value"
 ```
 
-### Error: "Component X not found"
+**Error: "Component X not found"**
 
 **Cause:** The dependency component is not registered
 
 **Solution:** Ensure the dependency is also marked with `#[component]` and registered before this component.
 
-### Error: "Cyclic dependency detected"
+**Error: "Cyclic dependency detected"**
 
 **Cause:** Two or more components depend on each other
 
@@ -515,7 +518,7 @@ key = "value"
 - Using events/callbacks instead of direct dependencies
 - Restructuring your architecture
 
-### Error: "plugin was already added"
+**Error: "plugin was already added"**
 
 **Cause:** Two components return the same type
 
@@ -529,7 +532,7 @@ struct PrimaryDb(DbConnection);
 fn create_primary_db(...) -> PrimaryDb { ... }
 ```
 
-### Error: "component was already added"
+**Error: "component was already added"**
 
 **Cause:** The same component type is registered twice
 
@@ -537,7 +540,7 @@ fn create_primary_db(...) -> PrimaryDb { ... }
 
 ## Migration Guide
 
-### From Manual Plugin to `#[component]`
+**From Manual Plugin to `#[component]`**
 
 **Before:**
 
@@ -582,7 +585,7 @@ App::new()
     .await;
 ```
 
-### Migration Steps
+**Migration Steps**
 
 1. **Identify component creation logic** in your Plugin's `build` method
 2. **Extract it into a function** with appropriate parameters
@@ -591,7 +594,7 @@ App::new()
 5. **Remove the manual Plugin implementation**
 6. **Test** to ensure everything works
 
-### Compatibility
+**Compatibility**
 
 The `#[component]` macro is fully compatible with manual Plugin implementations. You can mix both approaches:
 
