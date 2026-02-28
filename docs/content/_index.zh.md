@@ -4,7 +4,7 @@ title = "summer-rs"
 
 # The homepage contents
 [extra]
-lead = 'summer-rs是Rust编写的应用框架，与java生态的summer-boot类似'
+lead = 'summer-rs是Rust编写的应用框架，与java生态的spring-boot类似'
 url = "/zh/docs/getting-started/introduction/"
 url_button = "快速上手"
 logo = "logo.svg"

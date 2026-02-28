@@ -4,7 +4,7 @@ title = "summer-rs"
 
 # The homepage contents
 [extra]
-lead = "<b>summer-rs</b> is a application framework written in rust inspired by java's summer-boot"
+lead = "<b>summer-rs</b> is a application framework written in rust inspired by java's spring-boot"
 url = "/docs/getting-started/introduction/"
 url_button = "Get started"
 logo = "logo.svg"

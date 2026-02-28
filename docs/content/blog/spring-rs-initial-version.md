@@ -1,13 +1,13 @@
 +++
 title = "summer-rs initial version released"
-description = "After a month of precipitation, I wrote a microservice framework similar to summer-boot in rust. The following is an example of the simplest web application"
+description = "After a month of precipitation, I wrote a microservice framework similar to spring-boot in rust. The following is an example of the simplest web application"
 date = 2024-08-04T09:19:42+00:00
 updated = 2024-08-04T09:19:42+00:00
 draft = false
 template = "blog/page.html"
 
 [extra]
-lead = "After a month of precipitation, I wrote a microservice framework similar to summer-boot in rust. The following is an example of the simplest web application"
+lead = "After a month of precipitation, I wrote a microservice framework similar to spring-boot in rust. The following is an example of the simplest web application"
 +++
 
 ```rust
