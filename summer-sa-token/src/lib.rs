@@ -169,8 +169,8 @@ impl SaTokenPlugin {
         #[cfg(feature = "with-summer-redis")]
         {
             if let Some(redis) = app.get_component::<summer_redis::Redis>() {
-                tracing::info!("Using summerRedisStorage (reusing summer-redis connection)");
-                let storage = storage::summerRedisStorage::new(redis);
+                tracing::info!("Using SummerRedisStorage (reusing summer-redis connection)");
+                let storage = storage::SummerRedisStorage::new(redis);
                 Ok(std::sync::Arc::new(storage))
             } else {
                 anyhow::bail!(

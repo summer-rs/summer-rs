@@ -13,22 +13,22 @@ use std::time::Duration;
 ///
 /// This storage reuses the `Redis` (ConnectionManager) component from `summer-redis`,
 /// so you don't need to configure a separate Redis connection for sa-token.
-pub struct summerRedisStorage {
+pub struct SummerRedisStorage {
     client: Redis,
 }
 
-impl summerRedisStorage {
-    /// Create a new summerRedisStorage with the given Redis connection
+impl SummerRedisStorage {
+    /// Create a new SummerRedisStorage with the given Redis connection
     pub fn new(client: Redis) -> Self {
         Self { client }
     }
 }
 
 #[async_trait]
-impl SaStorage for summerRedisStorage {
+impl SaStorage for SummerRedisStorage {
     async fn get(&self, key: &str) -> StorageResult<Option<String>> {
         let mut conn = self.client.clone();
-        tracing::debug!("summerRedisStorage GET key: {}", key);
+        tracing::debug!("SummerRedisStorage GET key: {}", key);
         conn.get(key)
             .await
             .map_err(|e| StorageError::OperationFailed(e.to_string()))
@@ -36,7 +36,7 @@ impl SaStorage for summerRedisStorage {
 
     async fn set(&self, key: &str, value: &str, ttl: Option<Duration>) -> StorageResult<()> {
         let mut conn = self.client.clone();
-        tracing::debug!("summerRedisStorage SET key: {}", key);
+        tracing::debug!("SummerRedisStorage SET key: {}", key);
 
         if let Some(ttl) = ttl {
             conn.set_ex(key, value, ttl.as_secs())
