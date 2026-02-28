@@ -1,14 +1,14 @@
 use anyhow::Context;
-use spring::{auto_config, App};
-use spring_sa_token::{
+use summer::{auto_config, App};
+use summer_sa_token::{
     sa_check_login, sa_check_permission, sa_check_permissions_and, sa_check_permissions_or,
     sa_check_role, sa_check_roles_and, sa_check_roles_or, sa_ignore, LoginIdExtractor,
     SaTokenAuthConfigurator, SaTokenPlugin, SaTokenState, StpUtil,
 };
-use spring_sea_orm::SeaOrmPlugin;
-use spring_web::extractor::Component;
-use spring_web::WebConfigurator;
-use spring_web::{
+use summer_sea_orm::SeaOrmPlugin;
+use summer_web::extractor::Component;
+use summer_web::WebConfigurator;
+use summer_web::{
     axum::response::IntoResponse, error::Result, extractor::Json, get, post, WebPlugin,
 };
 
@@ -123,7 +123,7 @@ async fn logout(LoginIdExtractor(user_id): LoginIdExtractor) -> Result<impl Into
 #[get("/user/check-permission/{permission}")]
 async fn check_permission(
     LoginIdExtractor(user_id): LoginIdExtractor,
-    spring_web::extractor::Path(permission): spring_web::extractor::Path<String>,
+    summer_web::extractor::Path(permission): summer_web::extractor::Path<String>,
 ) -> Result<impl IntoResponse> {
     let has_permission = StpUtil::has_permission(&user_id, &permission).await;
 
@@ -137,7 +137,7 @@ async fn check_permission(
 #[get("/user/check-role/{role}")]
 async fn check_role(
     LoginIdExtractor(user_id): LoginIdExtractor,
-    spring_web::extractor::Path(role): spring_web::extractor::Path<String>,
+    summer_web::extractor::Path(role): summer_web::extractor::Path<String>,
 ) -> Result<impl IntoResponse> {
     let has_role = StpUtil::has_role(&user_id, &role).await;
 

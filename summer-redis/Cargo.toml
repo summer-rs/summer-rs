@@ -1,0 +1,22 @@
+[package]
+name = "summer-redis"
+description = "Integrate redis-rs with summer-rs"
+version = "0.5.0"
+keywords = ["redis", "database", "summer"]
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+
+[dependencies]
+summer = { path = "../summer", version = "0.5" }
+summer-macros = { path = "../summer-macros", version = "0.5" }
+serde = { workspace = true, features = ["derive"] }
+anyhow = { workspace = true }
+tracing = { workspace = true, features = ["log"] }
+redis = { workspace = true, features = ["connection-manager", "tokio-comp"] }
+schemars = { workspace = true }
+
+[dev-dependencies]
+summer-web = { path = "../summer-web" }
+toml = { workspace = true }

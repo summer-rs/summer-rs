@@ -1,6 +1,6 @@
-use spring::plugin::service::Service;
-use spring::App;
-use spring_grpc::GrpcPlugin;
+use summer::plugin::service::Service;
+use summer::App;
+use summer_grpc::GrpcPlugin;
 use tonic::{Request, Response, Status};
 
 use hello_world::greeter_server::{Greeter, GreeterServer};

@@ -1,8 +1,8 @@
 use schemars::JsonSchema;
 use serde::Deserialize;
-use spring::async_trait;
-use spring::config::{ConfigRegistry, Configurable};
-use spring::{
+use summer::async_trait;
+use summer::config::{ConfigRegistry, Configurable};
+use summer::{
     app::{App, AppBuilder},
     plugin::Plugin,
 };

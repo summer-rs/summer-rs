@@ -5,15 +5,15 @@ use jsonwebtoken::{Algorithm, DecodingKey, EncodingKey, Header, Validation};
 use lazy_static::lazy_static;
 use schemars::json_schema;
 use serde::{Deserialize, Serialize};
-use spring_web::aide::generate::GenContext;
-use spring_web::aide::openapi::{
+use summer_web::aide::generate::GenContext;
+use summer_web::aide::openapi::{
     Operation, Parameter, ParameterData, ParameterSchemaOrContent, ReferenceOr, SchemaObject,
 };
-use spring_web::aide::OperationInput;
-use spring_web::axum::http::request::Parts;
-use spring_web::axum::RequestPartsExt;
-use spring_web::error::{KnownWebError, Result, WebError};
-use spring_web::extractor::FromRequestParts;
+use summer_web::aide::OperationInput;
+use summer_web::axum::http::request::Parts;
+use summer_web::axum::RequestPartsExt;
+use summer_web::error::{KnownWebError, Result, WebError};
+use summer_web::extractor::FromRequestParts;
 
 lazy_static! {
     static ref DECODE_KEY: DecodingKey =

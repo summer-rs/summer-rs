@@ -1,7 +1,7 @@
 //! Multi-datasource Example
 //!
 //! This example demonstrates how to configure and use multiple database connections
-//! in a spring-rs application. This is useful for:
+//! in a summer-rs application. This is useful for:
 //! - Read/Write splitting (primary for writes, secondary for reads)
 //! - Connecting to multiple different databases
 //! - Database sharding scenarios
@@ -20,9 +20,9 @@ mod multi_datasource;
 use anyhow::Context;
 use multi_datasource::{MultiDatasourcePlugin, PrimaryDb, SecondaryDb};
 use sea_orm::ConnectionTrait;
-use spring::{auto_config, App};
-use spring_web::get;
-use spring_web::{
+use summer::{auto_config, App};
+use summer_web::get;
+use summer_web::{
     axum::response::IntoResponse, error::Result, extractor::Component, WebConfigurator, WebPlugin,
 };
 

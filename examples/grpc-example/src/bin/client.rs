@@ -1,7 +1,7 @@
 use hello_world::greeter_client::GreeterClient;
 use hello_world::HelloRequest;
-use spring::{auto_config, plugin::MutableComponentRegistry, App};
-use spring_web::{
+use summer::{auto_config, plugin::MutableComponentRegistry, App};
+use summer_web::{
     axum::response::IntoResponse,
     extractor::{Component, Path},
     get, WebConfigurator, WebPlugin,

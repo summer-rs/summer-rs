@@ -6,9 +6,9 @@ license.workspace = true
 authors.workspace = true
 
 [dependencies]
-spring = { path = "../../spring" }
-spring-web = { path = "../../spring-web" }
-spring-postgres = { path = "../../spring-postgres"}
+summer = { path = "../../summer" }
+summer-web = { path = "../../summer-web" }
+summer-postgres = { path = "../../summer-postgres"}
 tokio = { workspace = true, features = ["full"] }
 anyhow = { workspace = true }
 serde = { workspace = true }

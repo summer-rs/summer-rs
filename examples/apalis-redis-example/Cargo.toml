@@ -6,10 +6,10 @@ license.workspace = true
 authors.workspace = true
 
 [dependencies]
-spring = { path = "../../spring" }
-spring-web = { path = "../../spring-web" }
-spring-redis = { path = "../../spring-redis" }
-spring-apalis = { path = "../../spring-apalis", features = ["redis", "board", "board-web"] }
+summer = { path = "../../summer" }
+summer-web = { path = "../../summer-web" }
+summer-redis = { path = "../../summer-redis" }
+summer-apalis = { path = "../../summer-apalis", features = ["redis", "board", "board-web"] }
 tokio = { workspace = true, features = ["full"] }
 anyhow = { workspace = true }
 serde = { workspace = true }

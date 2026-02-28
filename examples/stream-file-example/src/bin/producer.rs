@@ -1,10 +1,10 @@
 use anyhow::Context;
 use serde_json::json;
-use spring::{auto_config, App};
-use spring_stream::{Producer, StreamPlugin};
-use spring_web::error::Result;
-use spring_web::get;
-use spring_web::{
+use summer::{auto_config, App};
+use summer_stream::{Producer, StreamPlugin};
+use summer_web::error::Result;
+use summer_web::get;
+use summer_web::{
     axum::response::{IntoResponse, Json},
     extractor::Component,
     WebConfigurator, WebPlugin,

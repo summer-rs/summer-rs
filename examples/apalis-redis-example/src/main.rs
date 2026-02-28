@@ -1,19 +1,19 @@
 use serde::{Deserialize, Serialize};
-use spring::{
+use summer::{
     app::AppBuilder,
     auto_config,
     plugin::{ComponentRegistry, MutableComponentRegistry},
     tracing, App,
 };
-use spring_apalis::apalis_board::axum::{
+use summer_apalis::apalis_board::axum::{
     framework::{ApiBuilder, RegisterRoute},
     sse::{TracingBroadcaster, TracingSubscriber},
     ui::ServeUI,
 };
-use spring_apalis::apalis_redis::RedisStorage;
-use spring_apalis::{apalis::prelude::*, ApalisConfigurator as _, ApalisPlugin};
-use spring_redis::{Redis, RedisPlugin};
-use spring_web::{
+use summer_apalis::apalis_redis::RedisStorage;
+use summer_apalis::{apalis::prelude::*, ApalisConfigurator as _, ApalisPlugin};
+use summer_redis::{Redis, RedisPlugin};
+use summer_web::{
     axum::{response::IntoResponse, Extension, Router},
     extractor::Component,
     get, WebConfigurator, WebPlugin,

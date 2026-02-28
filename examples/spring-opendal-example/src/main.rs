@@ -1,9 +1,9 @@
-use spring::{auto_config, App};
-use spring_opendal::{Op, OpenDALPlugin};
-use spring_web::extractor::Component;
-use spring_web::{axum::http::StatusCode, axum::response::IntoResponse};
-use spring_web::{get, post};
-use spring_web::{WebConfigurator, WebPlugin};
+use summer::{auto_config, App};
+use summer_opendal::{Op, OpenDALPlugin};
+use summer_web::extractor::Component;
+use summer_web::{axum::http::StatusCode, axum::response::IntoResponse};
+use summer_web::{get, post};
+use summer_web::{WebConfigurator, WebPlugin};
 
 #[auto_config(WebConfigurator)]
 #[tokio::main]
@@ -20,7 +20,7 @@ async fn index() -> impl IntoResponse {
     "Hello, OpenDAL!"
 }
 
-const FILE_NAME: &str = "test.spring";
+const FILE_NAME: &str = "test.summer";
 
 #[get("/read")]
 async fn read_file(Component(op): Component<Op>) -> impl IntoResponse {

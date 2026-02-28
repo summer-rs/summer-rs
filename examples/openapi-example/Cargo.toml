@@ -6,8 +6,8 @@ license.workspace = true
 authors.workspace = true
 
 [dependencies]
-spring = { path = "../../spring" }
-spring-web = { path = "../../spring-web", features = [
+summer = { path = "../../summer" }
+summer-web = { path = "../../summer-web", features = [
     "openapi",
     # "openapi-swagger",
     # "openapi-redoc",
@@ -18,5 +18,5 @@ anyhow = { workspace = true }
 serde = { workspace = true }
 schemars = { workspace = true }
 thiserror = { workspace = true }
-spring-sqlx = { path = "../../spring-sqlx", features = ["postgres"] }
+summer-sqlx = { path = "../../summer-sqlx", features = ["postgres"] }
 tracing = { workspace = true }

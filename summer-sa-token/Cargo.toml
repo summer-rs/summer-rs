@@ -1,0 +1,36 @@
+[package]
+name = "summer-sa-token"
+description = "Sa-Token authentication and authorization plugin for summer-rs"
+version = "0.5.0"
+categories = ["authentication", "web-programming"]
+keywords = ["authentication", "authorization", "sa-token", "summer", "security"]
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+
+[dependencies]
+summer = { path = "../summer", version = "0.5" }
+summer-web = { path = "../summer-web", version = "0.5", optional = true }
+summer-macros = { path = "../summer-macros", version = "0.5", features = ["sa-token"] }
+summer-redis = { path = "../summer-redis", version = "0.5", optional = true }
+sa-token-plugin-axum = { workspace = true }
+sa-token-core = { workspace = true }
+sa-token-adapter = { workspace = true }
+sa-token-storage-memory = { workspace = true, optional = true }
+serde = { workspace = true }
+anyhow = { workspace = true }
+tracing = { workspace = true }
+schemars = { workspace = true }
+
+[features]
+default = ["memory", "with-web"]
+memory = ["sa-token-storage-memory"]
+with-web = ["summer-web"]
+with-summer-redis = ["summer-redis"]
+openapi = ["summer-web/openapi"]
+
+[dev-dependencies]
+tower = { workspace = true }
+toml = { workspace = true }
+tokio = { workspace = true }

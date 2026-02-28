@@ -6,14 +6,14 @@ license.workspace = true
 authors.workspace = true
 
 [dependencies]
-spring = { path = "../../spring" }
-spring-web = { path = "../../spring-web", features = [
+summer = { path = "../../summer" }
+summer-web = { path = "../../summer-web", features = [
     "openapi",
     "openapi-redoc",
     "openapi-scalar",
     "openapi-swagger",
 ] }
-spring-sqlx = { path = "../../spring-sqlx", features = ["postgres"] }
+summer-sqlx = { path = "../../summer-sqlx", features = ["postgres"] }
 tokio = { workspace = true, features = ["full", "tracing"] }
 anyhow = { workspace = true }
 serde = { workspace = true }

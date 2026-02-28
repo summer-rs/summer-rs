@@ -1,9 +1,9 @@
 use schemars::JsonSchema;
 use serde::Deserialize;
-use spring::plugin::LazyComponent;
-use spring::{auto_config, config::Configurable, plugin::service::Service, App};
-use spring_web::get;
-use spring_web::{
+use summer::plugin::LazyComponent;
+use summer::{auto_config, config::Configurable, plugin::service::Service, App};
+use summer_web::get;
+use summer_web::{
     axum::response::IntoResponse, error::Result, extractor::Component, WebConfigurator, WebPlugin,
 };
 
@@ -57,7 +57,7 @@ impl UserService {
         format!("username: {username}, project: {project}, stars: {star_count}")
     }
 
-    fn get_better_user_info(&self) -> spring::error::Result<String> {
+    fn get_better_user_info(&self) -> summer::error::Result<String> {
         Ok(self
             .other_service
             .get()?

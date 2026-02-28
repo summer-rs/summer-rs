@@ -1,14 +1,14 @@
 [package]
-name = "spring-opendal-example"
+name = "summer-opendal-example"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
 authors.workspace = true
 
 [dependencies]
-spring = { path = "../../spring" }
-spring-web = { path = "../../spring-web" }
-spring-opendal = { path = "../../spring-opendal", features = ["services-fs"] }
+summer = { path = "../../summer" }
+summer-web = { path = "../../summer-web" }
+summer-opendal = { path = "../../summer-opendal", features = ["services-fs"] }
 tokio = { workspace = true }
 anyhow = { workspace = true }
 serde = { workspace = true }

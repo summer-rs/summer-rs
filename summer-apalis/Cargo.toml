@@ -1,0 +1,37 @@
+[package]
+name = "summer-apalis"
+description = "Integration of rust application framework summer-rs and apalis"
+version = "0.5.0"
+categories = ["date-and-time"]
+keywords = ["cron-scheduler", "task-scheduling", "cron-job", "summer"]
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+
+[features]
+full = ["apalis/full"]
+redis = ["apalis-redis", "summer-redis"]
+amqp = ["apalis-amqp"]
+sql-postgres = ["apalis-postgres", "summer-sqlx"]
+sql-sqlite = ["apalis-sqlite", "summer-sqlx"]
+sql-mysql = ["apalis-mysql", "summer-sqlx"]
+workflow = ["apalis-workflow"]
+board = ["apalis-board"]
+board-web = ["apalis-board/web"]
+
+[dependencies]
+summer = { path = "../summer", version = "0.5" }
+tower-service = { workspace = true }
+tower-layer = { workspace = true }
+tokio = { workspace = true }
+apalis = { workspace = true }
+apalis-redis = { workspace = true, optional = true }
+apalis-amqp = { workspace = true, optional = true }
+apalis-postgres = { workspace = true, optional = true, features = ["time"] }
+apalis-sqlite = { workspace = true, optional = true, features = ["time"] }
+apalis-mysql = { workspace = true, optional = true, features = ["time"] }
+apalis-workflow = { workspace = true, optional = true }
+apalis-board = { workspace = true, optional = true, features = ["axum"] }
+summer-redis = { path = "../summer-redis", version = "0.5", optional = true }
+summer-sqlx = { path = "../summer-sqlx", version = "0.5", optional = true }

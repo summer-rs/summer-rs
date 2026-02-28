@@ -6,10 +6,10 @@ license.workspace = true
 authors.workspace = true
 
 [dependencies]
-spring = { path = "../../spring" }
-spring-job = { path = "../../spring-job", features = ["postgres_storage"] }
-spring-web = { path = "../../spring-web" }
-spring-sqlx = { path = "../../spring-sqlx", features = [
+summer = { path = "../../summer" }
+summer-job = { path = "../../summer-job", features = ["postgres_storage"] }
+summer-web = { path = "../../summer-web" }
+summer-sqlx = { path = "../../summer-sqlx", features = [
     "postgres",
     "with-chrono",
 ] }

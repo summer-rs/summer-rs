@@ -1,8 +1,8 @@
 use serde::Deserialize;
-use spring::component;
-use spring::config::Configurable;
-use spring::plugin::ComponentRegistry;
-use spring::App;
+use summer::component;
+use summer::config::Configurable;
+use summer::plugin::ComponentRegistry;
+use summer::App;
 
 // Define configuration
 #[derive(Debug, Clone, Configurable, Deserialize)]
@@ -34,7 +34,7 @@ struct UserService {
 // Use #[component] macro to register components
 #[component]
 fn create_db_connection(
-    spring::extractor::Config(config): spring::extractor::Config<DbConfig>,
+    summer::extractor::Config(config): summer::extractor::Config<DbConfig>,
 ) -> DbConnection {
     println!("Creating DbConnection with config: {:?}", config);
     DbConnection {
@@ -44,7 +44,7 @@ fn create_db_connection(
 
 #[component]
 fn create_user_repository(
-    spring::extractor::Component(db): spring::extractor::Component<DbConnection>,
+    summer::extractor::Component(db): summer::extractor::Component<DbConnection>,
 ) -> UserRepository {
     println!("Creating UserRepository with db: {:?}", db);
     UserRepository { db }
@@ -52,7 +52,7 @@ fn create_user_repository(
 
 #[component]
 fn create_user_service(
-    spring::extractor::Component(repo): spring::extractor::Component<UserRepository>,
+    summer::extractor::Component(repo): summer::extractor::Component<UserRepository>,
 ) -> UserService {
     println!("Creating UserService with repo: {:?}", repo);
     UserService { repo }

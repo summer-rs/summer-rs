@@ -7,13 +7,13 @@ use entities::{
 };
 use sea_orm::{sea_query::IntoCondition, ColumnTrait, Condition, EntityTrait, QueryFilter};
 use serde::Deserialize;
-use spring::{auto_config, App};
-use spring_sea_orm::{
+use summer::{auto_config, App};
+use summer_sea_orm::{
     pagination::{Pagination, PaginationExt},
     DbConn, SeaOrmPlugin,
 };
-use spring_web::get;
-use spring_web::{
+use summer_web::get;
+use summer_web::{
     axum::response::{IntoResponse, Json},
     error::Result,
     extractor::{Component, Path, Query},

@@ -1,24 +1,24 @@
 [workspace]
 resolver = "2"
 members = [
-    "spring",
-    "spring-macros",
-    "spring-web",
-    "spring-grpc",
-    "spring-job",
-    "spring-redis",
-    "spring-sqlx",
-    "spring-postgres",
-    "spring-sea-orm",
-    "spring-stream",
-    "spring-mail",
-    "spring-opentelemetry",
-    "spring-opendal",
-    "spring-apalis",
-    "spring-sa-token",
+    "summer",
+    "summer-macros",
+    "summer-web",
+    "summer-grpc",
+    "summer-job",
+    "summer-redis",
+    "summer-sqlx",
+    "summer-postgres",
+    "summer-sea-orm",
+    "summer-stream",
+    "summer-mail",
+    "summer-opentelemetry",
+    "summer-opendal",
+    "summer-apalis",
+    "summer-sa-token",
     "examples/*",
 ]
-default-members = ["spring", "spring-*"]
+default-members = ["summer", "summer-*"]
 exclude = ["examples/**"]
 
 [workspace.package]
@@ -26,7 +26,7 @@ version = "0.5.0"
 edition = "2021"
 license = "MIT"
 authors = ["holmofy"]
-repository = "https://github.com/spring-rs/spring-rs"
+repository = "https://github.com/summer-rs/summer-rs"
 
 [workspace.dependencies]
 aide = "0.16.0-alpha.2"

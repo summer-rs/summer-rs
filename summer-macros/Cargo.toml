@@ -1,0 +1,31 @@
+[package]
+name = "summer-macros"
+description = "summer-rs Procedural Macros implementation"
+version = "0.5.0"
+categories = ["development-tools::procedural-macro-helpers"]
+keywords = ["proc-macro", "web", "cron", "stream", "summer"]
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+
+[lib]
+proc-macro = true
+
+[features]
+socket_io = ["summer-web/socket_io"]
+sa-token = []
+
+[dependencies]
+proc-macro2 = { workspace = true }
+quote = { workspace = true }
+syn = { workspace = true, features = ["full", "extra-traits"] }
+
+[dev-dependencies]
+tokio = { workspace = true }
+summer = { path = "../summer" }
+summer-web = { path = "../summer-web", features = ["openapi"] }
+summer-job = { path = "../summer-job" }
+summer-redis = { path = "../summer-redis" }
+serde = { workspace = true }
+serde_json = { workspace = true }
