@@ -130,8 +130,8 @@ jobs:
       - name: Run unit tests (Windows)
         if: matrix.os == 'windows-latest'
         run: |
-          # Test all default workspace members except spring-stream (rdkafka-sys not supported on Windows)
-          cargo test --lib -p spring -p spring-macros -p spring-web -p spring-grpc -p spring-job -p spring-redis -p spring-sqlx -p spring-postgres -p spring-sea-orm -p spring-mail -p spring-opentelemetry -p spring-opendal -p spring-apalis
+          # Test all default workspace members except summer-stream (rdkafka-sys not supported on Windows)
+          cargo test --lib -p summer -p summer-macros -p summer-web -p summer-grpc -p summer-job -p summer-redis -p summer-sqlx -p summer-postgres -p summer-sea-orm -p summer-mail -p summer-opentelemetry -p summer-opendal -p summer-apalis
 
   integration-tests:
     name: Integration Tests
