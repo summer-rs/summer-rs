@@ -12,4 +12,4 @@ toc = true
 top = false
 +++
 
-{{ include(path="../../spring/Log-Plugin.md") }}
+{{ include(path="../../summer/Log-Plugin.md") }}

@@ -1,11 +1,11 @@
 
-[![crates.io](https://img.shields.io/crates/v/spring-opentelemetry.svg)](https://crates.io/crates/spring-opentelemetry)
-[![Documentation](https://docs.rs/spring-opentelemetry/badge.svg)](https://docs.rs/spring-opentelemetry)
+[![crates.io](https://img.shields.io/crates/v/summer-opentelemetry.svg)](https://crates.io/crates/summer-opentelemetry)
+[![Documentation](https://docs.rs/summer-opentelemetry/badge.svg)](https://docs.rs/summer-opentelemetry)
 
 ## 依赖
 
 ```toml
-spring-opentelemetry = "<version>"
+summer-opentelemetry = "<version>"
 ```
 
 OTEL默认使用[W3C格式](https://github.com/w3c/trace-context)传递链路追踪的上下文信息。
@@ -27,6 +27,6 @@ enable = false    # 运行时是否启用该插件
 * [SDK Configuration](https://opentelemetry.io/docs/languages/sdk-configuration/)
 * [Environment Variable Specification](https://opentelemetry.io/docs/specs/otel/configuration/sdk-environment-variables/)
 
-完整代码参考[`opentelemetry-example`](https://github.com/spring-rs/spring-rs/tree/master/examples/opentelemetry-example)
+完整代码参考[`opentelemetry-example`](https://github.com/summer-rs/summer-rs/tree/master/examples/opentelemetry-example)
 
 **注意**: [opentelemetry-rust](https://github.com/open-telemetry/opentelemetry-rust/issues/1678)尚未稳定，与[tracing](https://github.com/open-telemetry/opentelemetry-rust/issues/1571)的部分功能需要整合。插件会持续跟踪opentelemetry-rust和tracing的相关动态，并及时更新。

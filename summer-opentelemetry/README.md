@@ -1,11 +1,11 @@
 
-[![crates.io](https://img.shields.io/crates/v/spring-opentelemetry.svg)](https://crates.io/crates/spring-opentelemetry)
-[![Documentation](https://docs.rs/spring-opentelemetry/badge.svg)](https://docs.rs/spring-opentelemetry)
+[![crates.io](https://img.shields.io/crates/v/summer-opentelemetry.svg)](https://crates.io/crates/summer-opentelemetry)
+[![Documentation](https://docs.rs/summer-opentelemetry/badge.svg)](https://docs.rs/summer-opentelemetry)
 
 ## Dependencies
 
 ```toml
-spring-opentelemetry = "<version>"
+summer-opentelemetry = "<version>"
 ```
 
 OTEL uses the [W3C format](https://github.com/w3c/trace-context) to propagate context information for tracing by default.
@@ -27,6 +27,6 @@ For other configurations, it is recommended to use the environment variables in 
 * [SDK Configuration](https://opentelemetry.io/docs/languages/sdk-configuration/)
 * [Environment Variable Specification](https://opentelemetry.io/docs/specs/otel/configuration/sdk-environment-variables/)
 
-For complete code, refer to [`opentelemetry-example`](https://github.com/spring-rs/spring-rs/tree/master/examples/opentelemetry-example)
+For complete code, refer to [`opentelemetry-example`](https://github.com/summer-rs/summer-rs/tree/master/examples/opentelemetry-example)
 
 **Note**: [opentelemetry-rust](https://github.com/open-telemetry/opentelemetry-rust/issues/1678) is not stable yet, and some features of [tracing](https://github.com/open-telemetry/opentelemetry-rust/issues/1571) need to be integrated. The plugin will continue to track the relevant dynamics of opentelemetry-rust and tracing, and update them in a timely manner.

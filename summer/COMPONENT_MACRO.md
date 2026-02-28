@@ -1,22 +1,22 @@
 # Component Macro Guide
 
-The `#[component]` macro provides declarative component registration for spring-rs applications, eliminating the need to manually implement the Plugin trait.
+The `#[component]` macro provides declarative component registration for summer-rs applications, eliminating the need to manually implement the Plugin trait.
 
 ## Quick Start
 
 ### 1. Add Dependencies
 
-Add `spring` and `spring-macros` to your `Cargo.toml`:
+Add `summer` and `summer-macros` to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-spring = "0.4"
+summer = "0.4"
 tokio = { version = "1", features = ["full"] }
 serde = { version = "1", features = ["derive"] }
 ```
 
-**Note:** You don't need to add `spring-macros`, `async-trait` or `inventory` as direct dependencies.
-The `spring` crate re-exports these for you.
+**Note:** You don't need to add `summer-macros`, `async-trait` or `inventory` as direct dependencies.
+The `summer` crate re-exports these for you.
 
 ### 2. Define Your Component
 
@@ -30,7 +30,7 @@ struct DbConnection {
 ### 2. Create Configuration
 
 ```rust
-use spring::config::Configurable;
+use summer::config::Configurable;
 use serde::Deserialize;
 
 #[derive(Clone, Configurable, Deserialize)]
@@ -44,8 +44,8 @@ struct DbConfig {
 ### 3. Use `#[component]` Macro
 
 ```rust
-use spring::config::Config;
-use spring::component;
+use summer::config::Config;
+use summer::component;
 
 #[component]
 fn create_db_connection(
@@ -60,7 +60,7 @@ fn create_db_connection(
 ### 4. Register in Application
 
 ```rust
-use spring::App;
+use summer::App;
 
 #[tokio::main]
 async fn main() {
@@ -607,8 +607,8 @@ App::new()
 
 ## See Also
 
-- [spring-rs Documentation](https://spring-rs.github.io/)
-- [Plugin System](../spring/Plugin.md)
-- [Dependency Injection](../spring/DI.md)
-- [Configuration](../spring/Config.md)
+- [summer-rs Documentation](https://summer-rs.github.io/)
+- [Plugin System](../summer/Plugin.md)
+- [Dependency Injection](../summer/DI.md)
+- [Configuration](../summer/Config.md)
 - [Example Project](../examples/component-macro-example/)

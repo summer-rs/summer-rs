@@ -1,12 +1,12 @@
-[![crates.io](https://img.shields.io/crates/v/spring.svg)](https://crates.io/crates/spring)
-[![Documentation](https://docs.rs/spring/badge.svg)](https://docs.rs/spring)
+[![crates.io](https://img.shields.io/crates/v/summer.svg)](https://crates.io/crates/summer)
+[![Documentation](https://docs.rs/summer/badge.svg)](https://docs.rs/summer)
 
 ## Introduction
 
-`spring` is the core module of this project, which includes: configuration management, plugin management, and component management.
+`summer` is the core module of this project, which includes: configuration management, plugin management, and component management.
 
-* All plugins need to implement the [`Plugin`](https://docs.rs/spring/latest/spring/plugin/trait.Plugin.html) trait.
-* All configurations need to implement the [`Configurable`](https://docs.rs/spring/latest/spring/config/trait.Configurable.html) trait.
+* All plugins need to implement the [`Plugin`](https://docs.rs/summer/latest/summer/plugin/trait.Plugin.html) trait.
+* All configurations need to implement the [`Configurable`](https://docs.rs/summer/latest/summer/config/trait.Configurable.html) trait.
 * All components need to implement the [`Clone`](https://doc.rust-lang.org/std/clone/trait.Clone.html) trait.
 
 > Note: To avoid deep copying of large struct in Component, it is recommended to use the [newtype pattern](https://effective-rust.com/newtype.html) to reference them via `Arc<T>`.
@@ -16,15 +16,15 @@
 Add dependencies
 
 ```toml
-spring = { version = "<version>" }           # This crate contains the definition of plugin traits
+summer = { version = "<version>" }           # This crate contains the definition of plugin traits
 serde = { workspace = true, features = ["derive"] } # Used to parse plugin configuration items
 ```
 
 ```rust
 use serde::Deserialize;
-use spring::async_trait;
-use spring::config::{Configurable, ConfigRegistry};
-use spring::{app::AppBuilder, plugin::Plugin};
+use summer::async_trait;
+use summer::config::{Configurable, ConfigRegistry};
+use summer::{app::AppBuilder, plugin::Plugin};
 
 struct MyPlugin;
 
@@ -55,4 +55,4 @@ struct Config {
 }
 ```
 
-For the complete code, refer to [`plugin-example`](https://github.com/spring-rs/spring-rs/tree/master/examples/plugin-example), or refer to other built-in plugin codes.
+For the complete code, refer to [`plugin-example`](https://github.com/summer-rs/summer-rs/tree/master/examples/plugin-example), or refer to other built-in plugin codes.

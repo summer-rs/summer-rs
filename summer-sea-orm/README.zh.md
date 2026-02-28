@@ -1,12 +1,12 @@
-[![crates.io](https://img.shields.io/crates/v/spring-sea-orm.svg)](https://crates.io/crates/spring-sea-orm)
-[![Documentation](https://docs.rs/spring-sea-orm/badge.svg)](https://docs.rs/spring-sea-orm)
+[![crates.io](https://img.shields.io/crates/v/summer-sea-orm.svg)](https://crates.io/crates/summer-sea-orm)
+[![Documentation](https://docs.rs/summer-sea-orm/badge.svg)](https://docs.rs/summer-sea-orm)
 
 [SeaORM](https://github.com/SeaQL/sea-orm) 是现代异步 ORM 框架，底层基于 SQLx，通过强类型实体与编译期安全的查询构建，在保持良好抽象的同时兼顾性能与可靠性。
 
 ## 依赖
 
 ```toml
-spring-sea-orm = { version = "<version>", features = ["postgres"] }
+summer-sea-orm = { version = "<version>", features = ["postgres"] }
 sea-orm = { version = "1.0" }    # 主要为了适配sea-orm-cli生成的entity代码
 ```
 
@@ -29,7 +29,7 @@ enable_logging = true                                # 打印sql日志
 
 ## 组件
 
-配置完上述配置项后，插件会自动注册一个[`DbConn`](https://docs.rs/spring-sea-orm/latest/spring_sea_orm/type.DbConn.html)连接池对象。该对象是[`sea_orm::DbConn`](https://docs.rs/sea-orm/1.0.0/sea_orm/type.DbConn.html)的别名。
+配置完上述配置项后，插件会自动注册一个[`DbConn`](https://docs.rs/summer-sea-orm/latest/summer_sea_orm/type.DbConn.html)连接池对象。该对象是[`sea_orm::DbConn`](https://docs.rs/sea-orm/1.0.0/sea_orm/type.DbConn.html)的别名。
 
 ```rust
 pub type DbConn = sea_orm::DbConn;
@@ -41,13 +41,13 @@ pub type DbConn = sea_orm::DbConn;
 
 ## 提取插件注册的Component
 
-`SeaOrmPlugin`插件为我们自动注册了一个连接池组件，我们可以使用`Component`从AppState中提取这个连接池，[`Component`](https://docs.rs/spring-web/latest/spring_web/extractor/struct.Component.html)是一个axum的[extractor](https://docs.rs/axum/latest/axum/extract/index.html)。
+`SeaOrmPlugin`插件为我们自动注册了一个连接池组件，我们可以使用`Component`从AppState中提取这个连接池，[`Component`](https://docs.rs/summer-web/latest/summer_web/extractor/struct.Component.html)是一个axum的[extractor](https://docs.rs/axum/latest/axum/extract/index.html)。
 
 ```rust
-use spring_sqlx::{sqlx::{self, Row}, ConnectPool};
-use spring_web::get;
-use spring_web::extractor::Component;
-use spring_web::error::Result;
+use summer_sqlx::{sqlx::{self, Row}, ConnectPool};
+use summer_web::get;
+use summer_web::extractor::Component;
+use summer_web::error::Result;
 use anyhow::Context;
 
 #[get("/{id}")]
@@ -66,12 +66,12 @@ async fn get_todo_list(
 
 ## 翻页支持
 
-`spring-sea-orm`为[SeaOrm的Select](https://docs.rs/sea-orm/latest/sea_orm/query/struct.Select.html)扩展了[PaginationExt特征](https://docs.rs/spring-sea-orm/latest/spring_sea_orm/pagination/trait.PaginationExt.html)。
+`summer-sea-orm`为[SeaOrm的Select](https://docs.rs/sea-orm/latest/sea_orm/query/struct.Select.html)扩展了[PaginationExt特征](https://docs.rs/summer-sea-orm/latest/summer_sea_orm/pagination/trait.PaginationExt.html)。
 
 另外还提供了web翻页参数的解析，只需在依赖中添加`with-web`功能即可。
 
 ```toml
-spring-sea-orm = { version = "<version>", features = ["postgres", "with-web"] }
+summer-sea-orm = { version = "<version>", features = ["postgres", "with-web"] }
 ```
 
 配置方式如下：
@@ -102,4 +102,4 @@ async fn get_todo_list(
 }
 ```
 
-完整代码参考[`sea-orm-example`](https://github.com/spring-rs/spring-rs/tree/master/examples/sea-orm-example)
+完整代码参考[`sea-orm-example`](https://github.com/summer-rs/summer-rs/tree/master/examples/sea-orm-example)

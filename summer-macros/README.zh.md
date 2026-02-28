@@ -1,10 +1,10 @@
-macros for spring.rs.
+macros for summer.rs.
 
-## spring-rs重新导出的宏
+## summer-rs重新导出的宏
 
-spring-rs重新导出了这个crate所有宏，因此你通常不需要明确的指定这个依赖。你可以到[spring-rs文档](https://docs.rs/spring/latest/spring/#attributes)查看被重新导出的宏。
+summer-rs重新导出了这个crate所有宏，因此你通常不需要明确的指定这个依赖。你可以到[summer-rs文档](https://docs.rs/summer/latest/summer/#attributes)查看被重新导出的宏。
 
-## 绑定`spring-web`路由的宏
+## 绑定`summer-web`路由的宏
 
 ### 绑定单个Http Method的handler
 
@@ -13,8 +13,8 @@ spring-rs重新导出了这个crate所有宏，因此你通常不需要明确的
 可以看这些相关文档: [GET], [POST], [PATCH], [PUT], [DELETE], [HEAD], [OPTIONS], [TRACE]
 
 ```
-# use spring_web::axum::response::IntoResponse;
-# use spring_macros::get;
+# use summer_web::axum::response::IntoResponse;
+# use summer_macros::get;
 #[get("/test")]
 async fn get_handler() -> impl IntoResponse {
     "hello world"
@@ -26,8 +26,8 @@ async fn get_handler() -> impl IntoResponse {
 类似于单Method的handler宏，但它需要一个或多个method参数来指定 HTTP Method。请参阅 [macro@route] 宏文档。
 
 ```
-# use spring_web::axum::response::IntoResponse;
-# use spring_macros::route;
+# use summer_web::axum::response::IntoResponse;
+# use summer_macros::route;
 #[route("/test", method = "GET", method = "HEAD")]
 async fn get_and_head_handler() -> impl IntoResponse {
     "hello world"
@@ -39,8 +39,8 @@ async fn get_and_head_handler() -> impl IntoResponse {
 `routers`充当多个单Method宏的包装器。它不接受任何参数，它将这些参数委托给各个Method的宏。请参阅 [macro@routes] 宏文档。
 
 ```
-# use spring_web::axum::response::IntoResponse;
-# use spring_macros::routes;
+# use summer_web::axum::response::IntoResponse;
+# use summer_macros::routes;
 #[routes]
 #[get("/test")]
 #[get("/test2")]
@@ -56,8 +56,8 @@ async fn example() -> impl IntoResponse {
 
 
 ```
-# use spring_macros::{nest, get};
-# use spring_web::axum::response::IntoResponse;
+# use summer_macros::{nest, get};
+# use summer_web::axum::response::IntoResponse;
 #[nest("/api")]
 mod api {
     # use super::*;
@@ -69,7 +69,7 @@ mod api {
 }
 ```
 
-## 绑定`spring-job`调度任务的宏
+## 绑定`summer-job`调度任务的宏
 
 * `one_shot`：只调度一次
 * `fix_delay`：按固定间隔时间调度任务，任务之间不会重叠，下一次调度需要上一次调度任务完成后等待固定间隔才开始

@@ -1,12 +1,12 @@
-[![crates.io](https://img.shields.io/crates/v/spring-postgres.svg)](https://crates.io/crates/spring-postgres)
-[![Documentation](https://docs.rs/spring-postgres/badge.svg)](https://docs.rs/spring-postgres)
+[![crates.io](https://img.shields.io/crates/v/summer-postgres.svg)](https://crates.io/crates/summer-postgres)
+[![Documentation](https://docs.rs/summer-postgres/badge.svg)](https://docs.rs/summer-postgres)
 
 [tokio-postgres](https://github.com/sfackler/rust-postgres) is a database connection tool similar to sqlx. Unlike sqlx, it only focuses on implementing postgresql database connections.
 
 ## Dependencies
 
 ```toml
-spring-postgres = { version = "<version>" }
+summer-postgres = { version = "<version>" }
 ```
 
 optional features:
@@ -42,7 +42,7 @@ pub struct Postgres(Arc<tokio_postgres::Client>);
 
 ## Extract the Component registered by the plugin
 
-The `PgPlugin` plugin automatically registers a [`Postgres`](https://docs.rs/tokio-postgres/latest/tokio_postgres/struct.Client.html) object for us. We can use `Component` to extract this connection pool from AppState. [`Component`](https://docs.rs/spring-web/latest/spring_web/extractor/struct.Component.html) is an axum [extractor](https://docs.rs/axum/latest/axum/extract/index.html).
+The `PgPlugin` plugin automatically registers a [`Postgres`](https://docs.rs/tokio-postgres/latest/tokio_postgres/struct.Client.html) object for us. We can use `Component` to extract this connection pool from AppState. [`Component`](https://docs.rs/summer-web/latest/summer_web/extractor/struct.Component.html) is an axum [extractor](https://docs.rs/axum/latest/axum/extract/index.html).
 
 ```rust
 #[get("/postgres")]
@@ -58,4 +58,4 @@ async fn hello_postgres(Component(pg): Component<Postgres>) -> Result<impl IntoR
 }
 ```
 
-Complete code reference [`postgres-example`](https://github.com/spring-rs/spring-rs/tree/master/examples/postgres-example)
+Complete code reference [`postgres-example`](https://github.com/summer-rs/summer-rs/tree/master/examples/postgres-example)

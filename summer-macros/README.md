@@ -1,8 +1,8 @@
-macros for spring.rs.
+macros for summer.rs.
 
-## spring.rs macros re-exports
+## summer.rs macros re-exports
 
-spring-rs re-exports all macros for this crate, so you usually don't need to explicitly specify this dependency. You can view the re-exported macros at spring-rs.
+summer-rs re-exports all macros for this crate, so you usually don't need to explicitly specify this dependency. You can view the re-exported macros at summer-rs.
 
 ## Web route macros
 
@@ -13,8 +13,8 @@ There is a macro to set up a handler for each of the most common HTTP methods.
 See docs for: [GET], [POST], [PATCH], [PUT], [DELETE], [HEAD], [OPTIONS], [TRACE]
 
 ```
-# use spring_web::axum::response::IntoResponse;
-# use spring_macros::get;
+# use summer_web::axum::response::IntoResponse;
+# use summer_macros::get;
 #[get("/test")]
 async fn get_handler() -> impl IntoResponse {
     "hello world"
@@ -26,8 +26,8 @@ Similar to the single method handler macro but takes one or more arguments for t
 it should respond to. See [macro@route] macro docs.
 
 ```
-# use spring_web::axum::response::IntoResponse;
-# use spring_macros::route;
+# use summer_web::axum::response::IntoResponse;
+# use summer_macros::route;
 #[route("/test", method = "GET", method = "HEAD")]
 async fn get_and_head_handler() -> impl IntoResponse {
     "hello world"
@@ -39,8 +39,8 @@ Acts as a wrapper for multiple single method handler macros. It takes no argumen
 delegates those to the macros for the individual methods. See [macro@routes] macro docs.
 
 ```
-# use spring_web::axum::response::IntoResponse;
-# use spring_macros::routes;
+# use summer_web::axum::response::IntoResponse;
+# use summer_macros::routes;
 #[routes]
 #[get("/test")]
 #[get("/test2")]

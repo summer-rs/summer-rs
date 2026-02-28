@@ -1,11 +1,11 @@
 
-[![crates.io](https://img.shields.io/crates/v/spring-opendal.svg)](https://crates.io/crates/spring-opendal)
-[![Documentation](https://docs.rs/spring-opendal/badge.svg)](https://docs.rs/spring-opendal)
+[![crates.io](https://img.shields.io/crates/v/summer-opendal.svg)](https://crates.io/crates/summer-opendal)
+[![Documentation](https://docs.rs/summer-opendal/badge.svg)](https://docs.rs/summer-opendal)
 
 ## Dependencies
 
 ```toml
-spring-opendal = { version = "<version>" }
+summer-opendal = { version = "<version>" }
 ```
 
 ## Configuration items
@@ -21,10 +21,10 @@ For Layer configuration, see [this document](https://docs.rs/opendal/latest/open
 
 ## Components
 
-After configuring the above configuration items, the plugin will automatically register a [`Op`](https://docs.rs/spring-opendal/latest/spring_opendal/type.Op.html) client. This object is an alias of [`opendal::Operator`](https://docs.rs/opendal/latest/opendal/struct.Operator.html).
+After configuring the above configuration items, the plugin will automatically register a [`Op`](https://docs.rs/summer-opendal/latest/summer_opendal/type.Op.html) client. This object is an alias of [`opendal::Operator`](https://docs.rs/opendal/latest/opendal/struct.Operator.html).
 
 ```rust
 pub type Op = Operator;
 ```
 
-For the complete code, please refer to [`spring-opendal-example`](https://github.com/spring-rs/spring-rs/tree/master/examples/spring-opendal-example)
+For the complete code, please refer to [`summer-opendal-example`](https://github.com/summer-rs/summer-rs/tree/master/examples/summer-opendal-example)

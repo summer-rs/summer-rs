@@ -1,11 +1,11 @@
 
-[![crates.io](https://img.shields.io/crates/v/spring-mail.svg)](https://crates.io/crates/spring-mail)
-[![Documentation](https://docs.rs/spring-mail/badge.svg)](https://docs.rs/spring-mail)
+[![crates.io](https://img.shields.io/crates/v/summer-mail.svg)](https://crates.io/crates/summer-mail)
+[![Documentation](https://docs.rs/summer-mail/badge.svg)](https://docs.rs/summer-mail)
 
 ## Dependencies
 
 ```toml
-spring-mail = { version = "<version>" }
+summer-mail = { version = "<version>" }
 ```
 
 ## Configuration items
@@ -21,7 +21,7 @@ test_connection = false    # Whether to test mail server connection on startup
 
 ## Components
 
-After configuring the above configuration items, the plugin will automatically register a [`Mailer`](https://docs.rs/spring-mail/latest/spring_mail/type.Mailer.html)STMP asynchronous client. This object is an alias of [`lettre::AsyncSmtpTransport<Tokio1Executor>`](https://docs.rs/lettre/latest/lettre/transport/smtp/struct.AsyncSmtpTransport.html).
+After configuring the above configuration items, the plugin will automatically register a [`Mailer`](https://docs.rs/summer-mail/latest/summer_mail/type.Mailer.html)STMP asynchronous client. This object is an alias of [`lettre::AsyncSmtpTransport<Tokio1Executor>`](https://docs.rs/lettre/latest/lettre/transport/smtp/struct.AsyncSmtpTransport.html).
 
 ```rust
 pub type Mailer = lettre::AsyncSmtpTransport<Tokio1Executor>;
@@ -29,7 +29,7 @@ pub type Mailer = lettre::AsyncSmtpTransport<Tokio1Executor>;
 
 ## Extract the Component registered by the plugin
 
-The `MailPlugin` plugin automatically registers an SMTP client for us. We can use `Component` to extract this connection pool from AppState. [`Component`](https://docs.rs/spring-web/latest/spring_web/extractor/struct.Component.html) is an axum [extractor](https://docs.rs/axum/latest/axum/extract/index.html).
+The `MailPlugin` plugin automatically registers an SMTP client for us. We can use `Component` to extract this connection pool from AppState. [`Component`](https://docs.rs/summer-web/latest/summer_web/extractor/struct.Component.html) is an axum [extractor](https://docs.rs/axum/latest/axum/extract/index.html).
 
 ```rust
 async fn send_mail(Component(mailer): Component<Mailer>) -> Result<impl IntoResponse> {
@@ -46,4 +46,4 @@ async fn send_mail(Component(mailer): Component<Mailer>) -> Result<impl IntoResp
 }
 ```
 
-For the complete code, please refer to [`mail-example`](https://github.com/spring-rs/spring-rs/tree/master/examples/mail-example)
+For the complete code, please refer to [`mail-example`](https://github.com/summer-rs/summer-rs/tree/master/examples/mail-example)

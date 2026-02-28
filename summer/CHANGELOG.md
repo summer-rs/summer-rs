@@ -4,18 +4,18 @@
 
 - **changed**: Refactor component ([#216])
 - **added**: add component macro for declarative component ([#214])
-- **breaking**: migrate `spring-job` & `spring-stream` extractor to `spring` crate ([#214], [#216])
+- **breaking**: migrate `summer-job` & `summer-stream` extractor to `summer` crate ([#214], [#216])
 
-[#216]: https://github.com/spring-rs/spring-rs/pull/216
-[#214]: https://github.com/spring-rs/spring-rs/pull/214
+[#216]: https://github.com/summer-rs/summer-rs/pull/216
+[#214]: https://github.com/summer-rs/summer-rs/pull/214
 
 **Migrating from 0.4 to 0.5**
 
 ```diff
--use spring_job::extractor::Component;
-+use spring::extractor::Component;
--use spring_job::extractor::Config;
-+use spring::extractor::Config;
+-use summer_job::extractor::Component;
++use summer::extractor::Component;
+-use summer_job::extractor::Config;
++use summer::extractor::Config;
  
  #[cron("1/10 * * * * *")]
  async fn cron_job(Component(db): Component<ConnectPool>) {
@@ -31,10 +31,10 @@
 
 
 ```diff
--use spring_stream::extractor::Component;
-+use spring::extractor::Component;
--use spring_stream::extractor::Config;
-+use spring::extractor::Config;
+-use summer_stream::extractor::Component;
++use summer::extractor::Component;
+-use summer_stream::extractor::Config;
++use summer::extractor::Config;
 
  #[stream_listener(
      "topic",
@@ -49,29 +49,29 @@
 
 - **changed**: upgrade `schemars` 0.9 to 1.1 ([#197])
 
-[#197]: https://github.com/spring-rs/spring-rs/pull/197
+[#197]: https://github.com/summer-rs/summer-rs/pull/197
 
 ## 0.4.6
 
 - **added**: refactor `shutdown_signal` ([#180])
 
-[#180]: https://github.com/spring-rs/spring-rs/pull/180
+[#180]: https://github.com/summer-rs/summer-rs/pull/180
 
 ## 0.4.5
 
 - **added**: Nested and circular dependency injection ([#173])
 
-[#173]: https://github.com/spring-rs/spring-rs/pull/173
+[#173]: https://github.com/summer-rs/summer-rs/pull/173
 
 ## 0.4.4
 
-- **added**: export `spring::submit_config_schema`
+- **added**: export `summer::submit_config_schema`
 
 ## 0.4.3
 
 - **added**: Service support inject None ([#160])
 
-[#160]: https://github.com/spring-rs/spring-rs/pull/160
+[#160]: https://github.com/summer-rs/summer-rs/pull/160
 
 ## 0.4.2
 
@@ -79,19 +79,19 @@
 - **changed**: upgrade `tokio` 1.44 to 1.46 ([#154])
 - **changed**: upgrade `serde-toml-merge` 0.3.8 to 0.3.10 ([#154])
 
-[#154]: https://github.com/spring-rs/spring-rs/pull/154
+[#154]: https://github.com/summer-rs/summer-rs/pull/154
 
 ## 0.4.1
 
 - **changed**: fix Immediately built plugins can't access config ([#145])
 
-[#145]: https://github.com/spring-rs/spring-rs/pull/145
+[#145]: https://github.com/summer-rs/summer-rs/pull/145
 
 ## 0.4.0
 
-- **breaking**: upgrade `spring-macros` 0.3 to 0.4 ([#132])
+- **breaking**: upgrade `summer-macros` 0.3 to 0.4 ([#132])
 
-[#132]: https://github.com/spring-rs/spring-rs/pull/132
+[#132]: https://github.com/summer-rs/summer-rs/pull/132
 
 **Migrating from 0.3 to 0.4**
 
@@ -112,14 +112,14 @@
 - **breaking**: remove `ComponentRegistry::create_service` ([#112])
 - **added**: Added prototype service derived macro generation `build` function ([#112])
 
-[#112]: https://github.com/spring-rs/spring-rs/pull/112
+[#112]: https://github.com/summer-rs/summer-rs/pull/112
 
 ## 0.3.0
 
 - **breaking**: refactor dependency inject ([#105])
 - **changed**: use `TypeId` instead of `type_name` to improve performance ([#105])
 
-[#105]: https://github.com/spring-rs/spring-rs/pull/105
+[#105]: https://github.com/summer-rs/summer-rs/pull/105
 
 **Migrating from 0.2 to 0.3**
 
@@ -139,41 +139,41 @@
 
 - **added**: toml support Environment variable interpolator ([#95])
 
-[#95]: https://github.com/spring-rs/spring-rs/pull/95
+[#95]: https://github.com/summer-rs/summer-rs/pull/95
 
 ## 0.2.8
 
 - **added**: banner & Fancy Starting Logs ([#91])
 - **added**: add `App::global()` ([#d1fa98])
 
-[#91]: https://github.com/spring-rs/spring-rs/pull/91
-[#d1fa98]: https://github.com/spring-rs/spring-rs/commit/d1fa983bc41750777c4bb12c5fa03479d273e977
+[#91]: https://github.com/summer-rs/summer-rs/pull/91
+[#d1fa98]: https://github.com/summer-rs/summer-rs/commit/d1fa983bc41750777c4bb12c5fa03479d273e977
 
 ## 0.2.7
 
 - **added**: support `include_str!` compile configuration files into the application ([#85])
 - **changed**: rename `config_file` to `use_config_file` ([#85])
 
-[#85]: https://github.com/spring-rs/spring-rs/pull/85
+[#85]: https://github.com/summer-rs/summer-rs/pull/85
 
 ## 0.2.6
 
 - **changed**: fix concurrent scheduler ([#81])
 
-[#81]: https://github.com/spring-rs/spring-rs/pull/81
+[#81]: https://github.com/summer-rs/summer-rs/pull/81
 
 ## 0.2.5
 
 - **changed**: fix exported `build` method ([#75])
 
-[#75]: https://github.com/spring-rs/spring-rs/pull/75
+[#75]: https://github.com/summer-rs/summer-rs/pull/75
 
 ## 0.2.4
 
 - **added**: App add `get_env` ([#74])
 - **added**: AppBuilder export `build` method ([#74])
 
-[#74]: https://github.com/spring-rs/spring-rs/pull/74
+[#74]: https://github.com/summer-rs/summer-rs/pull/74
 
 ## 0.2.3
 
@@ -181,20 +181,20 @@
 - **added**: AppBuilder add `add_layer` to support extends `tracing-rs` ([#65])
 - **added**: support immediately Plugin ([#65])
 
-[#65]: https://github.com/spring-rs/spring-rs/pull/65
+[#65]: https://github.com/summer-rs/summer-rs/pull/65
 
 ## 0.2.2
 
 - **added**: support shutdown hook ([#61])
 
-[#61]: https://github.com/spring-rs/spring-rs/pull/61
+[#61]: https://github.com/summer-rs/summer-rs/pull/61
 
 ## 0.2.1
 
 - **added**: support config logger time pattern ([#59])
 - **added**: support config logger add with_fields ([#59])
 
-[#59]: https://github.com/spring-rs/spring-rs/pull/59
+[#59]: https://github.com/summer-rs/summer-rs/pull/59
 
 ## 0.2.0
 
@@ -202,19 +202,19 @@
 - **added**: add `get_component` ([#54])
 - **breaking**: rename origin `get_component` to `get_component_ref` ([#54])
 
-[#54]: https://github.com/spring-rs/spring-rs/pull/54
+[#54]: https://github.com/summer-rs/summer-rs/pull/54
 
 ## 0.1.3
 
 - **changed**: refactor toml config registry ([#1a750a])
 
-[#1a750a]: https://github.com/spring-rs/spring-rs/commit/1a750a7d82871632bad7cee73ec418b5a28924ea
+[#1a750a]: https://github.com/summer-rs/summer-rs/commit/1a750a7d82871632bad7cee73ec418b5a28924ea
 
 ## 0.1.2
 
 - **changed**: add DeserializeErr ([#44])
 
-[#44]: https://github.com/spring-rs/spring-rs/pull/44
+[#44]: https://github.com/summer-rs/summer-rs/pull/44
 
 ## before 0.1.1
 

@@ -1,12 +1,12 @@
-[![crates.io](https://img.shields.io/crates/v/spring-sqlx.svg)](https://crates.io/crates/spring-sqlx)
-[![Documentation](https://docs.rs/spring-sqlx/badge.svg)](https://docs.rs/spring-sqlx)
+[![crates.io](https://img.shields.io/crates/v/summer-sqlx.svg)](https://crates.io/crates/summer-sqlx)
+[![Documentation](https://docs.rs/summer-sqlx/badge.svg)](https://docs.rs/summer-sqlx)
 
 [SQLx](https://github.com/launchbadge/sqlx) is an asynchronous SQL library that provides strongly typed database access with zero runtime reflection by validating SQL statements at compile time, without relying on an ORM.
 
 ## Dependencies
 
 ```toml
-spring-sqlx = { version = "<version>", features = ["mysql"] }
+summer-sqlx = { version = "<version>", features = ["mysql"] }
 ```
 
 You can replace `postgres`, `mysql`, `sqlite`feature to select the appropriate database driver.
@@ -33,7 +33,7 @@ connect_timeout = 1800000    # Maximum connection survival time, in milliseconds
 
 ## Components
 
-After configuring the above configuration items, the plugin will automatically register a [`ConnectPool`](https://docs.rs/spring-sqlx/latest/spring_sqlx/type.ConnectPool.html) connection pool object. This object is an alias for [`sqlx::AnyPool`](https://docs.rs/sqlx/latest/sqlx/type.AnyPool.html).
+After configuring the above configuration items, the plugin will automatically register a [`ConnectPool`](https://docs.rs/summer-sqlx/latest/summer_sqlx/type.ConnectPool.html) connection pool object. This object is an alias for [`sqlx::AnyPool`](https://docs.rs/sqlx/latest/sqlx/type.AnyPool.html).
 
 ```rust
 pub type ConnectPool = sqlx::AnyPool;
@@ -41,13 +41,13 @@ pub type ConnectPool = sqlx::AnyPool;
 
 ## Extract the Component registered by the plugin
 
-The `SqlxPlugin` plugin automatically registers a Sqlx connection pool component for us. We can use `Component` to extract this connection pool from AppState. [`Component`](https://docs.rs/spring-web/latest/spring_web/extractor/struct.Component.html) is an axum [extractor](https://docs.rs/axum/latest/axum/extract/index.html).
+The `SqlxPlugin` plugin automatically registers a Sqlx connection pool component for us. We can use `Component` to extract this connection pool from AppState. [`Component`](https://docs.rs/summer-web/latest/summer_web/extractor/struct.Component.html) is an axum [extractor](https://docs.rs/axum/latest/axum/extract/index.html).
 
 ```rust
-use spring_sqlx::{sqlx::{self, Row}, ConnectPool};
-use spring_web::get;
-use spring_web::extractor::Component;
-use spring_web::error::Result;
+use summer_sqlx::{sqlx::{self, Row}, ConnectPool};
+use summer_web::get;
+use summer_web::extractor::Component;
+use summer_web::error::Result;
 use anyhow::Context;
 
 #[get("/version")]
@@ -61,4 +61,4 @@ async fn mysql_version(Component(pool): Component<ConnectPool>) -> Result<String
 }
 ```
 
-Complete code reference [`sqlx-example`](https://github.com/spring-rs/spring-rs/tree/master/examples/sqlx-example)
+Complete code reference [`sqlx-example`](https://github.com/summer-rs/summer-rs/tree/master/examples/sqlx-example)

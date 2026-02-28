@@ -1,12 +1,12 @@
-[![crates.io](https://img.shields.io/crates/v/spring-grpc.svg)](https://crates.io/crates/spring-grpc)
-[![Documentation](https://docs.rs/spring-grpc/badge.svg)](https://docs.rs/spring-grpc)
+[![crates.io](https://img.shields.io/crates/v/summer-grpc.svg)](https://crates.io/crates/summer-grpc)
+[![Documentation](https://docs.rs/summer-grpc/badge.svg)](https://docs.rs/summer-grpc)
 
 [tonic](https://github.com/hyperium/tonic) 是一个基于 Rust 的异步 gRPC 框架，用于构建高性能、类型安全的 gRPC 客户端和服务端。它建立在 tokio 和 hyper 之上，拥有良好的性能和生态集成，广泛应用于微服务通信、远程调用等场景。
 
 ## 依赖
 
 ```toml
-spring-grpc = { version = "<version>" }
+summer-grpc = { version = "<version>" }
 tonic = { version = "0.13" }
 prost = { version = "0.13" }
 ```
@@ -65,9 +65,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 实现相应的接口
 
 ```rust
-use spring::plugin::service::Service;
-use spring::App;
-use spring_grpc::GrpcPlugin;
+use summer::plugin::service::Service;
+use summer::App;
+use summer_grpc::GrpcPlugin;
 use tonic::{Request, Response, Status};
 
 use hello_world::greeter_server::{Greeter, GreeterServer};
@@ -107,4 +107,4 @@ impl Greeter for MyGreeter {
 ```
 
 
-完整代码参考[`grpc-example`](https://github.com/spring-rs/spring-rs/tree/master/examples/grpc-example)
+完整代码参考[`grpc-example`](https://github.com/summer-rs/summer-rs/tree/master/examples/grpc-example)

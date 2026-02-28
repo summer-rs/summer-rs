@@ -1,6 +1,6 @@
 +++
 title = "Component Macro"
-description = "The #[component] macro provides declarative component registration for spring-rs applications, eliminating the need to manually implement the Plugin trait."
+description = "The #[component] macro provides declarative component registration for summer-rs applications, eliminating the need to manually implement the Plugin trait."
 draft = false
 weight = 6
 sort_by = "weight"
@@ -12,4 +12,4 @@ toc = true
 top = false
 +++
 
-{{ include(path="../../spring/COMPONENT_MACRO.md") }}
+{{ include(path="../../summer/COMPONENT_MACRO.md") }}

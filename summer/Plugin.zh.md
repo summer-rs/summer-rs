@@ -1,12 +1,12 @@
-[![crates.io](https://img.shields.io/crates/v/spring.svg)](https://crates.io/crates/spring)
-[![Documentation](https://docs.rs/spring/badge.svg)](https://docs.rs/spring)
+[![crates.io](https://img.shields.io/crates/v/summer.svg)](https://crates.io/crates/summer)
+[![Documentation](https://docs.rs/summer/badge.svg)](https://docs.rs/summer)
 
 ## 介绍
 
-`spring`是该项目的核心模块，包含了：配置管理、插件管理、组件管理。
+`summer`是该项目的核心模块，包含了：配置管理、插件管理、组件管理。
 
-* 所有的插件都需要实现[`Plugin`](https://docs.rs/spring/latest/spring/plugin/trait.Plugin.html)特征。
-* 所有的配置都需要实现[`Configurable`](https://docs.rs/spring/latest/spring/config/trait.Configurable.html)特征。
+* 所有的插件都需要实现[`Plugin`](https://docs.rs/summer/latest/summer/plugin/trait.Plugin.html)特征。
+* 所有的配置都需要实现[`Configurable`](https://docs.rs/summer/latest/summer/config/trait.Configurable.html)特征。
 * 所有的组件都需要实现[`Clone`](https://doc.rust-lang.org/std/clone/trait.Clone.html)特征。
 
 > 注意：为了避免对Component内大结构体进行深拷贝，推荐使用[newtype模式](https://effective-rust.com/newtype.html)通过`Arc<T>`进行引用。
@@ -16,7 +16,7 @@
 添加依赖
 
 ```toml
-spring = { version = "<version>" }                       # 该crate中包含了插件trait的定义
+summer = { version = "<version>" }                       # 该crate中包含了插件trait的定义
 serde = { workspace = true, features = ["derive"] }  # 用于解析插件的配置项
 ```
 
@@ -50,4 +50,4 @@ struct Config {
 }
 ```
 
-完整代码参考[`plugin-example`](https://github.com/spring-rs/spring-rs/tree/master/examples/plugin-example)，也可以参考自带的其他插件代码。
+完整代码参考[`plugin-example`](https://github.com/summer-rs/summer-rs/tree/master/examples/plugin-example)，也可以参考自带的其他插件代码。

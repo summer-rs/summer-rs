@@ -1,13 +1,13 @@
-[![crates.io](https://img.shields.io/crates/v/spring-stream.svg)](https://crates.io/crates/spring-stream)
-[![Documentation](https://docs.rs/spring-stream/badge.svg)](https://docs.rs/spring-stream)
+[![crates.io](https://img.shields.io/crates/v/summer-stream.svg)](https://crates.io/crates/summer-stream)
+[![Documentation](https://docs.rs/summer-stream/badge.svg)](https://docs.rs/summer-stream)
 
 ## 依赖
 
 ```toml
-spring-stream = { version = "<version>",features=["file"] }
+summer-stream = { version = "<version>",features=["file"] }
 ```
 
-spring-stream支持`file`、`stdio`、`redis`、`kafka`四种消息存储。
+summer-stream支持`file`、`stdio`、`redis`、`kafka`四种消息存储。
 
 可选的features: `json`.
 
@@ -49,7 +49,7 @@ connect = { sasl_options={mechanism="Plain",username="user",password="passwd"}}
 `StreamPlugin`注册了一个`Producer`用于发送消息。如果需要发送json格式的消息，需要在依赖项中添加`json`的feature：
 
 ```toml
-spring-stream = { version = "0.1.1", features=["file","json"] }
+summer-stream = { version = "0.1.1", features=["file","json"] }
 ```
 
 ```rust, linenos
@@ -82,7 +82,7 @@ async fn send_msg(Component(producer): Component<Producer>) -> Result<impl IntoR
 
 ### 消费消息
 
-`spring-stream`提供了`stream_listener`的过程宏来订阅指定topic的消息，代码如下：
+`summer-stream`提供了`stream_listener`的过程宏来订阅指定topic的消息，代码如下：
 
 ```rust, linenos, hl_lines=5 10-17
 #[tokio::main]
@@ -108,11 +108,11 @@ fn fill_file_consumer_options(opts: &mut FileConsumerOptions) {
 }
 ```
 
-完整示例代码查看[stream-file-example](https://github.com/spring-rs/spring-rs/tree/master/examples/stream-file-example)、[stream-redis-example](https://github.com/spring-rs/spring-rs/tree/master/examples/stream-redis-example)、[stream-kafka-example](https://github.com/spring-rs/spring-rs/tree/master/examples/stream-kafka-example)
+完整示例代码查看[stream-file-example](https://github.com/summer-rs/summer-rs/tree/master/examples/stream-file-example)、[stream-redis-example](https://github.com/summer-rs/summer-rs/tree/master/examples/stream-redis-example)、[stream-kafka-example](https://github.com/summer-rs/summer-rs/tree/master/examples/stream-kafka-example)
 
 ## 读取配置
 
-你可以用[`Config`](https://docs.rs/spring-stream/latest/spring_stream/extractor/struct.Config.html)抽取toml中的配置。用法上和[`spring-web`](https://spring-rs.github.io/zh/docs/plugins/spring-web/#du-qu-pei-zhi)完全一致。
+你可以用[`Config`](https://docs.rs/summer-stream/latest/summer_stream/extractor/struct.Config.html)抽取toml中的配置。用法上和[`summer-web`](https://summer-rs.github.io/zh/docs/plugins/summer-web/#du-qu-pei-zhi)完全一致。
 
 ```rust
 #[derive(Debug, Configurable, Deserialize)]

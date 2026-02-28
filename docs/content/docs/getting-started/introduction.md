@@ -1,6 +1,6 @@
 +++
 title = "Introduction"
-description = "spring-rs is a application framework written in Rust, similar to SpringBoot in java ecosystem. spring-rs provides an easily extensible plug-in system for integrating excellent projects in Rust community, such as axum, sqlx, sea-orm, etc."
+description = "summer-rs is a application framework written in Rust, similar to SpringBoot in java ecosystem. summer-rs provides an easily extensible plug-in system for integrating excellent projects in Rust community, such as axum, sqlx, sea-orm, etc."
 draft = false
 weight = 2
 sort_by = "weight"

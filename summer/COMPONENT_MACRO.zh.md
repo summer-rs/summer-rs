@@ -1,6 +1,6 @@
 # Component 宏使用指南
 
-`#[component]` 宏为 spring-rs 应用提供声明式组件注册，无需手动实现 Plugin trait。
+`#[component]` 宏为 summer-rs 应用提供声明式组件注册，无需手动实现 Plugin trait。
 
 ## 快速开始
 
@@ -10,7 +10,7 @@
 
 ```toml
 [dependencies]
-spring = "0.4"
+summer = "0.4"
 tokio = { version = "1", features = ["full"] }
 serde = { version = "1", features = ["derive"] }
 ```
@@ -27,7 +27,7 @@ struct DbConnection {
 ### 3. 创建配置
 
 ```rust
-use spring::config::Configurable;
+use summer::config::Configurable;
 use serde::Deserialize;
 
 #[derive(Clone, Configurable, Deserialize)]
@@ -41,8 +41,8 @@ struct DbConfig {
 ### 4. 使用 `#[component]` 宏
 
 ```rust
-use spring::config::Config;
-use spring::component;
+use summer::config::Config;
+use summer::component;
 
 #[component]
 fn create_db_connection(
@@ -57,7 +57,7 @@ fn create_db_connection(
 ### 5. 在应用中注册
 
 ```rust
-use spring::App;
+use summer::App;
 
 #[tokio::main]
 async fn main() {
@@ -602,8 +602,8 @@ App::new()
 
 ## 相关资源
 
-- [spring-rs 文档](https://spring-rs.github.io/)
-- [插件系统](../spring/Plugin.zh.md)
-- [依赖注入](../spring/DI.zh.md)
-- [配置系统](../spring/Config.zh.md)
+- [summer-rs 文档](https://summer-rs.github.io/)
+- [插件系统](../summer/Plugin.zh.md)
+- [依赖注入](../summer/DI.zh.md)
+- [配置系统](../summer/Config.zh.md)
 - [示例项目](../examples/component-macro-example/)

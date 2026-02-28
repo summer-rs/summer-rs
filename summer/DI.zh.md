@@ -1,12 +1,12 @@
 ## 编译期依赖注入
 
-spring-rs提供了一种特殊的Component——[Service](https://docs.rs/spring/latest/spring/plugin/service/index.html)，它支持在编译期注入依赖的组件。
+summer-rs提供了一种特殊的Component——[Service](https://docs.rs/summer/latest/summer/plugin/service/index.html)，它支持在编译期注入依赖的组件。
 
 像下面的例子`UserService`只需派生`Service`特征，为了区分注入的依赖，你需要通过属性宏`#[inject(component)]`和`#[inject(config)]`指定依赖是一个Component还是一个Config。
 
 ```rust
-use spring_sqlx::ConnectPool;
-use spring::config::Configurable;
+use summer_sqlx::ConnectPool;
+use summer::config::Configurable;
 use serde::Deserialize;
 
 #[derive(Clone, Configurable, Deserialize)]
@@ -33,19 +33,19 @@ struct UserWithOptionalComponentService {
 }
 ```
 
-完整代码参考[`dependency-inject-example`](https://github.com/spring-rs/spring-rs/tree/master/examples/dependency-inject-example)。
+完整代码参考[`dependency-inject-example`](https://github.com/summer-rs/summer-rs/tree/master/examples/dependency-inject-example)。
 
-> Service还支持grpc模式，可结合[spring-grpc](https://spring-rs.github.io/zh/docs/plugins/spring-grpc/)插件一起使用
+> Service还支持grpc模式，可结合[summer-grpc](https://summer-rs.github.io/zh/docs/plugins/summer-grpc/)插件一起使用
 
 ## 嵌套依赖注入（Nested dependency inject）
 
-spring-rs 支持多层级的依赖注入。
+summer-rs 支持多层级的依赖注入。
 例如，如果 `UserService` 依赖于 `OtherService`，而 `OtherService` 又依赖于 `DatabaseService`，
 那么当你注入 `UserService` 时，`OtherService` 和 `DatabaseService` 也会被自动注入。
 
 ```rust
-use spring::plugin::LazyComponent;
-use spring::plugin::service::Service;
+use summer::plugin::LazyComponent;
+use summer::plugin::service::Service;
 
 #[derive(Clone, Service)]
 struct DatabaseService {
@@ -63,7 +63,7 @@ struct UserService {
 }
 ```
 
-完整代码请参见 [`nested-dependency-inject-example`](https://github.com/spring-rs/spring-rs/tree/master/examples/nested-dependency-inject-example)。
+完整代码请参见 [`nested-dependency-inject-example`](https://github.com/summer-rs/summer-rs/tree/master/examples/nested-dependency-inject-example)。
 
 ---
 
@@ -72,13 +72,13 @@ struct UserService {
 当两个服务互相引用时，Rust 的类型系统会阻止直接的循环依赖。
 为了解决这个问题，你可以使用 `LazyComponent<T>` 来打破循环依赖。
 
-> spring-rs的依赖注入设计理念参照[google的Dagger](https://github.com/google/dagger)，我们不鼓励循环依赖，循环依赖往往意味着：业务职责不清、高耦合。
+> summer-rs的依赖注入设计理念参照[google的Dagger](https://github.com/google/dagger)，我们不鼓励循环依赖，循环依赖往往意味着：业务职责不清、高耦合。
 
 ```rust
-use spring::plugin::LazyComponent;
-use spring::plugin::service::Service;
+use summer::plugin::LazyComponent;
+use summer::plugin::service::Service;
 
-use spring::plugin::LazyComponent;
+use summer::plugin::LazyComponent;
 #[derive(Clone, Service)]
 struct UserService {
     #[inject(component)] // 在此情况下可选
@@ -104,4 +104,4 @@ struct OtherService {
 使用 `LazyComponent<T>` 时不必显式添加 `#[inject]` 属性，框架会自动检测。
 在内部，它只是对 `Arc<RwLock<...>>` 的封装，因此是线程安全的。
 
-完整代码请参见 [`circular-dependency-injection-example`](https://github.com/spring-rs/spring-rs/tree/master/examples/circular-dependency-injection-example)。
+完整代码请参见 [`circular-dependency-injection-example`](https://github.com/summer-rs/summer-rs/tree/master/examples/circular-dependency-injection-example)。

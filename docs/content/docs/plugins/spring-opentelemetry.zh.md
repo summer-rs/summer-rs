@@ -27,4 +27,4 @@ top = false
 
 > [CNCF](https://landscape.cncf.io/?group=projects-and-products&view-mode=card&license=oss&classify=category&sort-by=stars&sort-direction=desc#observability-and-analysis--observability)已有众多可观测性后端实现可供使用。
 
-{{ include(path="../../spring-opentelemetry/README.zh.md") }}
+{{ include(path="../../summer-opentelemetry/README.zh.md") }}

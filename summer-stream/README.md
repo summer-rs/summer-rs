@@ -1,13 +1,13 @@
-[![crates.io](https://img.shields.io/crates/v/spring-stream.svg)](https://crates.io/crates/spring-stream)
-[![Documentation](https://docs.rs/spring-stream/badge.svg)](https://docs.rs/spring-stream)
+[![crates.io](https://img.shields.io/crates/v/summer-stream.svg)](https://crates.io/crates/summer-stream)
+[![Documentation](https://docs.rs/summer-stream/badge.svg)](https://docs.rs/summer-stream)
 
 ## Dependencies
 
 ```toml
-spring-stream = { version = "<version>", features=["file"] }
+summer-stream = { version = "<version>", features=["file"] }
 ```
 
-spring-stream supports four message storages: `file`, `stdio`, `redis`, and `kafka`.
+summer-stream supports four message storages: `file`, `stdio`, `redis`, and `kafka`.
 
 optional features: `json`.
 
@@ -49,7 +49,7 @@ connect = { sasl_options={mechanism="Plain",username="user",password="passwd"}}
 `StreamPlugin` registers a `Producer` for sending messages. If you need to send messages in json format, you need to add the `json` feature in the dependencies:
 
 ```toml
-spring-stream = { version = "0.1.1", features=["file","json"] }
+summer-stream = { version = "0.1.1", features=["file","json"] }
 ```
 
 ```rust, linenos
@@ -58,17 +58,17 @@ spring-stream = { version = "0.1.1", features=["file","json"] }
 
 ### Consume messages
 
-`spring-stream` provides a process macro called `stream_listener` to subscribe to messages from a specified topic. The code is as follows:
+`summer-stream` provides a process macro called `stream_listener` to subscribe to messages from a specified topic. The code is as follows:
 
 ```rust, linenos
 {{ include_code(path="../../examples/stream-file-example/src/bin/consumer.rs") }}
 ``` 
 
-View the complete example code [stream-file-example](https://github.com/spring-rs/spring-rs/tree/master/examples/stream-file-example), [stream-redis-example](https://github.com/spring-rs/spring-rs/tree/master/examples/stream-redis-example), [stream-kafka-example](https://github.com/spring-rs/spring-rs/tree/master/examples/stream-kafka-example)
+View the complete example code [stream-file-example](https://github.com/summer-rs/summer-rs/tree/master/examples/stream-file-example), [stream-redis-example](https://github.com/summer-rs/summer-rs/tree/master/examples/stream-redis-example), [stream-kafka-example](https://github.com/summer-rs/summer-rs/tree/master/examples/stream-kafka-example)
 
 ## Read configuration
 
-You can use [`Config`](https://docs.rs/spring-stream/latest/spring_stream/extractor/struct.Config.html) to extract the configuration in toml. The usage is exactly the same as [`spring-web`](https://spring-rs.github.io/zh/docs/plugins/spring-web/#du-qu-pei-zhi).
+You can use [`Config`](https://docs.rs/summer-stream/latest/summer_stream/extractor/struct.Config.html) to extract the configuration in toml. The usage is exactly the same as [`summer-web`](https://summer-rs.github.io/zh/docs/plugins/summer-web/#du-qu-pei-zhi).
 
 ```rust
 #[derive(Debug, Configurable, Deserialize)]

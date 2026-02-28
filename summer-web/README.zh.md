@@ -1,12 +1,12 @@
-[![crates.io](https://img.shields.io/crates/v/spring-web.svg)](https://crates.io/crates/spring-web)
-[![Documentation](https://docs.rs/spring-web/badge.svg)](https://docs.rs/spring-web)
+[![crates.io](https://img.shields.io/crates/v/summer-web.svg)](https://crates.io/crates/summer-web)
+[![Documentation](https://docs.rs/summer-web/badge.svg)](https://docs.rs/summer-web)
 
 [Axum](https://github.com/tokio-rs/axum)是rust社区最优秀的Web框架之一，它是由tokio官方维护的一个基于[hyper](https://github.com/hyperium/hyper)的子项目。Axum提供了web路由，声明式的HTTP请求解析，HTTP响应的序列化等功能，而且能够与[tower](https://github.com/tower-rs)生态中的中间件结合。
 
 ## 依赖
 
 ```toml
-spring-web = { version = "<version>" }
+summer-web = { version = "<version>" }
 ```
 
 可选的**features**: 
@@ -39,7 +39,7 @@ timeout_request = { enable = true, timeout = 60000 }  # 请求超时时间60s
 
 # 跨域配置
 cors = { enable = true, allow_origins = [
-    "https://spring-rs.github.io",
+    "https://summer-rs.github.io",
 ], allow_headers = [
     "Authentication",
 ], allow_methods = [
@@ -56,7 +56,7 @@ static = { enable = true, uri = "/static", path = "static", precompressed = true
 
 ## API接口
 
-App实现了[WebConfigurator](https://docs.rs/spring-web/latest/spring_web/trait.WebConfigurator.html)特征，可以通过该特征指定路由配置：
+App实现了[WebConfigurator](https://docs.rs/summer-web/latest/summer_web/trait.WebConfigurator.html)特征，可以通过该特征指定路由配置：
 
 ```no_run, rust, linenos, hl_lines=6 10-18
 #[tokio::main]
@@ -106,13 +106,13 @@ async fn hello_api() -> String {
 
 ## 属性宏
 
-上面例子中的[`get`](https://docs.rs/spring-macros/latest/spring_macros/attr.get.html)是一个属性宏，`spring-web`提供了八个标准HTTP METHOD的过程宏：`get`、`post`、`patch`、`put`、`delete`、`head`、`trace`、`options`。另外还提供了`get_api`、`post_api`等八个用于生成openapi文档的宏。
+上面例子中的[`get`](https://docs.rs/summer-macros/latest/summer_macros/attr.get.html)是一个属性宏，`summer-web`提供了八个标准HTTP METHOD的过程宏：`get`、`post`、`patch`、`put`、`delete`、`head`、`trace`、`options`。另外还提供了`get_api`、`post_api`等八个用于生成openapi文档的宏。
 
-也可以使用[`route`](https://docs.rs/spring-macros/latest/spring_macros/attr.route.html)或[`api_route`](https://docs.rs/spring-macros/latest/spring_macros/attr.api_route.html)宏同时绑定多个method：
+也可以使用[`route`](https://docs.rs/summer-macros/latest/summer_macros/attr.route.html)或[`api_route`](https://docs.rs/summer-macros/latest/summer_macros/attr.api_route.html)宏同时绑定多个method：
 
 ```rust
-use spring_web::route;
-use spring_web::axum::response::IntoResponse;
+use summer_web::route;
+use summer_web::axum::response::IntoResponse;
 
 #[route("/test", method = "GET", method = "HEAD")]
 async fn example() -> impl IntoResponse {
@@ -120,11 +120,11 @@ async fn example() -> impl IntoResponse {
 }
 ```
 
-除此之外，spring还支持一个handler绑定多个路由，这需要用到[`routes`](https://docs.rs/spring-macros/latest/spring_macros/attr.routes.html)属性宏：
+除此之外，summer还支持一个handler绑定多个路由，这需要用到[`routes`](https://docs.rs/summer-macros/latest/summer_macros/attr.routes.html)属性宏：
 
 ```rust
-use spring_web::{routes, get, delete};
-use spring_web::axum::response::IntoResponse;
+use summer_web::{routes, get, delete};
+use summer_web::axum::response::IntoResponse;
 
 #[routes]
 #[get("/test")]
@@ -137,7 +137,7 @@ async fn example() -> impl IntoResponse {
 
 ## 提取插件注册的Component
 
-上面的例子中`SqlxPlugin`插件为我们自动注册了一个Sqlx连接池组件，我们可以使用`Component`从State中提取这个连接池，[`Component`](https://docs.rs/spring-web/latest/spring_web/extractor/struct.Component.html)是一个axum的[extractor](https://docs.rs/axum/latest/axum/extract/index.html)。
+上面的例子中`SqlxPlugin`插件为我们自动注册了一个Sqlx连接池组件，我们可以使用`Component`从State中提取这个连接池，[`Component`](https://docs.rs/summer-web/latest/summer_web/extractor/struct.Component.html)是一个axum的[extractor](https://docs.rs/axum/latest/axum/extract/index.html)。
 
 ```rust
 #[get("/version")]
@@ -151,11 +151,11 @@ async fn mysql_version(Component(pool): Component<ConnectPool>) -> Result<String
 }
 ```
 
-axum也提供了其他的[extractor](https://docs.rs/axum/latest/axum/extract/index.html)，这些都被reexport到了[`spring_web::extractor`](https://docs.rs/spring-web/latest/spring_web/extractor/index.html)下。
+axum也提供了其他的[extractor](https://docs.rs/axum/latest/axum/extract/index.html)，这些都被reexport到了[`summer_web::extractor`](https://docs.rs/summer-web/latest/summer_web/extractor/index.html)下。
 
 ## 读取配置
 
-你可以用[`Config`](https://docs.rs/spring-web/latest/spring_web/extractor/struct.Config.html)抽取toml中的配置。
+你可以用[`Config`](https://docs.rs/summer-web/latest/summer_web/extractor/struct.Config.html)抽取toml中的配置。
 
 ```rust
 #[derive(Debug, Configurable, Deserialize)]
@@ -179,23 +179,23 @@ a = 1
 b = true
 ```
 
-完整代码参考[`web-example`](https://github.com/spring-rs/spring-rs/tree/master/examples/web-example)
+完整代码参考[`web-example`](https://github.com/summer-rs/summer-rs/tree/master/examples/web-example)
 
 ## 在Middleware中使用Component抽取注册的组件
 
 你也可以在[middleware中使用Extractor](https://docs.rs/axum/latest/axum/middleware/fn.from_fn.html)，注意需要遵循axum的规则。
 
 ```rust
-use spring_web::{middlewares, axum::middleware};
+use summer_web::{middlewares, axum::middleware};
 
 /// 你可以通过middlewares宏来使用上面定义的middleware
 #[middlewares(
     middleware::from_fn(problem_middleware),
 )]
 mod routes {
-    use spring_web::{axum::{response::Response, middleware::Next, response::IntoResponse}, extractor::{Request, Component}};
-    use spring_sqlx::ConnectPool;
-    use spring_web::{middlewares, get, axum::middleware};
+    use summer_web::{axum::{response::Response, middleware::Next, response::IntoResponse}, extractor::{Request, Component}};
+    use summer_sqlx::ConnectPool;
+    use summer_web::{middlewares, get, axum::middleware};
     use std::time::Duration;
 
     async fn problem_middleware(Component(db): Component<ConnectPool>, request: Request, next: Next) -> Response {
@@ -214,14 +214,14 @@ mod routes {
 ```
 
 
-完整代码参考[`web-middleware-example`](https://github.com/spring-rs/spring-rs/tree/master/examples/web-middleware-example)
+完整代码参考[`web-middleware-example`](https://github.com/summer-rs/summer-rs/tree/master/examples/web-middleware-example)
 
-spring-web是围绕axum的一层薄薄的封装, 提供了一些宏以简化开发. [axum官方的examples](https://github.com/tokio-rs/axum/tree/main/examples)大多只要稍作修改即可运行在spring-web中。
+summer-web是围绕axum的一层薄薄的封装, 提供了一些宏以简化开发. [axum官方的examples](https://github.com/tokio-rs/axum/tree/main/examples)大多只要稍作修改即可运行在summer-web中。
 
 
 # SocketIO 支持
 
-你可以启用 `spring-web` 的 `socket_io` 功能，以使用与 [socketioxide](https://github.com/Totodore/socketioxide) 的集成。
+你可以启用 `summer-web` 的 `socket_io` 功能，以使用与 [socketioxide](https://github.com/Totodore/socketioxide) 的集成。
 
 SocketIO 是 WebSocket 的一种实现，提供更多的定义功能：
 
@@ -231,13 +231,13 @@ SocketIO 是 WebSocket 的一种实现，提供更多的定义功能：
 * 房间 / 命名空间，用于对客户端进行分组
 * 如果 WebSocket 不可用，可回退到其他传输方式
 
-你可以参考 [socketio-example](https://github.com/spring-rs/spring-rs/tree/master/examples/web-socketio-example) 来查看在 spring-web 中使用 SocketIO 的示例。
+你可以参考 [socketio-example](https://github.com/summer-rs/summer-rs/tree/master/examples/web-socketio-example) 来查看在 summer-web 中使用 SocketIO 的示例。
 
 我们可以在 SocketIO 处理器中共享插件注册的组件，就像在普通 HTTP 处理器中一样，例如使用由 `SqlxPlugin` 插件注册的 Sqlx 连接池组件。
 
 # OpenAPI 支持
 
-你可以启用 `spring-web` 的 `openapi` 功能来生成 OpenAPI 文档。你可以参考 [openapi-example](https://github.com/spring-rs/spring-rs/tree/master/examples/openapi-example) 获取更多信息。
+你可以启用 `summer-web` 的 `openapi` 功能来生成 OpenAPI 文档。你可以参考 [openapi-example](https://github.com/summer-rs/summer-rs/tree/master/examples/openapi-example) 获取更多信息。
 
 此外，你需要启用以下文档界面功能之一：`openapi-redoc`、`openapi-scalar` 或 `openapi-swagger`，以生成相应的文档界面。
 
@@ -264,8 +264,8 @@ API 函数上方的注释用于为 OpenAPI 文档提供附加信息，例如标�
 在此示例中，我们实现了 `thiserror::Error` 以获得更好的错误处理，但这不是强制的。
 
 ```rust,ignore
-use spring_web::ProblemDetails;
-use spring_web::axum::http::StatusCode;
+use summer_web::ProblemDetails;
+use summer_web::axum::http::StatusCode;
 
 // 只需要派生 ProblemDetails - From 和 IntoResponse 都会自动生成！
 #[derive(thiserror::Error, Debug, ProblemDetails)]
@@ -276,7 +276,7 @@ pub enum CustomErrors {
 
     #[status_code(500)]
     #[error(transparent)]
-    SqlxError(#[from] spring_sqlx::sqlx::Error),
+    SqlxError(#[from] summer_sqlx::sqlx::Error),
 
     #[status_code(418)]
     #[error("TeaPod 错误发生: {0:?}")]

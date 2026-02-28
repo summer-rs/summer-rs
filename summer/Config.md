@@ -1,6 +1,6 @@
 You can define configuration in the following way:
 ```rust
-use spring::config::Configurable;
+use summer::config::Configurable;
 use serde::Deserialize;
 
 #[derive(Debug, Configurable, Deserialize)]
@@ -11,7 +11,7 @@ struct Config {
 }
 ```
 
-The configuration in `toml` can be read through the [`app.get_config()`](https://docs.rs/spring/latest/spring/app/struct.AppBuilder.html#method.get_config) method:
+The configuration in `toml` can be read through the [`app.get_config()`](https://docs.rs/summer/latest/summer/app/struct.AppBuilder.html#method.get_config) method:
 
 ```toml
 [my-plugin]
@@ -20,9 +20,9 @@ b = true
 ```
 
 ```rust, hl_lines=19
-use spring::async_trait;
-use spring::plugin::Plugin;
-use spring::config::Configurable;
+use summer::async_trait;
+use summer::plugin::Plugin;
+use summer::config::Configurable;
 use serde::Deserialize;
 
 #[derive(Debug, Configurable, Deserialize)]
@@ -46,13 +46,13 @@ impl Plugin for MyPlugin {
 
 ## Use configuration in other plugins
 
-* [`spring-web`](https://spring-rs.github.io/docs/plugins/spring-web/#read-configuration)
-* [`spring-job`](https://spring-rs.github.io/docs/plugins/spring-job/#read-configuration)
-* [`spring-stream`](https://spring-rs.github.io/docs/plugins/spring-stream/#read-configuration)
+* [`summer-web`](https://summer-rs.github.io/docs/plugins/summer-web/#read-configuration)
+* [`summer-job`](https://summer-rs.github.io/docs/plugins/summer-job/#read-configuration)
+* [`summer-stream`](https://summer-rs.github.io/docs/plugins/summer-stream/#read-configuration)
 
 ## Using environment variables in configuration files
 
-spring-rs implements a simple interpolator.
+summer-rs implements a simple interpolator.
 
 You can use the `${ENV_VAR_NAME}` placeholder in the toml configuration file to read the value of the environment variable.
 
@@ -68,10 +68,10 @@ enable_logging = true
 
 ## Auto-completion tips for the configuration file
 
-Install the [vscode toml](https://marketplace.visualstudio.com/items?itemName=tamasfe.even-better-toml) plugin, then add the spring-rs schema file to the first line of the `toml` configuration file.
+Install the [vscode toml](https://marketplace.visualstudio.com/items?itemName=tamasfe.even-better-toml) plugin, then add the summer-rs schema file to the first line of the `toml` configuration file.
 
 ```toml
-#:schema https://spring-rs.github.io/config-schema.json
+#:schema https://summer-rs.github.io/config-schema.json
 [web]
 port = 18080
 graceful = true

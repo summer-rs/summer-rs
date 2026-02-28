@@ -1,21 +1,21 @@
-[![crates.io](https://img.shields.io/crates/v/spring-sa-token.svg)](https://crates.io/crates/spring-sa-token)
-[![Documentation](https://docs.rs/spring-sa-token/badge.svg)](https://docs.rs/spring-sa-token)
+[![crates.io](https://img.shields.io/crates/v/summer-sa-token.svg)](https://crates.io/crates/summer-sa-token)
+[![Documentation](https://docs.rs/summer-sa-token/badge.svg)](https://docs.rs/summer-sa-token)
 
-`spring-sa-token` 是针对[sa-token-rust](https://github.com/click33/sa-token-rust)的自动装配。sa-token-rust 。
+`summer-sa-token` 是针对[sa-token-rust](https://github.com/click33/sa-token-rust)的自动装配。sa-token-rust 。
 
 
 ## 依赖
 
 ```toml
 # 默认：内存存储（用于开发）
-spring-sa-token = { version = "<version>" }
-# 生产环境：复用 spring-redis 连接（推荐）
-spring-sa-token = { version = "<version>", default-features = false, features = ["with-spring-redis", "with-web"] }
+summer-sa-token = { version = "<version>" }
+# 生产环境：复用 summer-redis 连接（推荐）
+summer-sa-token = { version = "<version>", default-features = false, features = ["with-summer-redis", "with-web"] }
 ```
 
 可选 **features**：
 * `memory`：内存存储（默认，用于开发/测试）
-* `with-spring-redis`：使用 spring-redis 连接池存储（推荐）
+* `with-summer-redis`：使用 summer-redis 连接池存储（推荐）
 * `with-web`：启用 axum web 集成（中间件、提取器）
 
 ## 配置项
@@ -70,10 +70,10 @@ refresh_token_timeout = 604800  # 7 天
 ### 1. 添加插件到应用
 
 ```rust
-use spring::{auto_config, App};
-use spring_redis::RedisPlugin;
-use spring_sa_token::{SaTokenPlugin, SaTokenAuthConfigurator};
-use spring_web::{WebPlugin, WebConfigurator};
+use summer::{auto_config, App};
+use summer_redis::RedisPlugin;
+use summer_sa_token::{SaTokenPlugin, SaTokenAuthConfigurator};
+use summer_web::{WebPlugin, WebConfigurator};
 
 mod config;
 
@@ -81,7 +81,7 @@ mod config;
 #[tokio::main]
 async fn main() {
     App::new()
-        .add_plugin(RedisPlugin)       // with-spring-redis feature 需要
+        .add_plugin(RedisPlugin)       // with-summer-redis feature 需要
         .add_plugin(SaTokenPlugin)
         .add_plugin(WebPlugin)
         .sa_token_configure(config::SaTokenConfig)  // 配置路径认证
@@ -99,8 +99,8 @@ async fn main() {
 创建 `src/config.rs`：
 
 ```rust
-use spring::app::AppBuilder;
-use spring_sa_token::{PathAuthBuilder, SaStorage, SaTokenConfigurator};
+use summer::app::AppBuilder;
+use summer_sa_token::{PathAuthBuilder, SaStorage, SaTokenConfigurator};
 use std::sync::Arc;
 
 pub struct SaTokenConfig;
@@ -130,7 +130,7 @@ impl SaTokenConfigurator for SaTokenConfig {
 你也可以直接在 `main.rs` 中配置，无需单独的配置文件：
 
 ```rust
-use spring_sa_token::PathAuthBuilder;
+use summer_sa_token::PathAuthBuilder;
 
 #[tokio::main]
 async fn main() {
@@ -172,8 +172,8 @@ async fn main() {
 ### 3. 实现登录接口
 
 ```rust
-use spring_sa_token::StpUtil;
-use spring_web::{post, axum::response::IntoResponse, extractor::Json, error::Result};
+use summer_sa_token::StpUtil;
+use summer_web::{post, axum::response::IntoResponse, extractor::Json, error::Result};
 
 #[post("/login")]
 async fn login(Json(req): Json<LoginRequest>) -> Result<impl IntoResponse> {
@@ -199,8 +199,8 @@ async fn login(Json(req): Json<LoginRequest>) -> Result<impl IntoResponse> {
 ### 4. 访问受保护的路由
 
 ```rust
-use spring_sa_token::LoginIdExtractor;
-use spring_web::{get, axum::response::IntoResponse, extractor::Json, error::Result};
+use summer_sa_token::LoginIdExtractor;
+use summer_web::{get, axum::response::IntoResponse, extractor::Json, error::Result};
 
 #[get("/user/info")]
 async fn user_info(LoginIdExtractor(user_id): LoginIdExtractor) -> Result<impl IntoResponse> {
@@ -214,7 +214,7 @@ async fn user_info(LoginIdExtractor(user_id): LoginIdExtractor) -> Result<impl I
 
 ## 过程宏
 
-`spring-sa-token` 提供了多个用于声明式安全的过程宏：
+`summer-sa-token` 提供了多个用于声明式安全的过程宏：
 
 ### `#[sa_check_login]`
 
@@ -371,7 +371,7 @@ let has_perm = StpUtil::has_permission("user_id", "user:list").await;
 从请求中提取当前用户的登录 ID：
 
 ```rust
-use spring_sa_token::LoginIdExtractor;
+use summer_sa_token::LoginIdExtractor;
 
 #[get("/user/info")]
 async fn user_info(LoginIdExtractor(user_id): LoginIdExtractor) -> impl IntoResponse {
@@ -384,7 +384,7 @@ async fn user_info(LoginIdExtractor(user_id): LoginIdExtractor) -> impl IntoResp
 可选地提取 Token 信息（未认证时返回 None）：
 
 ```rust
-use spring_sa_token::OptionalSaTokenExtractor;
+use summer_sa_token::OptionalSaTokenExtractor;
 
 #[get("/public")]
 async fn public_endpoint(token: OptionalSaTokenExtractor) -> impl IntoResponse {
@@ -400,7 +400,7 @@ async fn public_endpoint(token: OptionalSaTokenExtractor) -> impl IntoResponse {
 提取完整的 Token 信息（未认证时失败）：
 
 ```rust
-use spring_sa_token::SaTokenExtractor;
+use summer_sa_token::SaTokenExtractor;
 
 #[get("/protected")]
 async fn protected_endpoint(SaTokenExtractor(info): SaTokenExtractor) -> impl IntoResponse {
@@ -413,8 +413,8 @@ async fn protected_endpoint(SaTokenExtractor(info): SaTokenExtractor) -> impl In
 访问 `SaTokenState` 组件进行高级操作：
 
 ```rust
-use spring_sa_token::SaTokenState;
-use spring_web::extractor::Component;
+use summer_sa_token::SaTokenState;
+use summer_web::extractor::Component;
 
 #[get("/api/config")]
 async fn get_config(Component(state): Component<SaTokenState>) -> impl IntoResponse {
@@ -434,15 +434,15 @@ async fn get_config(Component(state): Component<SaTokenState>) -> impl IntoRespo
 ### 步骤 1：将你的存储定义为 Service
 
 ```rust
-use spring::plugin::service::Service;
-use spring_sa_token::SaStorage;
-use spring_sea_orm::DbConn;
+use summer::plugin::service::Service;
+use summer_sa_token::SaStorage;
+use summer_sea_orm::DbConn;
 use sa_token_adapter::storage::{StorageResult, StorageError};
 
 #[derive(Clone, Service)]
 pub struct MyDatabaseStorage {
     #[inject(component)]
-    conn: DbConn,  // 由 spring 框架自动注入
+    conn: DbConn,  // 由 summer 框架自动注入
 }
 
 #[async_trait]
@@ -469,8 +469,8 @@ impl SaStorage for MyDatabaseStorage {
 ### 步骤 2：在配置器中使用 lazy_storage
 
 ```rust
-use spring::app::AppBuilder;
-use spring_sa_token::{lazy_storage, PathAuthBuilder, SaStorage, SaTokenConfigurator};
+use summer::app::AppBuilder;
+use summer_sa_token::{lazy_storage, PathAuthBuilder, SaStorage, SaTokenConfigurator};
 use std::sync::Arc;
 
 pub struct SaTokenConfig;
@@ -495,10 +495,10 @@ impl SaTokenConfigurator for SaTokenConfig {
 
 ## 错误处理
 
-所有安全宏在失败时返回 `spring_web::error::WebError`，可以由你的错误处理中间件处理：
+所有安全宏在失败时返回 `summer_web::error::WebError`，可以由你的错误处理中间件处理：
 
 ```rust
-use spring_web::error::Result;
+use summer_web::error::Result;
 
 #[get("/admin/dashboard")]
 #[sa_check_role("admin")]
@@ -510,4 +510,4 @@ async fn admin_dashboard() -> Result<impl IntoResponse> {
 
 完整代码参考 [`sa-token-example`][sa-token-example]
 
-[sa-token-example]: https://github.com/spring-rs/spring-rs/tree/master/examples/sa-token-example
+[sa-token-example]: https://github.com/summer-rs/summer-rs/tree/master/examples/sa-token-example

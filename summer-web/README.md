@@ -1,12 +1,12 @@
-[![crates.io](https://img.shields.io/crates/v/spring-web.svg)](https://crates.io/crates/spring-web)
-[![Documentation](https://docs.rs/spring-web/badge.svg)](https://docs.rs/spring-web)
+[![crates.io](https://img.shields.io/crates/v/summer-web.svg)](https://crates.io/crates/summer-web)
+[![Documentation](https://docs.rs/summer-web/badge.svg)](https://docs.rs/summer-web)
 
 [Axum](https://github.com/tokio-rs/axum) is one of the best web frameworks in the Rust community. It is a sub-project based on [hyper](https://github.com/hyperium/hyper) maintained by Tokio. Axum provides web routing, declarative HTTP request parsing, HTTP response serialization, and can be combined with the middleware in the [tower](https://github.com/tower-rs) ecosystem.
 
 ## Dependencies
 
 ```toml
-spring-web = { version = "<version>" }
+summer-web = { version = "<version>" }
 ```
 
 optional **features**:
@@ -39,7 +39,7 @@ timeout_request = { enable = true, timeout = 60000 }   # Request timeout 60s
 
 # Cross-domain configuration
 cors = { enable = true, allow_origins = [
-    "https://spring-rs.github.io",
+    "https://summer-rs.github.io",
 ], allow_headers = [
     "Authentication",
 ], allow_methods = [
@@ -57,13 +57,13 @@ static = { enable = true, uri = "/static", path = "static", precompressed = true
 
 ## API interface
 
-App implements the [WebConfigurator](https://docs.rs/spring-web/latest/spring_web/trait.WebConfigurator.html) feature, which can be used to specify routing configuration:
+App implements the [WebConfigurator](https://docs.rs/summer-web/latest/summer_web/trait.WebConfigurator.html) feature, which can be used to specify routing configuration:
 
 ```no_run, rust, linenos, hl_lines=6 10-18
-use spring::App;
-use spring_web::{get, get_api};
-use spring_web::{WebPlugin, WebConfigurator, Router, axum::response::IntoResponse, handler::TypeRouter};
-use spring_sqlx::SqlxPlugin;
+use summer::App;
+use summer_web::{get, get_api};
+use summer_web::{WebPlugin, WebConfigurator, Router, axum::response::IntoResponse, handler::TypeRouter};
+use summer_sqlx::SqlxPlugin;
 
 #[tokio::main]
 async fn main() {
@@ -116,13 +116,13 @@ You can also use the `auto_config` macro to implement automatic configuration. T
 
 ## Attribute macro
 
-In the example above, `get` is an attribute macro. `spring-web` provides procedural macros for eight standard HTTP methods: `get`, `post`, `patch`, `put`, `delete`, `head`, `trace`, and `options`. It also provides eight macros for generating OpenAPI documentation, such as `get_api` and `post_api`.
+In the example above, `get` is an attribute macro. `summer-web` provides procedural macros for eight standard HTTP methods: `get`, `post`, `patch`, `put`, `delete`, `head`, `trace`, and `options`. It also provides eight macros for generating OpenAPI documentation, such as `get_api` and `post_api`.
 
 You can also use the `route` or `api_route` macros to bind multiple methods simultaneously:
 
 ```rust
-use spring_web::route;
-use spring_web::axum::response::IntoResponse;
+use summer_web::route;
+use summer_web::axum::response::IntoResponse;
 
 #[route("/test", method = "GET", method = "HEAD")]
 async fn example() -> impl IntoResponse {
@@ -130,11 +130,11 @@ async fn example() -> impl IntoResponse {
 }
 ```
 
-In addition, spring also supports binding multiple routes to a handler, which requires the [`routes`](https://docs.rs/spring-macros/latest/spring_macros/attr.routes.html) attribute macro:
+In addition, summer also supports binding multiple routes to a handler, which requires the [`routes`](https://docs.rs/summer-macros/latest/summer_macros/attr.routes.html) attribute macro:
 
 ```rust
-use spring_web::{routes, get, delete};
-use spring_web::axum::response::IntoResponse;
+use summer_web::{routes, get, delete};
+use summer_web::axum::response::IntoResponse;
 
 #[routes]
 #[get("/test")]
@@ -147,13 +147,13 @@ async fn example() -> impl IntoResponse {
 
 ## Extract the Component registered by the plugin
 
-In the above example, the `SqlxPlugin` plugin automatically registers a Sqlx connection pool component for us. We can use `Component` to extract this connection pool from State. [`Component`](https://docs.rs/spring-web/latest/spring_web/extractor/struct.Component.html) is an axum [extractor](https://docs.rs/axum/latest/axum/extract/index.html).
+In the above example, the `SqlxPlugin` plugin automatically registers a Sqlx connection pool component for us. We can use `Component` to extract this connection pool from State. [`Component`](https://docs.rs/summer-web/latest/summer_web/extractor/struct.Component.html) is an axum [extractor](https://docs.rs/axum/latest/axum/extract/index.html).
 
 ```rust
 use anyhow::Context;
-use spring_web::get;
-use spring_web::{axum::response::IntoResponse, extractor::Component, error::Result};
-use spring_sqlx::{ConnectPool, sqlx::{self, Row}};
+use summer_web::get;
+use summer_web::{axum::response::IntoResponse, extractor::Component, error::Result};
+use summer_sqlx::{ConnectPool, sqlx::{self, Row}};
 
 #[get("/version")]
 async fn mysql_version(Component(pool): Component<ConnectPool>) -> Result<String> {
@@ -166,17 +166,17 @@ async fn mysql_version(Component(pool): Component<ConnectPool>) -> Result<String
 }
 ```
 
-Axum also provides other [extractors](https://docs.rs/axum/latest/axum/extract/index.html), which are reexported under [`spring_web::extractor`](https://docs.rs/spring-web/latest/spring_web/extractor/index.html).
+Axum also provides other [extractors](https://docs.rs/axum/latest/axum/extract/index.html), which are reexported under [`summer_web::extractor`](https://docs.rs/summer-web/latest/summer_web/extractor/index.html).
 
 ## Read configuration
 
-You can use [`Config`](https://docs.rs/spring-web/latest/spring_web/extractor/struct.Config.html) to extract the configuration in the toml file.
+You can use [`Config`](https://docs.rs/summer-web/latest/summer_web/extractor/struct.Config.html) to extract the configuration in the toml file.
 
 
 ```rust
-use spring_web::get;
-use spring_web::{extractor::Config, axum::response::IntoResponse};
-use spring::config::Configurable;
+use summer_web::get;
+use summer_web::{extractor::Config, axum::response::IntoResponse};
+use summer::config::Configurable;
 use serde::Deserialize;
 
 #[derive(Debug, Configurable, Deserialize)]
@@ -202,23 +202,23 @@ b = true
 
 Complete code reference [`web-example`][web-example]
 
-[web-example]: https://github.com/spring-rs/spring-rs/tree/master/examples/web-example
+[web-example]: https://github.com/summer-rs/summer-rs/tree/master/examples/web-example
 
 ## Use Extractor in Middleware
 
 You can also use [Extractor in middleware](https://docs.rs/axum/latest/axum/middleware/fn.from_fn.html), but please note that you need to follow the rules of axum.
 
 ```rust
-use spring_web::{middlewares, axum::middleware};
+use summer_web::{middlewares, axum::middleware};
 
 /// you can apply this middleware to your routes using the `middlewares` macro:
 #[middlewares(
     middleware::from_fn(problem_middleware),
 )]
 mod routes {
-    use spring_web::{axum::{response::Response, middleware::Next, response::IntoResponse}, extractor::{Request, Component}};
-    use spring_sqlx::ConnectPool;
-    use spring_web::{middlewares, get, axum::middleware};
+    use summer_web::{axum::{response::Response, middleware::Next, response::IntoResponse}, extractor::{Request, Component}};
+    use summer_sqlx::ConnectPool;
+    use summer_web::{middlewares, get, axum::middleware};
     use std::time::Duration;
 
     async fn problem_middleware(Component(db): Component<ConnectPool>, request: Request, next: Next) -> Response {
@@ -241,13 +241,13 @@ This middleware will:
 
 Complete code reference [`web-middleware-example`][web-middleware-example]
 
-[web-middleware-example]: https://github.com/spring-rs/spring-rs/tree/master/examples/web-middleware-example
+[web-middleware-example]: https://github.com/summer-rs/summer-rs/tree/master/examples/web-middleware-example
 
-spring-web is a thin wrapper around axum, adding some macros to simplify development. [The examples of axum](https://github.com/tokio-rs/axum/tree/main/examples) can be run in spring-web.
+summer-web is a thin wrapper around axum, adding some macros to simplify development. [The examples of axum](https://github.com/tokio-rs/axum/tree/main/examples) can be run in summer-web.
 
 # SocketIO support
 
-You can enable the `socket_io` feature of `spring-web` to use a integration with [socketioxide](https://github.com/Totodore/socketioxide).
+You can enable the `socket_io` feature of `summer-web` to use a integration with [socketioxide](https://github.com/Totodore/socketioxide).
 
 SocketIO is a implementation of WebSocket with more definitions.
 - Named events (like `chat message`, `user joined`, etc.) instead of just plain messages
@@ -256,14 +256,14 @@ SocketIO is a implementation of WebSocket with more definitions.
 - Rooms / Namespaces to group clients
 - Fallbacks to other transports if WebSocket isn't available
 
-You can refer to the [socketio-example](https://github.com/spring-rs/spring-rs/tree/master/examples/web-socketio-example) for a example of using SocketIO in spring-web.
+You can refer to the [socketio-example](https://github.com/summer-rs/summer-rs/tree/master/examples/web-socketio-example) for a example of using SocketIO in summer-web.
 
 We can share components registered by plugins in SocketIO handlers, just like in normal HTTP handlers, for example, using the Sqlx connection pool component registered by the `SqlxPlugin` plugin.
 
 
 # OpenAPI support
 
-You can enable the `openapi` feature of `spring-web` to use OpenAPI documentation generation. You can refer to the [openapi-example](https://github.com/spring-rs/spring-rs/tree/master/examples/openapi-example) for more information.
+You can enable the `openapi` feature of `summer-web` to use OpenAPI documentation generation. You can refer to the [openapi-example](https://github.com/summer-rs/summer-rs/tree/master/examples/openapi-example) for more information.
 
 Besides you need to enable one of the documentation interface features: `openapi-redoc`, `openapi-scalar` or `openapi-swagger` to generate the corresponding documentation interface.
 
@@ -290,8 +290,8 @@ We can use the derive macro `ProblemDetails` to automatically implement the `Fro
 In this case we are implementing `thiserror::Error` for better error handling, but it's not mandatory.
 
 ```rust,ignore
-use spring_web::ProblemDetails;
-use spring_web::axum::http::StatusCode;
+use summer_web::ProblemDetails;
+use summer_web::axum::http::StatusCode;
 
 // Only need ProblemDetails derive - From and IntoResponse are generated automatically!
 #[derive(thiserror::Error, Debug, ProblemDetails)]
@@ -302,7 +302,7 @@ pub enum CustomErrors {
 
     #[status_code(500)]
     #[error(transparent)]
-    SqlxError(#[from] spring_sqlx::sqlx::Error),
+    SqlxError(#[from] summer_sqlx::sqlx::Error),
 
     #[status_code(418)]
     #[error("TeaPod error occurred: {0:?}")]
@@ -324,7 +324,7 @@ pub struct CustomErrorSchema {
 The `ProblemDetails` derive macro automatically generates both the `From<T> for ProblemDetails` and `IntoResponse` implementations, eliminating the need for manual mapping:
 
 ```rust,ignore
-use spring_web::ProblemDetails;
+use summer_web::ProblemDetails;
 
 // Only need ProblemDetails derive - everything is generated automatically!
 #[derive(thiserror::Error, Debug, ProblemDetails)]
@@ -367,7 +367,7 @@ The macro automatically maps common HTTP status codes to appropriate Problem Det
 The `ProblemDetails` derive macro supports additional attributes for fine-grained control over the generated Problem Details:
 
 ```rust,ignore
-use spring_web::ProblemDetails;
+use summer_web::ProblemDetails;
 
 #[derive(thiserror::Error, Debug, ProblemDetails)]
 pub enum ApiError {
@@ -459,7 +459,7 @@ async fn main() {
 Then implement error handling:
 
 ```rust,ignore
-use spring_web::ProblemDetails;
+use summer_web::ProblemDetails;
 
 #[derive(thiserror::Error, Debug, ProblemDetails)]
 pub enum CustomErrors {
@@ -472,7 +472,7 @@ pub enum CustomErrors {
     #[status_code(500)]
     #[problem_type("https://api.myapp.com/problems/database-error")]
     #[error(transparent)]
-    SqlxError(#[from] spring_sqlx::sqlx::Error),
+    SqlxError(#[from] summer_sqlx::sqlx::Error),
 
     #[status_code(418)]
     #[error("TeaPod error occurred: {0:?}")]

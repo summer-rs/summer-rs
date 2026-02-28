@@ -1,21 +1,21 @@
-[![crates.io](https://img.shields.io/crates/v/spring-sa-token.svg)](https://crates.io/crates/spring-sa-token)
-[![Documentation](https://docs.rs/spring-sa-token/badge.svg)](https://docs.rs/spring-sa-token)
+[![crates.io](https://img.shields.io/crates/v/summer-sa-token.svg)](https://crates.io/crates/summer-sa-token)
+[![Documentation](https://docs.rs/summer-sa-token/badge.svg)](https://docs.rs/summer-sa-token)
 
-`spring-sa-token` is an automatic assembly for [sa-token-rust](https://github.com/click33/sa-token-rust).
+`summer-sa-token` is an automatic assembly for [sa-token-rust](https://github.com/click33/sa-token-rust).
 
 ## Dependencies
 
 ```toml
 # Default: memory storage (for development)
-spring-sa-token = { version = "<version>" }
+summer-sa-token = { version = "<version>" }
 
-# Production: reuse spring-redis connection (recommended)
-spring-sa-token = { version = "<version>", default-features = false, features = ["with-spring-redis", "with-web"] }
+# Production: reuse summer-redis connection (recommended)
+summer-sa-token = { version = "<version>", default-features = false, features = ["with-summer-redis", "with-web"] }
 ```
 
 Optional **features**:
 * `memory`: In-memory storage (default, for development/testing)
-* `with-spring-redis`: Use spring-redis connection pool for storage (recommended)
+* `with-summer-redis`: Use summer-redis connection pool for storage (recommended)
 * `with-web`: Enable axum web integration (middleware, extractors)
 
 ## Configuration items
@@ -69,10 +69,10 @@ refresh_token_timeout = 604800  # 7 days
 ### 1. Add plugins to your application
 
 ```rust,ignore
-use spring::{auto_config, App};
-use spring_redis::RedisPlugin;
-use spring_sa_token::{SaTokenPlugin, SaTokenAuthConfigurator};
-use spring_web::{WebPlugin, WebConfigurator};
+use summer::{auto_config, App};
+use summer_redis::RedisPlugin;
+use summer_sa_token::{SaTokenPlugin, SaTokenAuthConfigurator};
+use summer_web::{WebPlugin, WebConfigurator};
 
 mod config;
 
@@ -80,7 +80,7 @@ mod config;
 #[tokio::main]
 async fn main() {
     App::new()
-        .add_plugin(RedisPlugin)       // Required for with-spring-redis feature
+        .add_plugin(RedisPlugin)       // Required for with-summer-redis feature
         .add_plugin(SaTokenPlugin)
         .add_plugin(WebPlugin)
         .sa_token_configure(config::SaTokenConfig)  // Configure path-based auth
@@ -98,8 +98,8 @@ async fn main() {
 Create `src/config.rs`:
 
 ```rust,ignore
-use spring::app::AppBuilder;
-use spring_sa_token::{PathAuthBuilder, SaStorage, SaTokenConfigurator};
+use summer::app::AppBuilder;
+use summer_sa_token::{PathAuthBuilder, SaStorage, SaTokenConfigurator};
 use std::sync::Arc;
 
 pub struct SaTokenConfig;
@@ -129,7 +129,7 @@ Then use it in `main.rs`:
 You can also configure directly in `main.rs` without a separate config file:
 
 ```rust,ignore
-use spring_sa_token::PathAuthBuilder;
+use summer_sa_token::PathAuthBuilder;
 
 #[tokio::main]
 async fn main() {
@@ -171,8 +171,8 @@ async fn main() {
 ### 3. Implement login endpoint
 
 ```rust,ignore
-use spring_sa_token::StpUtil;
-use spring_web::{post, axum::response::IntoResponse, extractor::Json, error::Result};
+use summer_sa_token::StpUtil;
+use summer_web::{post, axum::response::IntoResponse, extractor::Json, error::Result};
 
 #[post("/login")]
 async fn login(Json(req): Json<LoginRequest>) -> Result<impl IntoResponse> {
@@ -198,8 +198,8 @@ async fn login(Json(req): Json<LoginRequest>) -> Result<impl IntoResponse> {
 ### 4. Access protected routes
 
 ```rust,ignore
-use spring_sa_token::LoginIdExtractor;
-use spring_web::{get, axum::response::IntoResponse, extractor::Json, error::Result};
+use summer_sa_token::LoginIdExtractor;
+use summer_web::{get, axum::response::IntoResponse, extractor::Json, error::Result};
 
 #[get("/user/info")]
 async fn user_info(LoginIdExtractor(user_id): LoginIdExtractor) -> Result<impl IntoResponse> {
@@ -213,7 +213,7 @@ async fn user_info(LoginIdExtractor(user_id): LoginIdExtractor) -> Result<impl I
 
 ## Procedural Macros
 
-`spring-sa-token` provides several procedural macros for declarative security:
+`summer-sa-token` provides several procedural macros for declarative security:
 
 ### `#[sa_check_login]`
 
@@ -370,7 +370,7 @@ let has_perm = StpUtil::has_permission("user_id", "user:list").await;
 Extract current user's login ID from request:
 
 ```rust,ignore
-use spring_sa_token::LoginIdExtractor;
+use summer_sa_token::LoginIdExtractor;
 
 #[get("/user/info")]
 async fn user_info(LoginIdExtractor(user_id): LoginIdExtractor) -> impl IntoResponse {
@@ -383,7 +383,7 @@ async fn user_info(LoginIdExtractor(user_id): LoginIdExtractor) -> impl IntoResp
 Extract token info optionally (returns None if not authenticated):
 
 ```rust,ignore
-use spring_sa_token::OptionalSaTokenExtractor;
+use summer_sa_token::OptionalSaTokenExtractor;
 
 #[get("/public")]
 async fn public_endpoint(token: OptionalSaTokenExtractor) -> impl IntoResponse {
@@ -399,7 +399,7 @@ async fn public_endpoint(token: OptionalSaTokenExtractor) -> impl IntoResponse {
 Extract full token info (fails if not authenticated):
 
 ```rust,ignore
-use spring_sa_token::SaTokenExtractor;
+use summer_sa_token::SaTokenExtractor;
 
 #[get("/protected")]
 async fn protected_endpoint(SaTokenExtractor(info): SaTokenExtractor) -> impl IntoResponse {
@@ -412,8 +412,8 @@ async fn protected_endpoint(SaTokenExtractor(info): SaTokenExtractor) -> impl In
 Access `SaTokenState` component for advanced operations:
 
 ```rust,ignore
-use spring_sa_token::SaTokenState;
-use spring_web::extractor::Component;
+use summer_sa_token::SaTokenState;
+use summer_web::extractor::Component;
 
 #[get("/api/config")]
 async fn get_config(Component(state): Component<SaTokenState>) -> impl IntoResponse {
@@ -433,15 +433,15 @@ You can implement a custom storage backend (e.g., database-based) using `lazy_st
 ### Step 1: Define your storage as a Service
 
 ```rust,ignore
-use spring::plugin::service::Service;
-use spring_sa_token::SaStorage;
-use spring_sea_orm::DbConn;
+use summer::plugin::service::Service;
+use summer_sa_token::SaStorage;
+use summer_sea_orm::DbConn;
 use sa_token_adapter::storage::{StorageResult, StorageError};
 
 #[derive(Clone, Service)]
 pub struct MyDatabaseStorage {
     #[inject(component)]
-    conn: DbConn,  // Auto-injected by spring framework
+    conn: DbConn,  // Auto-injected by summer framework
 }
 
 #[async_trait]
@@ -468,8 +468,8 @@ impl SaStorage for MyDatabaseStorage {
 ### Step 2: Use lazy_storage in your configurator
 
 ```rust,ignore
-use spring::app::AppBuilder;
-use spring_sa_token::{lazy_storage, PathAuthBuilder, SaStorage, SaTokenConfigurator};
+use summer::app::AppBuilder;
+use summer_sa_token::{lazy_storage, PathAuthBuilder, SaStorage, SaTokenConfigurator};
 use std::sync::Arc;
 
 pub struct SaTokenConfig;
@@ -494,10 +494,10 @@ The `lazy_storage<T>()` function:
 
 ## Error Handling
 
-All security macros return `spring_web::error::WebError` on failure, which can be handled by your error handling middleware:
+All security macros return `summer_web::error::WebError` on failure, which can be handled by your error handling middleware:
 
 ```rust,ignore
-use spring_web::error::Result;
+use summer_web::error::Result;
 
 #[get("/admin/dashboard")]
 #[sa_check_role("admin")]
@@ -509,4 +509,4 @@ async fn admin_dashboard() -> Result<impl IntoResponse> {
 
 Complete code reference [`sa-token-example`][sa-token-example]
 
-[sa-token-example]: https://github.com/spring-rs/spring-rs/tree/master/examples/sa-token-example
+[sa-token-example]: https://github.com/summer-rs/summer-rs/tree/master/examples/sa-token-example

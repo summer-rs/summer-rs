@@ -1,12 +1,12 @@
-[![crates.io](https://img.shields.io/crates/v/spring-sqlx.svg)](https://crates.io/crates/spring-sqlx)
-[![Documentation](https://docs.rs/spring-sqlx/badge.svg)](https://docs.rs/spring-sqlx)
+[![crates.io](https://img.shields.io/crates/v/summer-sqlx.svg)](https://crates.io/crates/summer-sqlx)
+[![Documentation](https://docs.rs/summer-sqlx/badge.svg)](https://docs.rs/summer-sqlx)
 
 [SQLx](https://github.com/launchbadge/sqlx) 是一个异步 SQL 库，通过编译期校验 SQL 语句来在不使用 ORM 的情况下提供强类型、零运行时反射的数据库访问能力。
 
 ## 依赖
 
 ```toml
-spring-sqlx = { version = "<version>", features = ["mysql"] }
+summer-sqlx = { version = "<version>", features = ["mysql"] }
 ```
 
 可以替换`postgres`、`mysql`、`sqlite`feature来选择合适的数据库驱动。
@@ -33,7 +33,7 @@ connect_timeout = 1800000                            # 连接的最大存活时�
 
 ## 组件
 
-配置完上述配置项后，插件会自动注册一个[`ConnectPool`](https://docs.rs/spring-sqlx/latest/spring_sqlx/type.ConnectPool.html)连接池对象。该对象是[`sqlx::AnyPool`](https://docs.rs/sqlx/latest/sqlx/type.AnyPool.html)的别名。
+配置完上述配置项后，插件会自动注册一个[`ConnectPool`](https://docs.rs/summer-sqlx/latest/summer_sqlx/type.ConnectPool.html)连接池对象。该对象是[`sqlx::AnyPool`](https://docs.rs/sqlx/latest/sqlx/type.AnyPool.html)的别名。
 
 ```rust
 pub type ConnectPool = sqlx::AnyPool;
@@ -41,13 +41,13 @@ pub type ConnectPool = sqlx::AnyPool;
 
 ## 提取插件注册的Component
 
-`SqlxPlugin`插件为我们自动注册了一个Sqlx连接池组件，我们可以使用`Component`从AppState中提取这个连接池，[`Component`](https://docs.rs/spring-web/latest/spring_web/extractor/struct.Component.html)是一个axum的[extractor](https://docs.rs/axum/latest/axum/extract/index.html)。
+`SqlxPlugin`插件为我们自动注册了一个Sqlx连接池组件，我们可以使用`Component`从AppState中提取这个连接池，[`Component`](https://docs.rs/summer-web/latest/summer_web/extractor/struct.Component.html)是一个axum的[extractor](https://docs.rs/axum/latest/axum/extract/index.html)。
 
 ```rust
-use spring_sqlx::{sqlx::{self, Row}, ConnectPool};
-use spring_web::get;
-use spring_web::extractor::Component;
-use spring_web::error::Result;
+use summer_sqlx::{sqlx::{self, Row}, ConnectPool};
+use summer_web::get;
+use summer_web::extractor::Component;
+use summer_web::error::Result;
 use anyhow::Context;
 
 #[get("/version")]
@@ -61,4 +61,4 @@ async fn mysql_version(Component(pool): Component<ConnectPool>) -> Result<String
 }
 ```
 
-完整代码参考[`sqlx-example`](https://github.com/spring-rs/spring-rs/tree/master/examples/sqlx-example)
+完整代码参考[`sqlx-example`](https://github.com/summer-rs/summer-rs/tree/master/examples/sqlx-example)
