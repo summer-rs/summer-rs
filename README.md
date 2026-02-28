@@ -1,37 +1,37 @@
 <div align="center">
-    <img src="https://raw.githubusercontent.com/spring-rs/spring-rs/refs/heads/master/docs/static/logo-rust.svg" alt="Logo" width="200"/>
-    <h3>spring-rs is application framework written in Rust, inspired by Java's SpringBoot</h3>
-    <p>English ｜ <a href="https://spring-rs.github.io/zh/docs/getting-started/introduction/">中文</a></p>
+    <img src="https://raw.githubusercontent.com/summer-rs/summer-rs/refs/heads/master/docs/static/logo-rust.svg" alt="Logo" width="200"/>
+    <h3>summer-rs is application framework written in Rust, inspired by Java's SpringBoot</h3>
+    <p>English ｜ <a href="https://summer-rs.github.io/zh/docs/getting-started/introduction/">中文</a></p>
     <p>
-        <a href="https://crates.io/crates/spring"><img src="https://img.shields.io/crates/v/spring.svg" alt="crates.io"/></a> <a href="https://docs.rs/spring"><img src="https://docs.rs/spring/badge.svg" alt="Documentation"/></a> <img src="https://img.shields.io/crates/l/spring" alt="Documentation"/>
+        <a href="https://crates.io/crates/summer"><img src="https://img.shields.io/crates/v/summer.svg" alt="crates.io"/></a> <a href="https://docs.rs/summer"><img src="https://docs.rs/summer/badge.svg" alt="Documentation"/></a> <img src="https://img.shields.io/crates/l/summer" alt="Documentation"/>
     </p>
 </div>
 
-<b>spring-rs</b> is an application framework that emphasizes convention over configuration, inspired by Java's SpringBoot. <b>spring-rs</b> provides an easily extensible plug-in system for integrating excellent projects in the Rust community, such as axum, sqlx, sea-orm, etc.
+<b>summer-rs</b> is an application framework that emphasizes convention over configuration, inspired by Java's SpringBoot. <b>summer-rs</b> provides an easily extensible plug-in system for integrating excellent projects in the Rust community, such as axum, sqlx, sea-orm, etc.
 
-Compared with SpringBoot in java, spring-rs has higher performance and lower memory usage, allowing you to completely get rid of the bloated JVM and travel light.
+Compared with SpringBoot in java, summer-rs has higher performance and lower memory usage, allowing you to completely get rid of the bloated JVM and travel light.
 
 ## Features
 
-* ⚡️ High performance: Benefiting from the awesome rust language, <b>spring-rs</b> has the ultimate performance comparable to C/C++
-* 🛡️ High security: Compared to C/C++, the Rust language used by <b>spring-rs</b> provides memory safety and thread safety.
-* 🔨 Lightweight: The core code of spring-rs does not exceed 5,000 lines, and the binary size of the release version packaged in rust is also small.
-* 🔧 Easy to use: <b>spring-rs</b> provides a clear and concise API and optional Procedural Macros to simplify development.
-* 🔌 Highly extensible: <b>spring-rs</b> uses a highly extensible plug-in model, and users can customize plug-ins to extend program capabilities.
-* ⚙️ Highly configurable: <b>spring-rs</b> uses toml to configure applications and plug-ins to improve application flexibility.
+* ⚡️ High performance: Benefiting from the awesome rust language, <b>summer-rs</b> has the ultimate performance comparable to C/C++
+* 🛡️ High security: Compared to C/C++, the Rust language used by <b>summer-rs</b> provides memory safety and thread safety.
+* 🔨 Lightweight: The core code of summer-rs does not exceed 5,000 lines, and the binary size of the release version packaged in rust is also small.
+* 🔧 Easy to use: <b>summer-rs</b> provides a clear and concise API and optional Procedural Macros to simplify development.
+* 🔌 Highly extensible: <b>summer-rs</b> uses a highly extensible plug-in model, and users can customize plug-ins to extend program capabilities.
+* ⚙️ Highly configurable: <b>summer-rs</b> uses toml to configure applications and plug-ins to improve application flexibility.
 
 ## Example
 
 **web**
 
 ```rust,no_run
-use spring::{auto_config, App};
-use spring_sqlx::{
+use summer::{auto_config, App};
+use summer_sqlx::{
     sqlx::{self, Row},
     ConnectPool, SqlxPlugin
 };
-use spring_web::{get, route};
-use spring_web::{
+use summer_web::{get, route};
+use summer_web::{
     error::Result, extractor::{Path, Component}, handler::TypeRouter, axum::response::IntoResponse, Router,
     WebConfigurator, WebPlugin,
 };
@@ -72,10 +72,10 @@ async fn sqlx_request_handler(Component(pool): Component<ConnectPool>) -> Result
 
 ```rust,ignore
 use anyhow::Context;
-use spring::{auto_config, App};
-use spring_job::{cron, fix_delay, fix_rate};
-use spring_job::{extractor::Component, JobConfigurator, JobPlugin};
-use spring_sqlx::{
+use summer::{auto_config, App};
+use summer_job::{cron, fix_delay, fix_rate};
+use summer_job::{extractor::Component, JobConfigurator, JobPlugin};
+use summer_sqlx::{
     sqlx::{self, Row},
     ConnectPool, SqlxPlugin,
 };
@@ -128,18 +128,18 @@ Add dependencies to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-spring = "0.4"
+summer = "0.4"
 tokio = { version = "1", features = ["full"] }
 ```
 
 **Simple component registration with `#[component]` macro:**
 
 ```rust,no_run
-use spring::component;
-use spring::config::Configurable;
-use spring::extractor::Config;
-use spring::plugin::ComponentRegistry;
-use spring::App;
+use summer::component;
+use summer::config::Configurable;
+use summer::extractor::Config;
+use summer::plugin::ComponentRegistry;
+use summer::App;
 use serde::Deserialize;
 
 // Define configuration
@@ -172,33 +172,33 @@ async fn main() {
 }
 ```
 
-The `#[component]` macro eliminates boilerplate code - no need to manually implement the Plugin trait! [Learn more →](https://spring-rs.github.io/docs/getting-started/component/)
+The `#[component]` macro eliminates boilerplate code - no need to manually implement the Plugin trait! [Learn more →](https://summer-rs.github.io/docs/getting-started/component/)
 
 ## Supported plugins
 
 | Plugin                | Crate                                                                                                                                                                      | Integrated With                                                               | Description                                      |
 | --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- | ------------------------------------------------ |
-| `spring-web`            | [![spring-web](https://img.shields.io/crates/v/spring-web.svg)](https://spring-rs.github.io/docs/plugins/spring-web/)                                         | [`axum`](https://github.com/tokio-rs/axum)                                  | Web framework based on Axum                      |
-| `spring-sqlx`           | [![spring-sqlx](https://img.shields.io/crates/v/spring-sqlx.svg)](https://spring-rs.github.io/docs/plugins/spring-sqlx/)                                     | [`sqlx`](https://github.com/launchbadge/sqlx)                               | Async SQL access                                 |
-| `spring-postgres`       | [![spring-postgres](https://img.shields.io/crates/v/spring-postgres.svg)](https://spring-rs.github.io/docs/plugins/spring-postgres/)                     | [`rust-postgres`](https://github.com/sfackler/rust-postgres)                | PostgreSQL client integration                   |
-| `spring-sea-orm`        | [![spring-sea-orm](https://img.shields.io/crates/v/spring-sea-orm.svg)](https://spring-rs.github.io/docs/plugins/spring-sea-orm/)                         | [`sea-orm`](https://www.sea-ql.org/SeaORM/)                                 | ORM support                                      |
-| `spring-redis`          | [![spring-redis](https://img.shields.io/crates/v/spring-redis.svg)](https://spring-rs.github.io/docs/plugins/spring-redis/)                                 | [`redis`](https://github.com/redis-rs/redis-rs)                             | Redis integration                                |
-| `spring-mail`           | [![spring-mail](https://img.shields.io/crates/v/spring-mail.svg)](https://spring-rs.github.io/docs/plugins/spring-mail/)                                     | [`lettre`](https://github.com/lettre/lettre)                                | Email sending                                    |
-| `spring-job`            | [![spring-job](https://img.shields.io/crates/v/spring-job.svg)](https://spring-rs.github.io/docs/plugins/spring-job/)                                         | [`tokio-cron-scheduler`](https://github.com/mvniekerk/tokio-cron-scheduler) | Scheduled jobs / Cron                            |
-| `spring-stream`         | [![spring-stream](https://img.shields.io/crates/v/spring-stream.svg)](https://spring-rs.github.io/docs/plugins/spring-stream/)                             | [`sea-streamer`](https://github.com/SeaQL/sea-streamer)                     | Stream processing (Redis Streams / Kafka)       |
-| `spring-opentelemetry`  | [![spring-opentelemetry](https://img.shields.io/crates/v/spring-opentelemetry.svg)](https://spring-rs.github.io/docs/plugins/spring-opentelemetry/) | [`opentelemetry`](https://github.com/open-telemetry/opentelemetry-rust)     | Logging, metrics, and distributed tracing        |
-| `spring-grpc`           | [![spring-grpc](https://img.shields.io/crates/v/spring-grpc.svg)](https://spring-rs.github.io/docs/plugins/spring-grpc/)                                     | [`tonic`](https://github.com/hyperium/tonic)                                | gRPC services and clients                        |
-| `spring-opendal`        | [![spring-opendal](https://img.shields.io/crates/v/spring-opendal.svg)](https://spring-rs.github.io/docs/plugins/spring-opendal/)                         | [`opendal`](https://github.com/apache/opendal)                              | Unified object storage and data access           |
-| `spring-apalis`        | [![spring-apalis](https://img.shields.io/crates/v/spring-apalis.svg)](https://spring-rs.github.io/docs/plugins/spring-apalis/)                         | [`apalis`](https://github.com/apalis-dev/apalis)                              | High-performance background processing library |
-| `spring-sa-token`      | [![spring-sa-token](https://img.shields.io/crates/v/spring-sa-token.svg)](https://spring-rs.github.io/docs/plugins/spring-sa-token/)               | [`sa-token-rust`](https://github.com/click33/sa-token-rust)                   | Sa-Token authentication and authorization      |
+| `summer-web`            | [![summer-web](https://img.shields.io/crates/v/summer-web.svg)](https://summer-rs.github.io/docs/plugins/summer-web/)                                         | [`axum`](https://github.com/tokio-rs/axum)                                  | Web framework based on Axum                      |
+| `summer-sqlx`           | [![summer-sqlx](https://img.shields.io/crates/v/summer-sqlx.svg)](https://summer-rs.github.io/docs/plugins/summer-sqlx/)                                     | [`sqlx`](https://github.com/launchbadge/sqlx)                               | Async SQL access                                 |
+| `summer-postgres`       | [![summer-postgres](https://img.shields.io/crates/v/summer-postgres.svg)](https://summer-rs.github.io/docs/plugins/summer-postgres/)                     | [`rust-postgres`](https://github.com/sfackler/rust-postgres)                | PostgreSQL client integration                   |
+| `summer-sea-orm`        | [![summer-sea-orm](https://img.shields.io/crates/v/summer-sea-orm.svg)](https://summer-rs.github.io/docs/plugins/summer-sea-orm/)                         | [`sea-orm`](https://www.sea-ql.org/SeaORM/)                                 | ORM support                                      |
+| `summer-redis`          | [![summer-redis](https://img.shields.io/crates/v/summer-redis.svg)](https://summer-rs.github.io/docs/plugins/summer-redis/)                                 | [`redis`](https://github.com/redis-rs/redis-rs)                             | Redis integration                                |
+| `summer-mail`           | [![summer-mail](https://img.shields.io/crates/v/summer-mail.svg)](https://summer-rs.github.io/docs/plugins/summer-mail/)                                     | [`lettre`](https://github.com/lettre/lettre)                                | Email sending                                    |
+| `summer-job`            | [![summer-job](https://img.shields.io/crates/v/summer-job.svg)](https://summer-rs.github.io/docs/plugins/summer-job/)                                         | [`tokio-cron-scheduler`](https://github.com/mvniekerk/tokio-cron-scheduler) | Scheduled jobs / Cron                            |
+| `summer-stream`         | [![summer-stream](https://img.shields.io/crates/v/summer-stream.svg)](https://summer-rs.github.io/docs/plugins/summer-stream/)                             | [`sea-streamer`](https://github.com/SeaQL/sea-streamer)                     | Stream processing (Redis Streams / Kafka)       |
+| `summer-opentelemetry`  | [![summer-opentelemetry](https://img.shields.io/crates/v/summer-opentelemetry.svg)](https://summer-rs.github.io/docs/plugins/summer-opentelemetry/) | [`opentelemetry`](https://github.com/open-telemetry/opentelemetry-rust)     | Logging, metrics, and distributed tracing        |
+| `summer-grpc`           | [![summer-grpc](https://img.shields.io/crates/v/summer-grpc.svg)](https://summer-rs.github.io/docs/plugins/summer-grpc/)                                     | [`tonic`](https://github.com/hyperium/tonic)                                | gRPC services and clients                        |
+| `summer-opendal`        | [![summer-opendal](https://img.shields.io/crates/v/summer-opendal.svg)](https://summer-rs.github.io/docs/plugins/summer-opendal/)                         | [`opendal`](https://github.com/apache/opendal)                              | Unified object storage and data access           |
+| `summer-apalis`        | [![summer-apalis](https://img.shields.io/crates/v/summer-apalis.svg)](https://summer-rs.github.io/docs/plugins/summer-apalis/)                         | [`apalis`](https://github.com/apalis-dev/apalis)                              | High-performance background processing library |
+| `summer-sa-token`      | [![summer-sa-token](https://img.shields.io/crates/v/summer-sa-token.svg)](https://summer-rs.github.io/docs/plugins/summer-sa-token/)               | [`sa-token-rust`](https://github.com/click33/sa-token-rust)                   | Sa-Token authentication and authorization      |
 
 ## Ecosystem
 
-* ![spring-sqlx-migration-plugin](https://img.shields.io/crates/v/spring-sqlx-migration-plugin.svg) [`spring-sqlx-migration-plugin`](https://github.com/Phosphorus-M/spring-sqlx-migration-plugin)
-* [![Version](https://img.shields.io/visual-studio-marketplace/v/holmofy.spring-rs)](https://marketplace.visualstudio.com/items?itemName=holmofy.spring-rs)[`spring-lsp`](https://github.com/spring-rs/spring-lsp) - IDE support for VSCode / compatible editor with LSP
-* [![JetBrains Plugin](https://img.shields.io/badge/JetBrains-Plugin-orange)](https://plugins.jetbrains.com/plugin/30040-spring-rs) [`intellij-spring-rs`](https://github.com/ouywm/intellij-spring-rs) - IDE support for RustRover / IntelliJ IDEA
+* ![summer-sqlx-migration-plugin](https://img.shields.io/crates/v/summer-sqlx-migration-plugin.svg) [`summer-sqlx-migration-plugin`](https://github.com/Phosphorus-M/summer-sqlx-migration-plugin)
+* [![Version](https://img.shields.io/visual-studio-marketplace/v/holmofy.summer-rs)](https://marketplace.visualstudio.com/items?itemName=holmofy.summer-rs)[`summer-lsp`](https://github.com/summer-rs/summer-lsp) - IDE support for VSCode / compatible editor with LSP
+* [![JetBrains Plugin](https://img.shields.io/badge/JetBrains-Plugin-orange)](https://plugins.jetbrains.com/plugin/30040-summer-rs) [`intellij-summer-rs`](https://github.com/ouywm/intellij-summer-rs) - IDE support for RustRover / IntelliJ IDEA
 
-[more>>](https://crates.io/crates/spring/reverse_dependencies)
+[more>>](https://crates.io/crates/summer/reverse_dependencies)
 
 ## Project showcase
 
@@ -207,8 +207,8 @@ The `#[component]` macro eliminates boilerplate code - no need to manually imple
 
 ## Contribution
 
-We also welcome community experts to contribute their own plugins. [Contributing →](https://github.com/spring-rs/spring-rs)
+We also welcome community experts to contribute their own plugins. [Contributing →](https://github.com/summer-rs/summer-rs)
 
 ## Help
 
-Click here to view common problems encountered when using `spring-rs` [Help →](https://spring-rs.github.io/docs/help/faq/)
+Click here to view common problems encountered when using `summer-rs` [Help →](https://summer-rs.github.io/docs/help/faq/)

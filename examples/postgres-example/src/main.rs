@@ -1,8 +1,8 @@
 use anyhow::Context;
-use spring::{auto_config, App};
-use spring_postgres::{PgPlugin, Postgres};
-use spring_web::get;
-use spring_web::{
+use summer::{auto_config, App};
+use summer_postgres::{PgPlugin, Postgres};
+use summer_web::get;
+use summer_web::{
     axum::response::{IntoResponse, Json},
     error::Result,
     extractor::Component,

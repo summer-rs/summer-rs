@@ -6,10 +6,10 @@ license.workspace = true
 authors.workspace = true
 
 [dependencies]
-spring = { path = "../../spring" }
-spring-web = { path = "../../spring-web" }
-spring-sa-token = { path = "../../spring-sa-token" }
-spring-sea-orm = { path = "../../spring-sea-orm", features = ["postgres"] }
+summer = { path = "../../summer" }
+summer-web = { path = "../../summer-web" }
+summer-sa-token = { path = "../../summer-sa-token" }
+summer-sea-orm = { path = "../../summer-sea-orm", features = ["postgres"] }
 sea-orm = { workspace = true, features = ["macros", "sqlx-postgres", "runtime-tokio-native-tls"] }
 async-trait = { workspace = true }
 tokio = { workspace = true }

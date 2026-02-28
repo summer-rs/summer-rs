@@ -7,9 +7,9 @@ sort_by = "weight"
 template = "docs/page.html"
 
 [extra]
-lead = "插件是spring-rs的核心概念之一，spring-rs正是通过插件机制扩展应用的功能"
+lead = "插件是summer-rs的核心概念之一，summer-rs正是通过插件机制扩展应用的功能"
 toc = true
 top = false
 +++
 
-{{ include(path="../../spring/Plugin.zh.md") }}
+{{ include(path="../../summer/Plugin.zh.md") }}

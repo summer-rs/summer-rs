@@ -2,18 +2,18 @@ use anyhow::Context;
 use derive_more::derive::Deref;
 use schemars::JsonSchema;
 use serde::Deserialize;
-use spring::{
+use summer::{
     auto_config,
     config::{ConfigRef, Configurable},
     plugin::{component::ComponentRef, service::Service, MutableComponentRegistry},
     App,
 };
-use spring_sqlx::{
+use summer_sqlx::{
     sqlx::{self, Row},
     ConnectPool, SqlxPlugin,
 };
-use spring_web::get;
-use spring_web::{
+use summer_web::get;
+use summer_web::{
     axum::response::IntoResponse, error::Result, extractor::Component, WebConfigurator, WebPlugin,
 };
 use std::sync::{

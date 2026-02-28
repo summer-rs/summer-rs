@@ -27,4 +27,4 @@ top = false
 
 > [CNCF](https://landscape.cncf.io/?group=projects-and-products&view-mode=card&license=oss&classify=category&sort-by=stars&sort-direction=desc#observability-and-analysis--observability) has many observability backend implementations available for use.
 
-{{ include(path="../../spring-opentelemetry/README.md") }}
+{{ include(path="../../summer-opentelemetry/README.md") }}

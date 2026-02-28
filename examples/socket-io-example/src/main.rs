@@ -1,20 +1,20 @@
 use std::sync::Arc;
 
-use spring_web::rmpv::Value;
-use spring_web::socketioxide::SocketIo;
-use spring_web::socketioxide::extract::{AckSender, Data, Event, SocketRef};
-use spring::plugin::MutableComponentRegistry;
-use spring::tracing::info;
-use spring::{auto_config, App};
-use spring_web::{on_fallback, WebConfigurator};
-use spring_web::extractor::Component;
-use spring_web::{
+use summer_web::rmpv::Value;
+use summer_web::socketioxide::SocketIo;
+use summer_web::socketioxide::extract::{AckSender, Data, Event, SocketRef};
+use summer::plugin::MutableComponentRegistry;
+use summer::tracing::info;
+use summer::{auto_config, App};
+use summer_web::{on_fallback, WebConfigurator};
+use summer_web::extractor::Component;
+use summer_web::{
     axum::{
         response::IntoResponse,
     },
     WebPlugin,
 };
-use spring_web::{get, on_connection, on_disconnect, subscribe_message};
+use summer_web::{get, on_connection, on_disconnect, subscribe_message};
 use tokio::sync::Mutex;
 
 type Users = Arc<Mutex<Vec<String>>>;

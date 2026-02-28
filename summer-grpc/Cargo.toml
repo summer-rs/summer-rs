@@ -1,0 +1,27 @@
+[package]
+name = "summer-grpc"
+description = "Integration of rust application framework summer-rs and tonic gRPC framework"
+version = "0.5.0"
+categories = ["web-programming", "network-programming"]
+keywords = ["rpc", "grpc", "protobuf", "summer"]
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+
+[features]
+
+[dependencies]
+summer = { path = "../summer", version = "0.5" }
+tonic = { workspace = true }
+anyhow = { workspace = true }
+thiserror = { workspace = true }
+tracing = { workspace = true, features = ["log"] }
+tokio = { workspace = true, features = ["full"] }
+tower = { workspace = true, features = ["full"] }
+tower-http = { workspace = true, features = ["full"] }
+serde = { workspace = true, features = ["derive"] }
+axum = { workspace = true }
+http = { workspace = true }
+schemars = { workspace = true }
+inventory = { workspace = true }

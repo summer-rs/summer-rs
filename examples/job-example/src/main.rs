@@ -1,16 +1,16 @@
 use anyhow::Context;
-use spring::extractor::Component;
-use spring::{auto_config, App};
-use spring_job::job::Job;
-use spring_job::{cron, fix_delay, fix_rate, JobScheduler};
-use spring_job::{JobConfigurator, JobPlugin};
-use spring_sqlx::{
+use summer::extractor::Component;
+use summer::{auto_config, App};
+use summer_job::job::Job;
+use summer_job::{cron, fix_delay, fix_rate, JobScheduler};
+use summer_job::{JobConfigurator, JobPlugin};
+use summer_sqlx::{
     sqlx::{self, Row},
     ConnectPool, SqlxPlugin,
 };
-use spring_web::axum::response::IntoResponse;
-use spring_web::extractor::AppRef;
-use spring_web::{
+use summer_web::axum::response::IntoResponse;
+use summer_web::extractor::AppRef;
+use summer_web::{
     error::Result, extractor::Component as WebComponent, get, WebConfigurator, WebPlugin,
 };
 use std::time::{Duration, SystemTime};

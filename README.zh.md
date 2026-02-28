@@ -1,37 +1,37 @@
 <div align="center">
-    <img src="https://raw.githubusercontent.com/spring-rs/spring-rs/refs/heads/master/docs/static/logo-rust.svg" alt="Logo" width="200"/>
-    <h3>spring-rs是Rust编写的应用框架，类似于java生态的SpringBoot</h3>
-    <p><a href="https://spring-rs.github.io/docs/getting-started/introduction/">English</a> ｜ 中文</p>
+    <img src="https://raw.githubusercontent.com/summer-rs/summer-rs/refs/heads/master/docs/static/logo-rust.svg" alt="Logo" width="200"/>
+    <h3>summer-rs是Rust编写的应用框架，类似于java生态的SpringBoot</h3>
+    <p><a href="https://summer-rs.github.io/docs/getting-started/introduction/">English</a> ｜ 中文</p>
     <p>
-        <a href="https://crates.io/crates/spring"><img src="https://img.shields.io/crates/v/spring.svg" alt="crates.io"/></a> <a href="https://docs.rs/spring"><img src="https://docs.rs/spring/badge.svg" alt="Documentation"/></a> <img src="https://img.shields.io/crates/l/spring" alt="Documentation"/>
+        <a href="https://crates.io/crates/summer"><img src="https://img.shields.io/crates/v/summer.svg" alt="crates.io"/></a> <a href="https://docs.rs/summer"><img src="https://docs.rs/summer/badge.svg" alt="Documentation"/></a> <img src="https://img.shields.io/crates/l/summer" alt="Documentation"/>
     </p>
 </div>
 
-<b>spring-rs</b>是一个Rust编写的应用框架，强调约定大于配置，类似于java生态的SpringBoot。<b>spring-rs</b>提供了易于扩展的插件系统，用于整合Rust社区的优秀项目，例如axum、sqlx、sea-orm等。
+<b>summer-rs</b>是一个Rust编写的应用框架，强调约定大于配置，类似于java生态的SpringBoot。<b>summer-rs</b>提供了易于扩展的插件系统，用于整合Rust社区的优秀项目，例如axum、sqlx、sea-orm等。
 
-相比于java生态的SpringBoot，spring-rs有更高的性能和更低的内存占用，让你彻底摆脱臃肿的JVM，轻装上阵。
+相比于java生态的SpringBoot，summer-rs有更高的性能和更低的内存占用，让你彻底摆脱臃肿的JVM，轻装上阵。
 
 ## 特点
 
-* ⚡️ 高性能: 得益于出色的Rust语言，<b>spring-rs</b>拥有与c/c++媲美的极致性能
-* 🛡️ 高安全性: 相比C/C++，<b>spring-rs</b>使用的Rust语言提供了内存安全和线程安全的能力
-* 🔨 轻量级: <b>spring-rs</b>的核心代码不超过5000行，打包的release版二进制文件也非常小巧
-* 🔧 容易使用: <b>spring-rs</b>提供了清晰明了的API和可选的过程宏来简化开发
-* 🔌 高可扩展性: <b>spring-rs</b>采用高扩展性的插件模式，用户可以自定义插件扩展程序功能
-* ⚙️ 高可配置性: <b>spring-rs</b>用toml配置应用和插件，提升应用灵活性
+* ⚡️ 高性能: 得益于出色的Rust语言，<b>summer-rs</b>拥有与c/c++媲美的极致性能
+* 🛡️ 高安全性: 相比C/C++，<b>summer-rs</b>使用的Rust语言提供了内存安全和线程安全的能力
+* 🔨 轻量级: <b>summer-rs</b>的核心代码不超过5000行，打包的release版二进制文件也非常小巧
+* 🔧 容易使用: <b>summer-rs</b>提供了清晰明了的API和可选的过程宏来简化开发
+* 🔌 高可扩展性: <b>summer-rs</b>采用高扩展性的插件模式，用户可以自定义插件扩展程序功能
+* ⚙️ 高可配置性: <b>summer-rs</b>用toml配置应用和插件，提升应用灵活性
 
 ## 简单的例子
 
 **web**
 
 ```rust,ignore
-use spring::{auto_config, App};
-use spring_sqlx::{
+use summer::{auto_config, App};
+use summer_sqlx::{
     sqlx::{self, Row},
     ConnectPool, SqlxPlugin
 };
-use spring_web::{get, route};
-use spring_web::{
+use summer_web::{get, route};
+use summer_web::{
     error::Result, extractor::{Path, Component}, handler::TypeRouter, axum::response::IntoResponse, Router, 
     WebConfigurator, WebPlugin,
 };
@@ -71,10 +71,10 @@ async fn sqlx_request_handler(Component(pool): Component<ConnectPool>) -> Result
 
 ```rust,ignore
 use anyhow::Context;
-use spring::{auto_config, App};
-use spring_job::{cron, fix_delay, fix_rate};
-use spring_job::{extractor::Component, JobConfigurator, JobPlugin};
-use spring_sqlx::{
+use summer::{auto_config, App};
+use summer_job::{cron, fix_delay, fix_rate};
+use summer_job::{extractor::Component, JobConfigurator, JobPlugin};
+use summer_sqlx::{
     sqlx::{self, Row},
     ConnectPool, SqlxPlugin,
 };
@@ -127,18 +127,18 @@ async fn fix_rate_job() {
 
 ```toml
 [dependencies]
-spring = "0.4"
+summer = "0.4"
 tokio = { version = "1", features = ["full"] }
 ```
 
 **使用 `#[component]` 宏简化组件注册：**
 
 ```rust,no_run
-use spring::component;
-use spring::config::Configurable;
-use spring::extractor::Config;
-use spring::plugin::ComponentRegistry;
-use spring::App;
+use summer::component;
+use summer::config::Configurable;
+use summer::extractor::Config;
+use summer::plugin::ComponentRegistry;
+use summer::App;
 use serde::Deserialize;
 
 // 定义配置
@@ -171,35 +171,35 @@ async fn main() {
 }
 ```
 
-`#[component]` 宏消除了样板代码 - 无需手动实现 Plugin trait！[了解更多 →](https://spring-rs.github.io/zh/docs/getting-started/component/)
+`#[component]` 宏消除了样板代码 - 无需手动实现 Plugin trait！[了解更多 →](https://summer-rs.github.io/zh/docs/getting-started/component/)
 
 ## 支持的插件
 
 | 插件                   | Crate                                                                                                                                                                      | 集成组件                                                                        | 说明                          |
 | -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- | --------------------------- |
-| `spring-web`           | [![spring-web](https://img.shields.io/crates/v/spring-web.svg)](https://spring-rs.github.io/docs/plugins/spring-web/)                                         | [`axum`](https://github.com/tokio-rs/axum)                                  | Web 框架，基于 axum              |
-| `spring-sqlx`          | [![spring-sqlx](https://img.shields.io/crates/v/spring-sqlx.svg)](https://spring-rs.github.io/docs/plugins/spring-sqlx/)                                     | [`sqlx`](https://github.com/launchbadge/sqlx)                               | 异步 SQL 访问                   |
-| `spring-postgres`      | [![spring-postgres](https://img.shields.io/crates/v/spring-postgres.svg)](https://spring-rs.github.io/docs/plugins/spring-postgres/)                     | [`rust-postgres`](https://github.com/sfackler/rust-postgres)                | PostgreSQL 客户端集成            |
-| `spring-sea-orm`       | [![spring-sea-orm](https://img.shields.io/crates/v/spring-sea-orm.svg)](https://spring-rs.github.io/docs/plugins/spring-sea-orm/)                         | [`sea-orm`](https://www.sea-ql.org/SeaORM/)                                 | ORM 支持                      |
-| `spring-redis`         | [![spring-redis](https://img.shields.io/crates/v/spring-redis.svg)](https://spring-rs.github.io/docs/plugins/spring-redis/)                                 | [`redis`](https://github.com/redis-rs/redis-rs)                             | Redis 集成                    |
-| `spring-mail`          | [![spring-mail](https://img.shields.io/crates/v/spring-mail.svg)](https://spring-rs.github.io/docs/plugins/spring-mail/)                                     | [`lettre`](https://github.com/lettre/lettre)                                | 邮件发送                        |
-| `spring-job`           | [![spring-job](https://img.shields.io/crates/v/spring-job.svg)](https://spring-rs.github.io/docs/plugins/spring-job/)                                         | [`tokio-cron-scheduler`](https://github.com/mvniekerk/tokio-cron-scheduler) | 定时任务 / Cron                 |
-| `spring-stream`        | [![spring-stream](https://img.shields.io/crates/v/spring-stream.svg)](https://spring-rs.github.io/docs/plugins/spring-stream/)                             | [`sea-streamer`](https://github.com/SeaQL/sea-streamer)                     | 消息流处理（Redis Stream / Kafka） |
-| `spring-opentelemetry` | [![spring-opentelemetry](https://img.shields.io/crates/v/spring-opentelemetry.svg)](https://spring-rs.github.io/docs/plugins/spring-opentelemetry/) | [`opentelemetry`](https://github.com/open-telemetry/opentelemetry-rust)     | 日志 / 指标 / 链路追踪              |
-| `spring-grpc`          | [![spring-grpc](https://img.shields.io/crates/v/spring-grpc.svg)](https://spring-rs.github.io/docs/plugins/spring-grpc/)                                     | [`tonic`](https://github.com/hyperium/tonic)                                | gRPC 服务与调用                  |
-| `spring-opendal`       | [![spring-opendal](https://img.shields.io/crates/v/spring-opendal.svg)](https://spring-rs.github.io/docs/plugins/spring-opendal/)                         | [`opendal`](https://github.com/apache/opendal)                              | 统一对象存储 / 数据访问               |
-| `spring-apalis`       | [![spring-apalis](https://img.shields.io/crates/v/spring-apalis.svg)](https://spring-rs.github.io/docs/plugins/spring-apalis/)                         | [`apalis`](https://github.com/apalis-dev/apalis)                              | 高性能后台任务处理框架 |
-| `spring-sa-token`     | [![spring-sa-token](https://img.shields.io/crates/v/spring-sa-token.svg)](https://spring-rs.github.io/docs/plugins/spring-sa-token/)               | [`sa-token-rust`](https://github.com/click33/sa-token-rust)                   | Sa-Token 权限认证框架 |
+| `summer-web`           | [![summer-web](https://img.shields.io/crates/v/summer-web.svg)](https://summer-rs.github.io/docs/plugins/summer-web/)                                         | [`axum`](https://github.com/tokio-rs/axum)                                  | Web 框架，基于 axum              |
+| `summer-sqlx`          | [![summer-sqlx](https://img.shields.io/crates/v/summer-sqlx.svg)](https://summer-rs.github.io/docs/plugins/summer-sqlx/)                                     | [`sqlx`](https://github.com/launchbadge/sqlx)                               | 异步 SQL 访问                   |
+| `summer-postgres`      | [![summer-postgres](https://img.shields.io/crates/v/summer-postgres.svg)](https://summer-rs.github.io/docs/plugins/summer-postgres/)                     | [`rust-postgres`](https://github.com/sfackler/rust-postgres)                | PostgreSQL 客户端集成            |
+| `summer-sea-orm`       | [![summer-sea-orm](https://img.shields.io/crates/v/summer-sea-orm.svg)](https://summer-rs.github.io/docs/plugins/summer-sea-orm/)                         | [`sea-orm`](https://www.sea-ql.org/SeaORM/)                                 | ORM 支持                      |
+| `summer-redis`         | [![summer-redis](https://img.shields.io/crates/v/summer-redis.svg)](https://summer-rs.github.io/docs/plugins/summer-redis/)                                 | [`redis`](https://github.com/redis-rs/redis-rs)                             | Redis 集成                    |
+| `summer-mail`          | [![summer-mail](https://img.shields.io/crates/v/summer-mail.svg)](https://summer-rs.github.io/docs/plugins/summer-mail/)                                     | [`lettre`](https://github.com/lettre/lettre)                                | 邮件发送                        |
+| `summer-job`           | [![summer-job](https://img.shields.io/crates/v/summer-job.svg)](https://summer-rs.github.io/docs/plugins/summer-job/)                                         | [`tokio-cron-scheduler`](https://github.com/mvniekerk/tokio-cron-scheduler) | 定时任务 / Cron                 |
+| `summer-stream`        | [![summer-stream](https://img.shields.io/crates/v/summer-stream.svg)](https://summer-rs.github.io/docs/plugins/summer-stream/)                             | [`sea-streamer`](https://github.com/SeaQL/sea-streamer)                     | 消息流处理（Redis Stream / Kafka） |
+| `summer-opentelemetry` | [![summer-opentelemetry](https://img.shields.io/crates/v/summer-opentelemetry.svg)](https://summer-rs.github.io/docs/plugins/summer-opentelemetry/) | [`opentelemetry`](https://github.com/open-telemetry/opentelemetry-rust)     | 日志 / 指标 / 链路追踪              |
+| `summer-grpc`          | [![summer-grpc](https://img.shields.io/crates/v/summer-grpc.svg)](https://summer-rs.github.io/docs/plugins/summer-grpc/)                                     | [`tonic`](https://github.com/hyperium/tonic)                                | gRPC 服务与调用                  |
+| `summer-opendal`       | [![summer-opendal](https://img.shields.io/crates/v/summer-opendal.svg)](https://summer-rs.github.io/docs/plugins/summer-opendal/)                         | [`opendal`](https://github.com/apache/opendal)                              | 统一对象存储 / 数据访问               |
+| `summer-apalis`       | [![summer-apalis](https://img.shields.io/crates/v/summer-apalis.svg)](https://summer-rs.github.io/docs/plugins/summer-apalis/)                         | [`apalis`](https://github.com/apalis-dev/apalis)                              | 高性能后台任务处理框架 |
+| `summer-sa-token`     | [![summer-sa-token](https://img.shields.io/crates/v/summer-sa-token.svg)](https://summer-rs.github.io/docs/plugins/summer-sa-token/)               | [`sa-token-rust`](https://github.com/click33/sa-token-rust)                   | Sa-Token 权限认证框架 |
 
 ## 生态
 
-* ![spring-sqlx-migration-plugin](https://img.shields.io/crates/v/spring-sqlx-migration-plugin.svg) [`spring-sqlx-migration-plugin`](https://github.com/Phosphorus-M/spring-sqlx-migration-plugin)
-* [![Version](https://img.shields.io/visual-studio-marketplace/v/holmofy.spring-rs)](https://marketplace.visualstudio.com/items?itemName=holmofy.spring-rs)[`spring-lsp`](https://github.com/spring-rs/spring-lsp) - VSCode插件 / 其他兼容LSP协议编辑器
-* [![JetBrains Plugin](https://img.shields.io/badge/JetBrains-Plugin-orange)](https://plugins.jetbrains.com/plugin/30040-spring-rs) [`intellij-spring-rs`](https://github.com/ouywm/intellij-spring-rs) - RustRover / IntelliJ IDEA 插件支持
+* ![summer-sqlx-migration-plugin](https://img.shields.io/crates/v/summer-sqlx-migration-plugin.svg) [`summer-sqlx-migration-plugin`](https://github.com/Phosphorus-M/summer-sqlx-migration-plugin)
+* [![Version](https://img.shields.io/visual-studio-marketplace/v/holmofy.summer-rs)](https://marketplace.visualstudio.com/items?itemName=holmofy.summer-rs)[`summer-lsp`](https://github.com/summer-rs/summer-lsp) - VSCode插件 / 其他兼容LSP协议编辑器
+* [![JetBrains Plugin](https://img.shields.io/badge/JetBrains-Plugin-orange)](https://plugins.jetbrains.com/plugin/30040-summer-rs) [`intellij-summer-rs`](https://github.com/ouywm/intellij-summer-rs) - RustRover / IntelliJ IDEA 插件支持
 
-[更多>>](https://crates.io/crates/spring/reverse_dependencies)
+[更多>>](https://crates.io/crates/summer/reverse_dependencies)
 
-<img alt="star history" src="https://api.star-history.com/svg?repos=spring-rs/spring-rs&type=Timeline" style="width: 100%"/>
+<img alt="star history" src="https://api.star-history.com/svg?repos=summer-rs/summer-rs&type=Timeline" style="width: 100%"/>
 
 ## 项目示例
 
@@ -227,8 +227,8 @@ async fn main() {
 
 ## 贡献
 
-也欢迎社区的大牛贡献自己的插件。 [Contributing →](https://github.com/spring-rs/spring-rs)
+也欢迎社区的大牛贡献自己的插件。 [Contributing →](https://github.com/summer-rs/summer-rs)
 
 ## 帮助
 
-点击这里可以查看`spring-rs`使用过程中遇到的常见问题 [Help →](https://spring-rs.github.io/zh/docs/help/faq/)
+点击这里可以查看`summer-rs`使用过程中遇到的常见问题 [Help →](https://summer-rs.github.io/zh/docs/help/faq/)

@@ -7,13 +7,13 @@ use entities::{
 };
 use sea_orm::{sea_query::IntoCondition, ColumnTrait, Condition, EntityTrait, QueryFilter};
 use serde::Deserialize;
-use spring::{auto_config, App};
-use spring_sea_orm::{
+use summer::{auto_config, App};
+use summer_sea_orm::{
     pagination::{Pagination, PaginationExt},
     DbConn, SeaOrmPlugin,
 };
-use spring_web::get;
-use spring_web::{
+use summer_web::get;
+use summer_web::{
     axum::response::{IntoResponse, Json},
     error::Result,
     extractor::{Component, Path, Query},
@@ -35,9 +35,9 @@ struct TodoListQuery {
     title: Option<String>,
 }
 
-impl IntoCondition for TodoListQuery {
-    fn into_condition(self) -> sea_orm::Condition {
-        match self.title {
+impl From<TodoListQuery> for Condition {
+    fn from(query: TodoListQuery) -> Self {
+        match query.title {
             Some(title) => todo_list::Column::Title.starts_with(title).into_condition(),
             None => Condition::all(),
         }

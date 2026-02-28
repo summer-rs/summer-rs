@@ -6,6 +6,6 @@ license.workspace = true
 authors.workspace = true
 
 [dependencies]
-spring = { path = "../../spring" }
-spring-web = { path = "../../spring-web", features = ["socket_io"]}
+summer = { path = "../../summer" }
+summer-web = { path = "../../summer-web", features = ["socket_io"]}
 tokio = { workspace = true, features = ["full", "tracing"] }

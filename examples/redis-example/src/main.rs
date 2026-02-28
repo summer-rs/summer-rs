@@ -1,13 +1,13 @@
 use anyhow::Context;
-use spring::{auto_config, App};
-use spring_redis::{cache, redis::AsyncCommands, Redis, RedisPlugin};
-use spring_web::{
+use summer::{auto_config, App};
+use summer_redis::{cache, redis::AsyncCommands, Redis, RedisPlugin};
+use summer_web::{
     axum::response::{IntoResponse, Json},
     error::Result,
     extractor::{Component, Path},
     WebConfigurator, WebPlugin,
 };
-use spring_web::{get, post};
+use summer_web::{get, post};
 
 #[auto_config(WebConfigurator)]
 #[tokio::main]

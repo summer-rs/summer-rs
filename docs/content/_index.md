@@ -1,10 +1,10 @@
 +++
-title = "spring-rs"
+title = "summer-rs"
 
 
 # The homepage contents
 [extra]
-lead = "<b>spring-rs</b> is a application framework written in rust inspired by java's spring-boot"
+lead = "<b>summer-rs</b> is a application framework written in rust inspired by java's spring-boot"
 url = "/docs/getting-started/introduction/"
 url_button = "Get started"
 logo = "logo.svg"
@@ -24,25 +24,25 @@ weight = 20
 
 [[extra.list]]
 title = "⚡️ High performance ⚡️"
-content = 'Benefiting from the awesome rust language, <b>spring-rs</b> has the ultimate performance comparable to C/C++'
+content = 'Benefiting from the awesome rust language, <b>summer-rs</b> has the ultimate performance comparable to C/C++'
 
 [[extra.list]]
 title = "🛡️ High security 🛡️"
-content = 'Compared to C/C++, the Rust language used by <b>spring-rs</b> provides memory safety and thread safety.'
+content = 'Compared to C/C++, the Rust language used by <b>summer-rs</b> provides memory safety and thread safety.'
 
 [[extra.list]]
 title = "🔨 Lightweight 🔨"
-content = "The core code of spring-rs does not exceed 5,000 lines, and the binary size of the release version packaged in rust is also small."
+content = "The core code of summer-rs does not exceed 5,000 lines, and the binary size of the release version packaged in rust is also small."
 
 [[extra.list]]
 title = "🔧 Easy to use 🔧"
-content = "<b>spring-rs</b> provides a clear and concise API and optional Procedural Macros to simplify development."
+content = "<b>summer-rs</b> provides a clear and concise API and optional Procedural Macros to simplify development."
 
 [[extra.list]]
 title = "🔌 Highly extensible 🔌"
-content = "<b>spring-rs</b> uses a highly extensible plug-in model, and users can customize plug-ins to extend program capabilities."
+content = "<b>summer-rs</b> uses a highly extensible plug-in model, and users can customize plug-ins to extend program capabilities."
 
 [[extra.list]]
 title = "⚙️ Highly configurable ⚙️"
-content = "<b>spring-rs</b> uses toml to configure applications and plug-ins to improve application flexibility."
+content = "<b>summer-rs</b> uses toml to configure applications and plug-ins to improve application flexibility."
 +++

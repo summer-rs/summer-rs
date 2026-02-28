@@ -4,16 +4,16 @@ use axum::http::StatusCode;
 use jwt::Claims;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
-use spring::config::Configurable;
-use spring::{auto_config, App};
-use spring_sqlx::SqlxPlugin;
-use spring_web::{
+use summer::config::Configurable;
+use summer::{auto_config, App};
+use summer_sqlx::SqlxPlugin;
+use summer_web::{
     axum::response::IntoResponse,
     error::Result,
     extractor::{Config, Json, Path},
     WebConfigurator, WebPlugin,
 };
-use spring_web::{get, get_api, nest, post, route, routes};
+use summer_web::{get, get_api, nest, post, route, routes};
 
 #[auto_config(WebConfigurator)]
 #[tokio::main]
@@ -99,13 +99,13 @@ async fn protected_user_info_api(
 #[nest("/sql")]
 mod sql {
     use anyhow::Context;
-    use spring_sqlx::{
+    use summer_sqlx::{
         sqlx::{self, Row},
         ConnectPool,
     };
-    use spring_web::extractor::Component;
-    use spring_web::get;
-    use spring_web::{error::Result, get_api};
+    use summer_web::extractor::Component;
+    use summer_web::get;
+    use summer_web::{error::Result, get_api};
     use std::ops::Deref;
 
     #[get("/version")]

@@ -1,11 +1,11 @@
 use anyhow::Context;
-use spring::{auto_config, App};
-use spring_sqlx::sqlx::Row;
-use spring_sqlx::{sqlx, ConnectPool, SqlxPlugin};
-use spring_web::error::KnownWebError;
-use spring_web::get;
-use spring_web::nest;
-use spring_web::{
+use summer::{auto_config, App};
+use summer_sqlx::sqlx::Row;
+use summer_sqlx::{sqlx, ConnectPool, SqlxPlugin};
+use summer_web::error::KnownWebError;
+use summer_web::get;
+use summer_web::nest;
+use summer_web::{
     axum::{
         body,
         middleware::{self, Next},
@@ -16,7 +16,7 @@ use spring_web::{
     extractor::Request,
     WebPlugin,
 };
-use spring_web::{middlewares, WebConfigurator};
+use summer_web::{middlewares, WebConfigurator};
 use std::time::Duration;
 use tower_http::cors::CorsLayer;
 use tower_http::timeout::TimeoutLayer;
@@ -43,7 +43,7 @@ async fn main() {
     TimeoutLayer::with_status_code(StatusCode::REQUEST_TIMEOUT, Duration::from_secs(10))
 )]
 mod routes {
-    use spring_web::axum::http::StatusCode;
+    use summer_web::axum::http::StatusCode;
 
     use super::*;
 
@@ -112,7 +112,7 @@ async fn problem_middleware(
     CorsLayer::permissive()
 )]
 mod protected_routes {
-    use spring_web::axum::http::StatusCode;
+    use summer_web::axum::http::StatusCode;
 
     use super::*;
 
@@ -160,7 +160,7 @@ async fn auth_middleware(request: Request, next: Next) -> Response {
 #[nest("/api")]
 mod api {
 
-    use spring_web::{axum::http::StatusCode, extractor::Path};
+    use summer_web::{axum::http::StatusCode, extractor::Path};
 
     use super::*;
 

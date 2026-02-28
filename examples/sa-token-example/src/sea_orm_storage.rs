@@ -4,11 +4,11 @@
 //! demonstrating how users can define their own storage backend.
 
 use async_trait::async_trait;
-use spring::plugin::service::Service;
-use spring_sa_token::sa_token_adapter::storage::{SaStorage, StorageError, StorageResult};
+use summer::plugin::service::Service;
+use summer_sa_token::sa_token_adapter::storage::{SaStorage, StorageError, StorageResult};
 use sea_orm::entity::prelude::*;
 use sea_orm::{ColumnTrait, EntityTrait, QueryFilter, Set};
-use spring_sea_orm::DbConn;
+use summer_sea_orm::DbConn;
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
 /// Simple key/value storage table for Sa-Token.
@@ -46,7 +46,7 @@ impl ActiveModelBehavior for ActiveModel {}
 /// # Example
 ///
 /// ```rust,ignore
-/// use spring_sa_token::{lazy_storage, SaTokenConfigurator};
+/// use summer_sa_token::{lazy_storage, SaTokenConfigurator};
 ///
 /// impl SaTokenConfigurator for MyConfig {
 ///     fn configure_storage(&self, _app: &AppBuilder) -> Option<Arc<dyn SaStorage>> {

@@ -5,13 +5,13 @@
 
 use anyhow::Context;
 use serde::Deserialize;
-use spring::app::AppBuilder;
-use spring::config::{ConfigRegistry, Configurable};
-use spring::error::Result;
-use spring::plugin::{ComponentRegistry, MutableComponentRegistry, Plugin};
-use spring::{async_trait, tracing, App};
-use spring_sea_orm::config::SeaOrmConfig;
-use spring_sea_orm::{DbConn, SeaOrmPlugin};
+use summer::app::AppBuilder;
+use summer::config::{ConfigRegistry, Configurable};
+use summer::error::Result;
+use summer::plugin::{ComponentRegistry, MutableComponentRegistry, Plugin};
+use summer::{async_trait, tracing, App};
+use summer_sea_orm::config::SeaOrmConfig;
+use summer_sea_orm::{DbConn, SeaOrmPlugin};
 use std::ops::Deref;
 use std::sync::Arc;
 
@@ -42,7 +42,7 @@ impl Deref for SecondaryDb {
 }
 
 /// Multi-datasource configuration
-/// Reuses SeaOrmConfig from spring-sea-orm for each datasource
+/// Reuses SeaOrmConfig from summer-sea-orm for each datasource
 #[derive(Debug, Clone, Configurable, Deserialize)]
 #[config_prefix = "multi-datasource"]
 pub struct MultiDatasourceConfig {

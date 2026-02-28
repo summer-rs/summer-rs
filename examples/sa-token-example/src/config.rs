@@ -3,8 +3,8 @@
 //! This module defines path-based authentication rules for Sa-Token
 //! and provides a custom SeaORM-based storage implementation.
 
-use spring::app::AppBuilder;
-use spring_sa_token::{lazy_storage, PathAuthBuilder, SaStorage, SaTokenConfigurator};
+use summer::app::AppBuilder;
+use summer_sa_token::{lazy_storage, PathAuthBuilder, SaStorage, SaTokenConfigurator};
 use std::sync::Arc;
 use crate::sea_orm_storage::SeaOrmStorage;
 

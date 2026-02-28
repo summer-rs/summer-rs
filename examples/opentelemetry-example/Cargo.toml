@@ -6,10 +6,10 @@ license.workspace = true
 authors.workspace = true
 
 [dependencies]
-spring = { path = "../../spring" }
-spring-web = { path = "../../spring-web" }
-spring-sqlx = { path = "../../spring-sqlx", features = ["postgres"] }
-spring-opentelemetry = { path = "../../spring-opentelemetry", features = [
+summer = { path = "../../summer" }
+summer-web = { path = "../../summer-web" }
+summer-sqlx = { path = "../../summer-sqlx", features = ["postgres"] }
+summer-opentelemetry = { path = "../../summer-opentelemetry", features = [
     "grpc",
 ] }
 tokio = { workspace = true }

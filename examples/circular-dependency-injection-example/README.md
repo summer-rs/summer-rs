@@ -28,7 +28,7 @@ error[E0072]: recursive types `UserService` and `BetterUserService` have infinit
 For solve this you can use `LazyComponent<T>` to break the circular dependency:
 
 ```rust
-use spring::plugin::LazyComponent;
+use summer::plugin::LazyComponent;
 
 #[derive(Clone, Service)]
 struct UserService {

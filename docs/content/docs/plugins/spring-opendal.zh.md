@@ -1,5 +1,5 @@
 +++
-title = "spring-opendal插件"
+title = "summer-opendal插件"
 description = "opendal插件如何使用"
 draft = false
 weight = 21
@@ -14,4 +14,4 @@ top = false
 
 <img style="width:100%" src="https://opendal.apache.org/img/external/e90fb803e25e12f621eafa3d092fe628.png" alt="OpenDAL"/>
 
-{{ include(path="../../spring-opendal/README.zh.md") }}
+{{ include(path="../../summer-opendal/README.zh.md") }}

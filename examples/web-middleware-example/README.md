@@ -1,6 +1,6 @@
 # Web Middleware Example
 
-This example demonstrates how to use the `#[middlewares]` macro in Spring-RS to apply middleware layers to specific groups of routes. It showcases different middleware patterns including error handling, authentication, logging, and nested routing.
+This example demonstrates how to use the `#[middlewares]` macro in summer-RS to apply middleware layers to specific groups of routes. It showcases different middleware patterns including error handling, authentication, logging, and nested routing.
 
 ## Overview
 

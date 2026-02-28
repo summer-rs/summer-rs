@@ -1,13 +1,13 @@
 use schemars::JsonSchema;
 use serde::Serialize;
-use spring::{auto_config, App};
-use spring_sqlx::SqlxPlugin;
-use spring_web::axum::Json;
-use spring_web::extractor::Path;
-use spring_web::get_api;
-use spring_web::WebPlugin;
-use spring_web::WebConfigurator;
-use spring_web::ProblemDetails as ProblemDetailsMacro;
+use summer::{auto_config, App};
+use summer_sqlx::SqlxPlugin;
+use summer_web::axum::Json;
+use summer_web::extractor::Path;
+use summer_web::get_api;
+use summer_web::WebPlugin;
+use summer_web::WebConfigurator;
+use summer_web::ProblemDetails as ProblemDetailsMacro;
 
 #[auto_config(WebConfigurator)]
 #[tokio::main]
@@ -68,7 +68,7 @@ pub enum ApiErrors {
     #[status_code(500)]
     #[problem_type("https://api.myapp.com/problems/database-error")]
     #[error(transparent)]
-    SqlxError(#[from] spring_sqlx::sqlx::Error),
+    SqlxError(#[from] summer_sqlx::sqlx::Error),
 
     #[status_code(418)]
     #[problem_type("https://api.myapp.com/problems/teapot-error")]
@@ -137,7 +137,7 @@ async fn fetch_user_info(user_id: i64) -> Result<UserInfo, ApiErrors> {
     let is_database_connected = true;
     if !is_database_connected {
         return Err(ApiErrors::SqlxError(
-            spring_sqlx::sqlx::Error::PoolTimedOut,
+            summer_sqlx::sqlx::Error::PoolTimedOut,
         ));
     }
 

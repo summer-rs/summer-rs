@@ -1,10 +1,10 @@
-use spring::tracing;
-use spring::App;
-use spring_stream::consumer::Consumers;
-use spring_stream::extractor::{Json, StreamKey};
-use spring_stream::handler::TypedConsumer;
-use spring_stream::stream_listener;
-use spring_stream::{kafka::KafkaConsumerOptions, StreamConfigurator, StreamPlugin};
+use summer::tracing;
+use summer::App;
+use summer_stream::consumer::Consumers;
+use summer_stream::extractor::{Json, StreamKey};
+use summer_stream::handler::TypedConsumer;
+use summer_stream::stream_listener;
+use summer_stream::{kafka::KafkaConsumerOptions, StreamConfigurator, StreamPlugin};
 use stream_kafka_example::Payload;
 
 #[tokio::main]

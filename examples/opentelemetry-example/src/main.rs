@@ -1,18 +1,18 @@
 use anyhow::Context;
-use spring::{
+use summer::{
     tracing::{info, info_span, Instrument, Level},
     App,
 };
-use spring_opentelemetry::trace as otel_trace;
-use spring_opentelemetry::{global, metrics as otel_metrics};
-use spring_opentelemetry::{
+use summer_opentelemetry::trace as otel_trace;
+use summer_opentelemetry::{global, metrics as otel_metrics};
+use summer_opentelemetry::{
     KeyValue, OpenTelemetryPlugin, ResourceConfigurator, SERVICE_NAME, SERVICE_VERSION,
 };
-use spring_sqlx::{
+use summer_sqlx::{
     sqlx::{self, Row},
     ConnectPool, SqlxPlugin,
 };
-use spring_web::{
+use summer_web::{
     axum::response::IntoResponse,
     error::Result,
     extractor::{Component, Path},
@@ -21,7 +21,7 @@ use spring_web::{
     },
     Router, WebConfigurator, WebPlugin,
 };
-use spring_web::{get, route};
+use summer_web::{get, route};
 
 // Main function entry
 #[tokio::main]
@@ -49,14 +49,14 @@ fn router() -> Router {
         .on_eos(DefaultOnEos::default());
     let otel_trace_layer = otel_trace::HttpLayer::server(Level::INFO).export_trace_id(true);
     // Note: http_tracing_layer must be added after trace_layer, because axum defaults to adding it first and executing it later.
-    spring_web::handler::auto_router()
+    summer_web::handler::auto_router()
         .layer(otel_metrics_layer)
         .layer(trace_layer)
         .layer(otel_trace_layer)
 }
 
 // The get macro specifies the Http Method and request path.
-// spring-rs also provides other standard http method macros such as post, delete, patch, etc.
+// summer-rs also provides other standard http method macros such as post, delete, patch, etc.
 #[get("/")]
 async fn hello_world() -> impl IntoResponse {
     info!("hello world called");

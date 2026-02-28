@@ -1,11 +1,11 @@
-use spring::tracing;
-use spring::App;
-use spring_stream::consumer::Consumers;
-use spring_stream::extractor::Json;
-use spring_stream::file::AutoStreamReset;
-use spring_stream::handler::TypedConsumer;
-use spring_stream::stream_listener;
-use spring_stream::{file::FileConsumerOptions, StreamConfigurator, StreamPlugin};
+use summer::tracing;
+use summer::App;
+use summer_stream::consumer::Consumers;
+use summer_stream::extractor::Json;
+use summer_stream::file::AutoStreamReset;
+use summer_stream::handler::TypedConsumer;
+use summer_stream::stream_listener;
+use summer_stream::{file::FileConsumerOptions, StreamConfigurator, StreamPlugin};
 use stream_file_example::Payload;
 
 #[tokio::main]

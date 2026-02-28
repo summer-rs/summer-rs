@@ -1,5 +1,5 @@
 +++
-title = "spring-web插件"
+title = "summer-web插件"
 description = "web插件如何使用"
 draft = false
 weight = 12
@@ -7,9 +7,9 @@ sort_by = "weight"
 template = "docs/page.html"
 
 [extra]
-lead = "spring-web是基于<a href='https://github.com/tokio-rs/axum' target='_blank'>axum</a>实现的"
+lead = "summer-web是基于<a href='https://github.com/tokio-rs/axum' target='_blank'>axum</a>实现的"
 toc = true
 top = false
 +++
 
-{{ include(path="../../spring-web/README.zh.md") }}
+{{ include(path="../../summer-web/README.zh.md") }}

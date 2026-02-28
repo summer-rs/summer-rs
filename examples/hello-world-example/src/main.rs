@@ -1,16 +1,16 @@
 use anyhow::Context;
-use spring::{auto_config, App};
-use spring_sqlx::{
+use summer::{auto_config, App};
+use summer_sqlx::{
     sqlx::{self, Row},
     ConnectPool, SqlxPlugin,
 };
-use spring_web::{
+use summer_web::{
     axum::response::IntoResponse,
     error::Result,
     extractor::{Component, Path},
     WebConfigurator, WebPlugin,
 };
-use spring_web::{get, route};
+use summer_web::{get, route};
 
 // Main function entry
 #[auto_config(WebConfigurator)] // auto config web router
@@ -24,7 +24,7 @@ async fn main() {
 }
 
 // The get macro specifies the Http Method and request path.
-// spring-rs also provides other standard http method macros such as post, delete, patch, etc.
+// summer-rs also provides other standard http method macros such as post, delete, patch, etc.
 #[get("/")]
 async fn hello_world() -> impl IntoResponse {
     "hello world"

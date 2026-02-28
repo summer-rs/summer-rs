@@ -1,0 +1,56 @@
+[package]
+name = "summer-opentelemetry"
+description = "Integration of summer-rs framework and open-telemetry"
+version = "0.5.0"
+categories = [
+    "development-tools::debugging",
+    "development-tools::profiling",
+    "api-bindings",
+    "asynchronous",
+]
+keywords = ["logging", "metrics", "tracing", "observability", "summer"]
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+
+[features]
+default = ["grpc"]
+jaeger = ["opentelemetry-jaeger-propagator"]
+zipkin = ["opentelemetry-zipkin"]
+more-resource = ["opentelemetry-resource-detectors"]
+grpc = ["opentelemetry-otlp/grpc-tonic"]
+http = ["opentelemetry-otlp/http-proto"]
+
+[dependencies]
+summer = { path = "../summer", version = "0.5" }
+serde = { workspace = true, features = ["derive"] }
+anyhow = { workspace = true }
+tracing = { workspace = true, features = ["log"] }
+schemars = { workspace = true }
+opentelemetry = { workspace = true }
+opentelemetry_sdk = { workspace = true, features = ["rt-tokio"] }
+opentelemetry-otlp = { workspace = true, features = ["serialize"] }
+opentelemetry-http = { workspace = true }
+opentelemetry-appender-tracing = { workspace = true }
+opentelemetry-semantic-conventions = { workspace = true, features = [
+    "semconv_experimental",
+] }
+#opentelemetry-prometheus = { workspace = true }
+opentelemetry-jaeger-propagator = { workspace = true, optional = true }
+opentelemetry-zipkin = { workspace = true, optional = true }
+opentelemetry-resource-detectors = { workspace = true, optional = true }
+tonic = { workspace = true }
+http = { workspace = true }
+http-body = { workspace = true }
+tracing-opentelemetry = { workspace = true }
+tracing-subscriber = { workspace = true }
+tower = { workspace = true }
+tower-layer = { workspace = true }
+tower-service = { workspace = true }
+axum = { workspace = true }
+futures-util = { workspace = true }
+pin-project = { workspace = true }
+
+[dev-dependencies]
+summer-web = { path = "../summer-web" }

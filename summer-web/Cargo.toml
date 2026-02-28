@@ -1,0 +1,63 @@
+[package]
+name = "summer-web"
+description = "Integration of rust application framework summer-rs and Axum web framework"
+version = "0.5.0"
+categories = ["web-programming::http-server"]
+keywords = ["web-programming", "web-server", "summer"]
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+
+[features]
+default = ["http2"]
+http2 = ["axum/http2"]
+socket_io = ["dep:socketioxide", "dep:rmpv", "summer-macros/socket_io"]
+multipart = ["axum/multipart", "aide/axum-multipart"]
+ws = ["axum/ws", "aide/axum-ws"]
+openapi = [
+    "aide",
+    "aide/axum",
+    "aide/axum-tokio",
+    "aide/axum-extra",
+    "aide/axum-extra-cookie",
+    "aide/axum-extra-cookie-private",
+    "aide/axum-extra-form",
+    "aide/axum-extra-headers",
+    "aide/axum-extra-json-deserializer",
+    "aide/axum-extra-query",
+    "aide/axum-extra-typed-routing",
+    "aide/axum-form",
+    "aide/axum-json",
+    "aide/axum-matched-path",
+    "aide/axum-original-uri",
+    "aide/axum-query",
+]
+openapi-redoc = ["aide/redoc"]
+openapi-scalar = ["aide/scalar"]
+openapi-swagger = ["aide/swagger"]
+
+[dependencies]
+summer = { path = "../summer", version = "0.5" }
+summer-macros = { path = "../summer-macros", version = "0.5" }
+axum = { workspace = true, features = ["macros"] }
+serde = { workspace = true, features = ["derive"] }
+serde_json = { workspace = true }
+anyhow = { workspace = true }
+thiserror = { workspace = true }
+tracing = { workspace = true, features = ["log"] }
+tokio = { workspace = true, features = ["full"] }
+tower = { workspace = true, features = ["full"] }
+tower-http = { workspace = true, features = ["full"] }
+byte-unit = { workspace = true, features = ["serde"] }
+schemars = { workspace = true }
+indexmap = { workspace = true }
+inventory = { workspace = true }
+socketioxide = { workspace = true, optional = true, features = ["tracing"] }
+rmpv = { workspace = true, optional = true, features = ["with-serde"] }
+aide = { workspace = true, optional = true }
+
+[dev-dependencies]
+summer-sqlx = { path = "../summer-sqlx" }
+serde_json = { workspace = true }
+tower = { workspace = true }

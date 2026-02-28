@@ -1,8 +1,8 @@
 use anyhow::Context;
-use spring::{auto_config, App};
-use spring_mail::{header::ContentType, AsyncTransport, MailPlugin, Mailer, Message};
-use spring_web::get;
-use spring_web::{
+use summer::{auto_config, App};
+use summer_mail::{header::ContentType, AsyncTransport, MailPlugin, Mailer, Message};
+use summer_web::get;
+use summer_web::{
     axum::response::{IntoResponse, Json},
     error::Result,
     extractor::Component,

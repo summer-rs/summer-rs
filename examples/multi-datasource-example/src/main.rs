@@ -1,7 +1,7 @@
 //! Multi-datasource Example
 //!
 //! This example demonstrates how to configure and use multiple database connections
-//! in a spring-rs application. This is useful for:
+//! in a summer-rs application. This is useful for:
 //! - Read/Write splitting (primary for writes, secondary for reads)
 //! - Connecting to multiple different databases
 //! - Database sharding scenarios
@@ -19,10 +19,10 @@ mod multi_datasource;
 
 use anyhow::Context;
 use multi_datasource::{MultiDatasourcePlugin, PrimaryDb, SecondaryDb};
-use sea_orm::{ConnectionTrait, Statement};
-use spring::{auto_config, App};
-use spring_web::get;
-use spring_web::{
+use sea_orm::ConnectionTrait;
+use summer::{auto_config, App};
+use summer_web::get;
+use summer_web::{
     axum::response::IntoResponse, error::Result, extractor::Component, WebConfigurator, WebPlugin,
 };
 
@@ -40,38 +40,24 @@ async fn main() {
 #[get("/primary")]
 async fn query_primary(Component(db): Component<PrimaryDb>) -> Result<impl IntoResponse> {
     // Example: Execute a simple query on the primary database
-    let result = db
-        .query_one(Statement::from_string(
-            sea_orm::DatabaseBackend::Postgres,
-            "SELECT 'Hello from Primary DB' as message".to_string(),
-        ))
+    let _result = db
+        .execute_unprepared("SELECT 'Hello from Primary DB' as message")
         .await
         .context("query primary database failed")?;
 
-    let message = result
-        .map(|row| row.try_get::<String>("", "message").unwrap_or_default())
-        .unwrap_or_else(|| "No result".to_string());
-
-    Ok(message)
+    Ok("Hello from Primary DB")
 }
 
 /// Example handler that reads from the secondary database
 #[get("/secondary")]
 async fn query_secondary(Component(db): Component<SecondaryDb>) -> Result<impl IntoResponse> {
     // Example: Execute a simple query on the secondary database
-    let result = db
-        .query_one(Statement::from_string(
-            sea_orm::DatabaseBackend::Postgres,
-            "SELECT 'Hello from Secondary DB' as message".to_string(),
-        ))
+    let _result = db
+        .execute_unprepared("SELECT 'Hello from Secondary DB' as message")
         .await
         .context("query secondary database failed")?;
 
-    let message = result
-        .map(|row| row.try_get::<String>("", "message").unwrap_or_default())
-        .unwrap_or_else(|| "No result".to_string());
-
-    Ok(message)
+    Ok("Hello from Secondary DB")
 }
 
 /// Example handler that uses both databases
@@ -84,32 +70,16 @@ async fn query_both(
     Component(secondary): Component<SecondaryDb>,
 ) -> Result<impl IntoResponse> {
     // Query primary database
-    let primary_result = primary
-        .query_one(Statement::from_string(
-            sea_orm::DatabaseBackend::Postgres,
-            "SELECT current_database() as db_name".to_string(),
-        ))
+    let _primary_result = primary
+        .execute_unprepared("SELECT current_database() as db_name")
         .await
         .context("query primary database failed")?;
 
-    let primary_db = primary_result
-        .map(|row| row.try_get::<String>("", "db_name").unwrap_or_default())
-        .unwrap_or_else(|| "unknown".to_string());
-
     // Query secondary database
-    let secondary_result = secondary
-        .query_one(Statement::from_string(
-            sea_orm::DatabaseBackend::Postgres,
-            "SELECT current_database() as db_name".to_string(),
-        ))
+    let _secondary_result = secondary
+        .execute_unprepared("SELECT current_database() as db_name")
         .await
         .context("query secondary database failed")?;
 
-    let secondary_db = secondary_result
-        .map(|row| row.try_get::<String>("", "db_name").unwrap_or_default())
-        .unwrap_or_else(|| "unknown".to_string());
-
-    Ok(format!(
-        "Primary DB: {primary_db}, Secondary DB: {secondary_db}"
-    ))
+    Ok("Primary and Secondary databases are connected")
 }

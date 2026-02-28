@@ -4,8 +4,8 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-spring = { path = "../../spring" }
-spring-web = { path = "../../spring-web" }
+summer = { path = "../../summer" }
+summer-web = { path = "../../summer-web" }
 tokio = { workspace = true }
 serde = { workspace = true }
 anyhow = { workspace = true }

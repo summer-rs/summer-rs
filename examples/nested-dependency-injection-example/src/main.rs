@@ -1,8 +1,8 @@
 use schemars::JsonSchema;
 use serde::Deserialize;
-use spring::{auto_config, config::Configurable, plugin::service::Service, App};
-use spring_web::get;
-use spring_web::{
+use summer::{auto_config, config::Configurable, plugin::service::Service, App};
+use summer_web::get;
+use summer_web::{
     axum::response::IntoResponse, error::Result, extractor::Component, WebConfigurator, WebPlugin,
 };
 
