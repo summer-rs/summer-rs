@@ -40,7 +40,7 @@ async fn main() {
 #[get("/primary")]
 async fn query_primary(Component(db): Component<PrimaryDb>) -> Result<impl IntoResponse> {
     // Example: Execute a simple query on the primary database
-    let result = db
+    let _result = db
         .execute_unprepared("SELECT 'Hello from Primary DB' as message")
         .await
         .context("query primary database failed")?;
@@ -52,7 +52,7 @@ async fn query_primary(Component(db): Component<PrimaryDb>) -> Result<impl IntoR
 #[get("/secondary")]
 async fn query_secondary(Component(db): Component<SecondaryDb>) -> Result<impl IntoResponse> {
     // Example: Execute a simple query on the secondary database
-    let result = db
+    let _result = db
         .execute_unprepared("SELECT 'Hello from Secondary DB' as message")
         .await
         .context("query secondary database failed")?;
@@ -70,13 +70,13 @@ async fn query_both(
     Component(secondary): Component<SecondaryDb>,
 ) -> Result<impl IntoResponse> {
     // Query primary database
-    let primary_result = primary
+    let _primary_result = primary
         .execute_unprepared("SELECT current_database() as db_name")
         .await
         .context("query primary database failed")?;
 
     // Query secondary database
-    let secondary_result = secondary
+    let _secondary_result = secondary
         .execute_unprepared("SELECT current_database() as db_name")
         .await
         .context("query secondary database failed")?;
