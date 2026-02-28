@@ -1,5 +1,5 @@
 [package]
-name = "summer-opendal-example"
+name = "opendal-example"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
