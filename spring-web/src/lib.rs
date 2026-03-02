@@ -394,6 +394,17 @@ fn finish_openapi(
         router.finish_api(&mut api)
     };
 
+    // Prepend global_prefix to all API paths in the OpenAPI spec,
+    // since finish_api() generates paths before nest(global_prefix) is applied.
+    if !global_prefix.is_empty() {
+        if let Some(ref mut paths) = api.paths {
+            let old_paths = std::mem::take(&mut paths.paths);
+            for (path, item) in old_paths {
+                paths.paths.insert(format!("{global_prefix}{path}"), item);
+            }
+        }
+    }
+
     router.layer(Extension(Arc::new(api)))
 }
 
