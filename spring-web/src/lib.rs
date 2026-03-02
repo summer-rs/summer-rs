@@ -238,9 +238,11 @@ pub struct WebPlugin;
 #[async_trait]
 impl Plugin for WebPlugin {
     async fn build(&self, app: &mut AppBuilder) {
-        let config = app
+        let mut config = app
             .get_config::<WebConfig>()
             .expect("web plugin config load failed");
+
+        config.normalize_prefixes();
 
         #[cfg(feature = "socket_io")]
         let socketio_config = app.get_config::<SocketIOConfig>().ok();
@@ -303,7 +305,7 @@ impl WebPlugin {
         #[cfg(feature = "openapi")]
         let router = {
             let openapi_conf = app.get_expect_component::<OpenApiConfig>();
-            finish_openapi(&app, router, openapi_conf)
+            finish_openapi(&app, router, openapi_conf, &config.global_prefix)
         };
 
         // 4. axum server
@@ -377,8 +379,9 @@ fn finish_openapi(
     app: &App,
     router: aide::axum::ApiRouter,
     openapi_conf: OpenApiConfig,
+    global_prefix: &str,
 ) -> axum::Router {
-    let router = router.nest_api_service(&openapi_conf.doc_prefix, docs_routes(&openapi_conf));
+    let router = router.nest_api_service(&openapi_conf.doc_prefix, docs_routes(&openapi_conf, global_prefix));
 
     let mut api = app.get_component::<OpenApi>().unwrap_or_else(|| OpenApi {
         info: openapi_conf.info,
@@ -395,9 +398,9 @@ fn finish_openapi(
 }
 
 #[cfg(feature = "openapi")]
-pub fn docs_routes(OpenApiConfig { doc_prefix, info }: &OpenApiConfig) -> aide::axum::ApiRouter {
+pub fn docs_routes(OpenApiConfig { doc_prefix, info }: &OpenApiConfig, global_prefix: &str) -> aide::axum::ApiRouter {
     let router = aide::axum::ApiRouter::new();
-    let _openapi_path = &format!("{doc_prefix}/openapi.json");
+    let _openapi_path = &format!("{global_prefix}{doc_prefix}/openapi.json");
     let _doc_title = &info.title;
 
     #[cfg(feature = "openapi-scalar")]
