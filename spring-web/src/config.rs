@@ -43,6 +43,27 @@ pub struct OpenApiConfig {
     pub(crate) info: aide::openapi::Info,
 }
 
+/// Normalize a URL prefix: ensure it starts with '/' and does not end with '/'.
+/// Empty strings are left unchanged.
+fn normalize_prefix(prefix: &mut String) {
+    if !prefix.is_empty() {
+        if !prefix.starts_with('/') {
+            prefix.insert(0, '/');
+        }
+        while prefix.ends_with('/') {
+            prefix.pop();
+        }
+    }
+}
+
+impl WebConfig {
+    pub(crate) fn normalize_prefixes(&mut self) {
+        normalize_prefix(&mut self.server.global_prefix);
+        #[cfg(feature = "openapi")]
+        normalize_prefix(&mut self.openapi.doc_prefix);
+    }
+}
+
 fn default_binding() -> IpAddr {
     IpAddr::V4(Ipv4Addr::new(0, 0, 0, 0))
 }
