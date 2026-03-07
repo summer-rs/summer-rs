@@ -496,20 +496,20 @@ pub(crate) fn with_methods(input: TokenStream, openapi: bool) -> TokenStream {
         Err(err) => return input_and_compile_error(input, err),
     };
 
-    let (methods, others) = ast
-        .attrs
-        .into_iter()
-        .map(|attr| match Method::from_path(attr.path()) {
-            Ok(method) => Ok((method, attr)),
-            Err(_) => Err(attr),
-        })
-        .partition::<Vec<_>, _>(Result::is_ok);
+    let mut methods = Vec::new();
+    let mut others = Vec::new();
 
-    ast.attrs = others.into_iter().map(Result::unwrap_err).collect();
+    for attr in ast.attrs {
+        match Method::from_path(attr.path()) {
+            Ok(method) => methods.push((method, attr)),
+            Err(_) => others.push(attr),
+        }
+    }
+
+    ast.attrs = others;
 
     let methods = match methods
         .into_iter()
-        .map(Result::unwrap)
         .map(|(method, attr)| {
             attr.parse_args()
                 .and_then(|args| Args::new(args, Some(method)))
