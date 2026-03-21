@@ -221,7 +221,7 @@ fn collect_and_strip_route_info(module: &mut syn::ItemMod, _nest_prefix: Option<
     for item in items {
         if let syn::Item::Fn(fun) = item {
             let function_middlewares = extract_function_middlewares(&fun.attrs)?;
-            let has_openapi = fun.attrs.iter().any(|a| is_openapi_attr(a));
+            let has_openapi = fun.attrs.iter().any(is_openapi_attr);
             let doc_attributes: Vec<syn::Attribute> = fun
                 .attrs
                 .iter()
