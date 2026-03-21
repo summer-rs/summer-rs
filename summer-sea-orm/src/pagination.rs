@@ -13,6 +13,9 @@ pub struct Pagination {
     pub page: u64,
     #[serde(default = "default_size")]
     pub size: u64,
+    #[serde(skip)]
+    #[schemars(skip)]
+    pub one_indexed: bool,
 }
 
 fn default_page() -> u64 {
@@ -25,6 +28,14 @@ fn default_size() -> u64 {
 impl Pagination {
     pub fn empty_page<T>(&self) -> Page<T> {
         Page::new(vec![], self, 0)
+    }
+
+    fn response_page(&self) -> u64 {
+        if self.one_indexed {
+            self.page + 1
+        } else {
+            self.page
+        }
     }
 }
 
@@ -100,7 +111,11 @@ mod web {
                 pagination.page.unwrap_or(0)
             };
 
-            Ok(Pagination { page, size })
+            Ok(Pagination {
+                page,
+                size,
+                one_indexed: config.one_indexed,
+            })
         }
     }
 
@@ -139,6 +154,9 @@ pub struct Page<T> {
     pub total_elements: u64,
     /// the number of total pages.
     pub total_pages: u64,
+    #[serde(skip)]
+    #[schemars(skip)]
+    one_indexed: bool,
 }
 
 impl<T> Page<T> {
@@ -146,9 +164,10 @@ impl<T> Page<T> {
         Self {
             content,
             size: pagination.size,
-            page: pagination.page,
+            page: pagination.response_page(),
             total_elements: total,
             total_pages: Self::total_pages(total, pagination.size),
+            one_indexed: pagination.one_indexed,
         }
     }
 
@@ -176,6 +195,7 @@ impl<T> Page<T> {
             page,
             total_elements,
             total_pages,
+            one_indexed,
         } = self;
         let content = content.into_iter().map(func).collect();
         Page {
@@ -184,6 +204,7 @@ impl<T> Page<T> {
             page,
             total_elements,
             total_pages,
+            one_indexed,
         }
     }
 
@@ -194,12 +215,20 @@ impl<T> Page<T> {
 
     #[inline]
     pub fn is_first(&self) -> bool {
-        self.page == 0
+        if self.one_indexed {
+            self.page <= 1
+        } else {
+            self.page == 0
+        }
     }
 
     #[inline]
     pub fn is_last(&self) -> bool {
-        self.page + 1 >= self.total_pages
+        if self.one_indexed {
+            self.page >= self.total_pages
+        } else {
+            self.page + 1 >= self.total_pages
+        }
     }
 }
 
@@ -247,5 +276,55 @@ where
         let total = paginator.num_items().await?;
         let content = paginator.fetch_page(pagination.page).await?;
         Ok(Page::new(content, pagination, total))
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{Page, Pagination};
+
+    #[test]
+    fn page_response_uses_zero_based_numbers_when_disabled() {
+        let pagination = Pagination {
+            page: 4,
+            size: 20,
+            one_indexed: false,
+        };
+        let page = Page::new(vec![1, 2, 3], &pagination, 83);
+
+        assert_eq!(page.page, 4);
+        assert_eq!(page.total_pages, 5);
+        assert!(!page.is_first());
+        assert!(page.is_last());
+    }
+
+    #[test]
+    fn page_response_uses_one_based_numbers_when_enabled() {
+        let pagination = Pagination {
+            page: 4,
+            size: 20,
+            one_indexed: true,
+        };
+        let page = Page::new(vec![1, 2, 3], &pagination, 83);
+
+        assert_eq!(page.page, 5);
+        assert_eq!(page.total_pages, 5);
+        assert!(!page.is_first());
+        assert!(page.is_last());
+    }
+
+    #[test]
+    fn empty_page_keeps_first_page_for_one_indexed_mode() {
+        let pagination = Pagination {
+            page: 0,
+            size: 20,
+            one_indexed: true,
+        };
+        let page = pagination.empty_page::<i32>();
+
+        assert_eq!(page.page, 1);
+        assert_eq!(page.total_pages, 0);
+        assert!(page.is_first());
+        assert!(page.is_last());
     }
 }
