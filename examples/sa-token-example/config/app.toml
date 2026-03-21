@@ -49,10 +49,10 @@ jwt_secret_key = "test-secret-key-12345"
 jwt_algorithm = "HS512"
 
 # JWT 签发者
-jwt_issuer = "spring-rs-test"
+jwt_issuer = "summer-rs-test"
 
 # JWT 受众
-jwt_audience = "spring-rs-users"
+jwt_audience = "summer-rs-users"
 
 # 是否启用防重放攻击（nonce 机制）
 enable_nonce = true

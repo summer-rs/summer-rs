@@ -1,6 +1,6 @@
 [user]
 username = "holmofy"
-project = "spring-rs"
+project = "summer-rs"
 
 [logger]
 pretty_backtrace = true

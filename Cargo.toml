@@ -31,15 +31,15 @@ repository = "https://github.com/summer-rs/summer-rs"
 [workspace.dependencies]
 aide = "0.16.0-alpha.2"
 anyhow = "1.0"
-apalis = "1.0.0-rc.4"
-apalis-redis = "1.0.0-rc.4"
-apalis-amqp = "1.0.0-rc.4"
-apalis-postgres = { version = "1.0.0-rc.4", default-features = false }
-apalis-mysql = { version = "1.0.0-rc.4", default-features = false }
-apalis-sqlite = { version = "1.0.0-rc.4", default-features = false }
-apalis-workflow = "0.1.0-rc.4"
-apalis-cron = "1.0.0-rc.4"
-apalis-board = "1.0.0-rc.4"
+apalis = "1.0.0-rc.6"
+apalis-redis = "1.0.0-rc.6"
+apalis-amqp = "1.0.0-rc.6"
+apalis-postgres = { version = "1.0.0-rc.6", default-features = false }
+apalis-mysql = { version = "1.0.0-rc.6", default-features = false }
+apalis-sqlite = { version = "1.0.0-rc.6", default-features = false }
+apalis-workflow = "0.1.0-rc.6"
+apalis-cron = "1.0.0-rc.6"
+apalis-board = "1.0.0-rc.6"
 async-trait = "0.1"
 axum = "0.8"
 byte-unit = "5.1"

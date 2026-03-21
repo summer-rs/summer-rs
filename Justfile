@@ -1,4 +1,4 @@
-# Spring-RS Development Commands
+# Summer-RS Development Commands
 # Run 'just' or 'just --list' to see all available commands
 
 # Default recipe - show help
