@@ -224,7 +224,7 @@ fn generate_problem_details_for_variant(
     // 如果有自定义的 problem_type，使用它；否则根据状态码自动生成
     let problem_details_expr = if let Some(custom_type) = problem_type {
         let title_expr = if let Some(title_val) = title {
-            quote! { #title_val.to_string() }
+            resolve_string_or_format_expr(enum_ident, variant_ident, variant_fields, &title_val)?
         } else if let Some(error_fmt) = &error_format {
             // 如果有格式化的 error 属性，使用格式化后的字符串作为 title
             generate_format_expr(enum_ident, variant_ident, variant_fields, error_fmt)?
@@ -232,9 +232,9 @@ fn generate_problem_details_for_variant(
             let default_title = format!("{} Error", variant_name);
             quote! { #default_title.to_string() }
         };
-        
+
         let detail_expr = if let Some(detail_val) = detail {
-            quote! { #detail_val.to_string() }
+            resolve_string_or_format_expr(enum_ident, variant_ident, variant_fields, &detail_val)?
         } else if let Some(error_fmt) = &error_format {
             // 如果有格式化的 error 属性，也可以用作 detail
             generate_format_expr(enum_ident, variant_ident, variant_fields, error_fmt)?
@@ -261,7 +261,7 @@ fn generate_problem_details_for_variant(
         match status_code {
             400 => {
                 let detail_expr = if let Some(detail_val) = detail {
-                    quote! { #detail_val.to_string() }
+                    resolve_string_or_format_expr(enum_ident, variant_ident, variant_fields, &detail_val)?
                 } else if let Some(error_fmt) = &error_format {
                     generate_format_expr(enum_ident, variant_ident, variant_fields, error_fmt)?
                 } else {
@@ -280,7 +280,7 @@ fn generate_problem_details_for_variant(
             },
             404 => {
                 let resource_expr = if let Some(detail_val) = detail {
-                    quote! { #detail_val.to_string() }
+                    resolve_string_or_format_expr(enum_ident, variant_ident, variant_fields, &detail_val)?
                 } else if let Some(error_fmt) = &error_format {
                     generate_format_expr(enum_ident, variant_ident, variant_fields, error_fmt)?
                 } else {
@@ -301,16 +301,16 @@ fn generate_problem_details_for_variant(
                 let problem_type = "about:blank".to_string();
                 
                 let title_expr = if let Some(title_val) = title {
-                    quote! { #title_val.to_string() }
+                    resolve_string_or_format_expr(enum_ident, variant_ident, variant_fields, &title_val)?
                 } else if let Some(error_fmt) = &error_format {
                     generate_format_expr(enum_ident, variant_ident, variant_fields, error_fmt)?
                 } else {
                     let default_title = format!("{} Error", variant_name);
                     quote! { #default_title.to_string() }
                 };
-                
+
                 let detail_expr = if let Some(detail_val) = detail {
-                    quote! { #detail_val.to_string() }
+                    resolve_string_or_format_expr(enum_ident, variant_ident, variant_fields, &detail_val)?
                 } else if let Some(error_fmt) = &error_format {
                     generate_format_expr(enum_ident, variant_ident, variant_fields, error_fmt)?
                 } else {
@@ -418,6 +418,19 @@ fn get_error_format_from_attrs(attrs: &[Attribute]) -> syn::Result<Option<String
         }
     }
     Ok(None)
+}
+
+fn resolve_string_or_format_expr(
+    enum_ident: &syn::Ident,
+    variant_ident: &syn::Ident,
+    variant_fields: &Fields,
+    value: &str,
+) -> syn::Result<TokenStream> {
+    if value.contains('{') && value.contains('}') {
+        generate_format_expr(enum_ident, variant_ident, variant_fields, value)
+    } else {
+        Ok(quote! { #value.to_string() })
+    }
 }
 
 fn generate_format_expr(
@@ -572,8 +585,96 @@ mod tests {
             syn::parse_quote! { #[title("Explicit Title")] },
             syn::parse_quote! { #[error("Error Message")] }
         ];
-        
+
         let result = get_title_from_attrs(&attrs).unwrap();
         assert_eq!(result, Some("Explicit Title".to_string()));
+    }
+
+    #[test]
+    fn test_resolve_string_or_format_expr_static() {
+        let enum_ident: syn::Ident = syn::parse_quote! { TestEnum };
+        let variant_ident: syn::Ident = syn::parse_quote! { TestVariant };
+        let fields = Fields::Unit;
+
+        let result = resolve_string_or_format_expr(&enum_ident, &variant_ident, &fields, "fixed message").unwrap();
+        let expected = quote! { "fixed message".to_string() };
+        assert_eq!(result.to_string(), expected.to_string());
+    }
+
+    #[test]
+    fn test_resolve_string_or_format_expr_with_interpolation() {
+        use syn::{FieldsUnnamed, Field};
+
+        let enum_ident: syn::Ident = syn::parse_quote! { TestEnum };
+        let variant_ident: syn::Ident = syn::parse_quote! { TestVariant };
+
+        let field: Field = syn::parse_quote! { String };
+        let mut unnamed = syn::punctuated::Punctuated::new();
+        unnamed.push(field);
+        let fields = Fields::Unnamed(FieldsUnnamed {
+            paren_token: Default::default(),
+            unnamed,
+        });
+
+        let result = resolve_string_or_format_expr(&enum_ident, &variant_ident, &fields, "User {0} not found").unwrap();
+        let expected = quote! { format!("User {0} not found", inner) };
+        assert_eq!(result.to_string(), expected.to_string());
+    }
+
+    #[test]
+    fn test_detail_interpolation_in_derive() {
+        // 测试 #[detail("User {0} not found")] 在单个未命名字段变体上能正确生成 format!(...)
+        let input: DeriveInput = syn::parse_quote! {
+            #[derive(ProblemDetails)]
+            pub enum TestErrors {
+                #[status_code(404)]
+                #[detail("User {0} not found")]
+                #[error("not found: {0}")]
+                UserNotFound(String),
+            }
+        };
+
+        let result = expand_derive(input).unwrap();
+        let result_str = result.to_string();
+        // 应该生成 format!(...) 调用而非 .to_string()
+        assert!(result_str.contains("format !"), "detail interpolation should generate format! call, got: {}", result_str);
+    }
+
+    #[test]
+    fn test_title_interpolation_in_derive() {
+        // 测试 #[title("Error: {0}")] 在单个未命名字段变体上能正确生成 format!(...)
+        let input: DeriveInput = syn::parse_quote! {
+            #[derive(ProblemDetails)]
+            pub enum TestErrors {
+                #[status_code(422)]
+                #[problem_type("https://example.com/problems/test")]
+                #[title("Error: {0}")]
+                #[error("some error: {0}")]
+                CustomError(String),
+            }
+        };
+
+        let result = expand_derive(input).unwrap();
+        let result_str = result.to_string();
+        assert!(result_str.contains("format !"), "title interpolation should generate format! call, got: {}", result_str);
+    }
+
+    #[test]
+    fn test_static_detail_unchanged() {
+        // 测试静态 #[detail("fixed message")] 行为不变
+        let input: DeriveInput = syn::parse_quote! {
+            #[derive(ProblemDetails)]
+            pub enum TestErrors {
+                #[status_code(400)]
+                #[detail("fixed validation error")]
+                #[error("bad request")]
+                BadRequest,
+            }
+        };
+
+        let result = expand_derive(input).unwrap();
+        let result_str = result.to_string();
+        assert!(result_str.contains("\"fixed validation error\" . to_string ()"),
+            "static detail should use .to_string(), got: {}", result_str);
     }
 }
