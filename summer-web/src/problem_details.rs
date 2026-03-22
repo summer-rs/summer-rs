@@ -194,16 +194,8 @@ impl ProblemDetails {
     }
     
     /// Add an extension field
-    ///
-    /// # Panics (debug only)
-    /// Panics if `key` collides with a first-class field name.
     pub fn with_extension(mut self, key: impl Into<String>, value: serde_json::Value) -> Self {
-        let key = key.into();
-        debug_assert!(
-            !matches!(key.as_str(), "type" | "title" | "status" | "detail" | "instance" | "violations"),
-            "extension key `{key}` conflicts with a first-class ProblemDetails field"
-        );
-        self.extensions.insert(key, value);
+        self.extensions.insert(key.into(), value);
         self
     }
 
