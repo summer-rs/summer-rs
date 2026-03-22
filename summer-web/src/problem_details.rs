@@ -86,9 +86,57 @@ pub fn register_error_response_by_variant<T>(
     }
 }
 
-/// RFC 7807 Problem Details for HTTP APIs
-/// 
-/// This struct represents a standardized error response format as defined in RFC 7807.
+/// The location in the HTTP request where a validation violation occurred.
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema, PartialEq)]
+#[serde(rename_all = "lowercase")]
+pub enum ViolationLocation {
+    Body,
+    Query,
+    Path,
+}
+
+/// A single validation violation describing which field failed and why.
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+pub struct Violation {
+    /// The field that failed validation (e.g. "name", "items[0].email")
+    pub field: String,
+    /// Where in the request the field is located
+    #[serde(rename = "in")]
+    pub location: ViolationLocation,
+    /// A human-readable description of the violation
+    pub message: String,
+}
+
+impl Violation {
+    /// Create a new Violation
+    pub fn new(field: impl Into<String>, location: ViolationLocation, message: impl Into<String>) -> Self {
+        Self {
+            field: field.into(),
+            location,
+            message: message.into(),
+        }
+    }
+
+    /// Create a violation for a body field
+    pub fn body(field: impl Into<String>, message: impl Into<String>) -> Self {
+        Self::new(field, ViolationLocation::Body, message)
+    }
+
+    /// Create a violation for a query parameter
+    pub fn query(field: impl Into<String>, message: impl Into<String>) -> Self {
+        Self::new(field, ViolationLocation::Query, message)
+    }
+
+    /// Create a violation for a path parameter
+    pub fn path(field: impl Into<String>, message: impl Into<String>) -> Self {
+        Self::new(field, ViolationLocation::Path, message)
+    }
+}
+
+/// Problem Details for HTTP APIs (RFC 9457 / RFC 7807)
+///
+/// This struct represents a standardized error response format as defined in
+/// [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457) (which obsoletes RFC 7807).
 /// It provides a consistent way to communicate error information in HTTP APIs.
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 pub struct ProblemDetails {
@@ -109,7 +157,11 @@ pub struct ProblemDetails {
     /// A URI reference that identifies the specific occurrence of the problem
     #[serde(skip_serializing_if = "Option::is_none")]
     pub instance: Option<String>,
-    
+
+    /// Field-level validation violations
+    #[serde(skip_serializing_if = "Vec::is_empty", default)]
+    pub violations: Vec<Violation>,
+
     /// Additional problem-specific extension fields
     #[serde(flatten)]
     pub extensions: HashMap<String, serde_json::Value>,
@@ -124,6 +176,7 @@ impl ProblemDetails {
             status,
             detail: None,
             instance: None,
+            violations: Vec::new(),
             extensions: HashMap::new(),
         }
     }
@@ -141,9 +194,49 @@ impl ProblemDetails {
     }
     
     /// Add an extension field
+    ///
+    /// # Panics (debug only)
+    /// Panics if `key` collides with a first-class field name.
     pub fn with_extension(mut self, key: impl Into<String>, value: serde_json::Value) -> Self {
-        self.extensions.insert(key.into(), value);
+        let key = key.into();
+        debug_assert!(
+            !matches!(key.as_str(), "type" | "title" | "status" | "detail" | "instance" | "violations"),
+            "extension key `{key}` conflicts with a first-class ProblemDetails field"
+        );
+        self.extensions.insert(key, value);
         self
+    }
+
+    /// Add a single validation violation
+    pub fn with_violation(
+        mut self,
+        field: impl Into<String>,
+        location: ViolationLocation,
+        message: impl Into<String>,
+    ) -> Self {
+        self.violations.push(Violation::new(field, location, message));
+        self
+    }
+
+    /// Add multiple validation violations at once
+    pub fn with_violations(mut self, violations: Vec<Violation>) -> Self {
+        self.violations.extend(violations);
+        self
+    }
+
+    /// Create a validation error with violations
+    ///
+    /// Convenience constructor that builds a 400 response pre-populated with
+    /// the given violations and an auto-generated detail message.
+    ///
+    /// Uses a dedicated problem type URI rather than `about:blank` so that the
+    /// custom title "Validation Error" conforms to RFC 9457 §4.2.1 (which
+    /// requires `about:blank` titles to match the HTTP status phrase).
+    pub fn validation_error_with_violations(violations: Vec<Violation>) -> Self {
+        let count = violations.len();
+        Self::new("urn:problem-type:validation-error", "Validation Error", 400)
+            .with_detail(format!("{count} validation error{} occurred", if count == 1 { "" } else { "s" }))
+            .with_violations(violations)
     }
     
     /// Create a validation error problem
@@ -220,20 +313,39 @@ impl IntoResponse for ProblemDetails {
     fn into_response(mut self) -> axum::response::Response {
         let status = axum::http::StatusCode::from_u16(self.status)
             .unwrap_or(axum::http::StatusCode::INTERNAL_SERVER_ERROR);
-        
+
         // Try to get the current request URI from task-local storage
         if self.instance.is_none() {
             if let Some(uri) = get_current_request_uri() {
                 self.instance = Some(uri);
             }
         }
-        
+
         // Set the correct Content-Type for Problem Details
         (
             status,
             [("content-type", "application/problem+json")],
             axum::Json(self),
         ).into_response()
+    }
+}
+
+#[cfg(feature = "openapi")]
+impl aide::OperationOutput for ProblemDetails {
+    type Inner = Self;
+
+    fn operation_response(
+        _ctx: &mut aide::generate::GenContext,
+        _operation: &mut aide::openapi::Operation,
+    ) -> Option<aide::openapi::Response> {
+        None
+    }
+
+    fn inferred_responses(
+        _ctx: &mut aide::generate::GenContext,
+        _operation: &mut aide::openapi::Operation,
+    ) -> Vec<(Option<aide::openapi::StatusCode>, aide::openapi::Response)> {
+        vec![]
     }
 }
 
@@ -323,10 +435,126 @@ mod tests {
     async fn test_automatic_uri_capture() {
         // Test that URI is captured in task-local storage
         let test_uri = "/test/path".to_string();
-        
+
         CURRENT_REQUEST_URI.scope(test_uri.clone(), async {
             let uri = get_current_request_uri();
             assert_eq!(uri, Some(test_uri));
         }).await;
+    }
+
+    #[test]
+    fn test_violation_new() {
+        let v = Violation::new("email", ViolationLocation::Body, "invalid format");
+        assert_eq!(v.field, "email");
+        assert_eq!(v.location, ViolationLocation::Body);
+        assert_eq!(v.message, "invalid format");
+    }
+
+    #[test]
+    fn test_violation_body_shortcut() {
+        let v = Violation::body("name", "must not be null");
+        assert_eq!(v.field, "name");
+        assert_eq!(v.location, ViolationLocation::Body);
+        assert_eq!(v.message, "must not be null");
+    }
+
+    #[test]
+    fn test_violation_query_shortcut() {
+        let v = Violation::query("page", "must be positive");
+        assert_eq!(v.location, ViolationLocation::Query);
+    }
+
+    #[test]
+    fn test_violation_path_shortcut() {
+        let v = Violation::path("id", "must be a valid UUID");
+        assert_eq!(v.location, ViolationLocation::Path);
+    }
+
+    #[test]
+    fn test_problem_details_with_violations() {
+        let problem = ProblemDetails::validation_error("validation failed")
+            .with_violation("name", ViolationLocation::Body, "must not be null")
+            .with_violation("age", ViolationLocation::Body, "must be positive");
+
+        assert_eq!(problem.violations.len(), 2);
+        assert_eq!(problem.violations[0].field, "name");
+        assert_eq!(problem.violations[1].field, "age");
+    }
+
+    #[test]
+    fn test_problem_details_with_violations_batch() {
+        let violations = vec![
+            Violation::body("a", "required"),
+            Violation::query("b", "too long"),
+        ];
+        let problem = ProblemDetails::validation_error("err").with_violations(violations);
+        assert_eq!(problem.violations.len(), 2);
+    }
+
+    #[test]
+    fn test_serialize_without_violations_omits_key() {
+        let problem = ProblemDetails::not_found("user");
+        let json = serde_json::to_value(&problem).unwrap();
+        assert!(json.get("violations").is_none(), "violations key should be absent when empty");
+    }
+
+    #[test]
+    fn test_serialize_with_violations() {
+        let problem = ProblemDetails::validation_error("bad input")
+            .with_violation("email", ViolationLocation::Body, "invalid email format");
+
+        let json = serde_json::to_value(&problem).unwrap();
+        let violations = json.get("violations").expect("violations key should be present");
+        let arr = violations.as_array().unwrap();
+        assert_eq!(arr.len(), 1);
+        assert_eq!(arr[0]["field"], "email");
+        assert_eq!(arr[0]["in"], "body");
+        assert_eq!(arr[0]["message"], "invalid email format");
+    }
+
+    #[test]
+    fn test_deserialize_without_violations() {
+        let json = r#"{"type":"about:blank","title":"Not Found","status":404}"#;
+        let problem: ProblemDetails = serde_json::from_str(json).unwrap();
+        assert!(problem.violations.is_empty());
+    }
+
+    #[test]
+    fn test_deserialize_with_violations() {
+        let json = r#"{
+            "type":"about:blank",
+            "title":"Validation Error",
+            "status":400,
+            "violations":[
+                {"field":"name","in":"body","message":"must not be null"},
+                {"field":"page","in":"query","message":"must be positive"}
+            ]
+        }"#;
+        let problem: ProblemDetails = serde_json::from_str(json).unwrap();
+        assert_eq!(problem.violations.len(), 2);
+        assert_eq!(problem.violations[0].location, ViolationLocation::Body);
+        assert_eq!(problem.violations[1].location, ViolationLocation::Query);
+    }
+
+    #[test]
+    fn test_validation_error_with_violations() {
+        let violations = vec![
+            Violation::body("name", "must not be null"),
+            Violation::body("items[0].email", "invalid email format"),
+        ];
+        let problem = ProblemDetails::validation_error_with_violations(violations);
+
+        assert_eq!(problem.status, 400);
+        assert_eq!(problem.problem_type, "urn:problem-type:validation-error");
+        assert_eq!(problem.title, "Validation Error");
+        assert_eq!(problem.detail, Some("2 validation errors occurred".to_string()));
+        assert_eq!(problem.violations.len(), 2);
+    }
+
+    #[test]
+    fn test_validation_error_with_violations_singular() {
+        let violations = vec![Violation::body("name", "required")];
+        let problem = ProblemDetails::validation_error_with_violations(violations);
+        assert_eq!(problem.detail, Some("1 validation error occurred".to_string()));
     }
 }

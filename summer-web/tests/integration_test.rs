@@ -216,9 +216,105 @@ mod test_error_handling {
 async fn test_router_merge() {
     let router1 = Router::new();
     let router2 = Router::new();
-    
+
     // Test that routers can be merged
     let _merged = router1.merge(router2);
+}
+
+#[tokio::test]
+async fn test_problem_details_with_violations_response() {
+    use summer_web::axum::http::{Request, StatusCode};
+    use summer_web::axum::routing::post;
+    use summer_web::axum::response::IntoResponse;
+    use summer_web::problem_details::{ProblemDetails, Violation, ViolationLocation};
+    use tower::ServiceExt;
+
+    async fn validate_handler() -> impl IntoResponse {
+        ProblemDetails::validation_error_with_violations(vec![
+            Violation::body("name", "must not be null"),
+            Violation::new("page", ViolationLocation::Query, "must be positive"),
+        ])
+        .with_instance("/api/users")
+    }
+
+    let app = summer_web::axum::Router::new()
+        .route("/api/users", post(validate_handler));
+
+    let response = app
+        .oneshot(
+            Request::builder()
+                .method("POST")
+                .uri("/api/users")
+                .body(String::new())
+                .unwrap(),
+        )
+        .await
+        .unwrap();
+
+    assert_eq!(response.status(), StatusCode::BAD_REQUEST);
+
+    let content_type = response
+        .headers()
+        .get("content-type")
+        .and_then(|v| v.to_str().ok())
+        .unwrap_or("");
+    assert_eq!(content_type, "application/problem+json");
+
+    let body = axum::body::to_bytes(response.into_body(), usize::MAX)
+        .await
+        .unwrap();
+    let json: serde_json::Value = serde_json::from_slice(&body).unwrap();
+
+    assert_eq!(json["status"], 400);
+    assert_eq!(json["type"], "urn:problem-type:validation-error");
+    assert_eq!(json["title"], "Validation Error");
+    assert_eq!(json["detail"], "2 validation errors occurred");
+    assert_eq!(json["instance"], "/api/users");
+
+    let violations = json["violations"].as_array().unwrap();
+    assert_eq!(violations.len(), 2);
+    assert_eq!(violations[0]["field"], "name");
+    assert_eq!(violations[0]["in"], "body");
+    assert_eq!(violations[0]["message"], "must not be null");
+    assert_eq!(violations[1]["field"], "page");
+    assert_eq!(violations[1]["in"], "query");
+    assert_eq!(violations[1]["message"], "must be positive");
+}
+
+#[tokio::test]
+async fn test_problem_details_without_violations_response() {
+    use summer_web::axum::http::{Request, StatusCode};
+    use summer_web::axum::routing::get;
+    use summer_web::axum::response::IntoResponse;
+    use summer_web::problem_details::ProblemDetails;
+    use tower::ServiceExt;
+
+    async fn not_found_handler() -> impl IntoResponse {
+        ProblemDetails::not_found("user")
+    }
+
+    let app = summer_web::axum::Router::new()
+        .route("/api/users/1", get(not_found_handler));
+
+    let response = app
+        .oneshot(
+            Request::builder()
+                .uri("/api/users/1")
+                .body(String::new())
+                .unwrap(),
+        )
+        .await
+        .unwrap();
+
+    assert_eq!(response.status(), StatusCode::NOT_FOUND);
+
+    let body = axum::body::to_bytes(response.into_body(), usize::MAX)
+        .await
+        .unwrap();
+    let json: serde_json::Value = serde_json::from_slice(&body).unwrap();
+
+    // violations key should not appear when empty
+    assert!(json.get("violations").is_none());
 }
 
 #[test]
