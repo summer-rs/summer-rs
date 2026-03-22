@@ -16,7 +16,9 @@ summer-web = { path = "../../summer-web", features = [
 tokio = { workspace = true, features = ["full", "tracing"] }
 anyhow = { workspace = true }
 serde = { workspace = true }
+serde_json = { workspace = true }
 schemars = { workspace = true }
 thiserror = { workspace = true }
+validator = { workspace = true }
 summer-sqlx = { path = "../../summer-sqlx", features = ["postgres"] }
 tracing = { workspace = true }

@@ -98,6 +98,7 @@ tower = "0.5"
 tower-http = "0.6"
 tower-layer = "0.3"
 tower-service = "0.3"
+validator = { version = "0.20", features = ["derive"] }
 tracing = "0.1"
 tracing-appender = "0.2"
 tracing-error = "0.2"
