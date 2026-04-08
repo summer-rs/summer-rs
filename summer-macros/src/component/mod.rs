@@ -11,7 +11,7 @@ mod validation;
 
 use proc_macro::TokenStream;
 use quote::quote;
-use syn::{parse_macro_input, ItemFn};
+use syn::{parse_macro_input, FnArg, ItemFn};
 
 /// Main entry point for the `#[component]` macro
 ///
@@ -49,11 +49,21 @@ pub fn component_macro(attr: TokenStream, item: TokenStream) -> TokenStream {
     // Generate inventory registration
     let inventory_submit = codegen::generate_inventory_submit(&attrs, &func);
 
-    // Preserve original function
+    // Preserve original function, but strip #[inject] attributes from parameters
+    // so that the emitted code doesn't reference the unresolvable `inject` attribute.
+    let mut clean_func = func.clone();
+    for param in &mut clean_func.sig.inputs {
+        if let FnArg::Typed(pat_type) = param {
+            pat_type
+                .attrs
+                .retain(|attr| !attr.path().is_ident("inject"));
+        }
+    }
+
     let output = quote! {
         #plugin_impl
         #inventory_submit
-        #func
+        #clean_func
     };
 
     output.into()

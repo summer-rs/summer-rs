@@ -291,6 +291,36 @@ async fn test_component_ref_usage() {
 }
 
 #[tokio::test]
+async fn test_component_with_inject_dependency_name_override() {
+    #[derive(Clone)]
+    struct InjectedConsumer {
+        value: String,
+    }
+
+    #[component]
+    fn create_injected_consumer(
+        #[inject("__CreateTestConnectionPlugin")] Component(conn): Component<TestConnection>,
+    ) -> InjectedConsumer {
+        InjectedConsumer { value: conn.url }
+    }
+
+    let toml_config = r#"
+        [test-db]
+        host = "injecthost"
+        port = 2222
+    "#;
+
+    let app = App::new()
+        .use_config_str(toml_config)
+        .build()
+        .await
+        .expect("Failed to build app");
+
+    let consumer = app.get_component::<InjectedConsumer>().unwrap();
+    assert_eq!(consumer.value, "injecthost:2222");
+}
+
+#[tokio::test]
 async fn test_try_get_component() {
     let toml_config = r#"
         [test-db]
