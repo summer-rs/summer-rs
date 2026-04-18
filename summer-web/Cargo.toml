@@ -36,6 +36,9 @@ openapi = [
 openapi-redoc = ["aide/redoc"]
 openapi-scalar = ["aide/scalar"]
 openapi-swagger = ["aide/swagger"]
+validator = ["dep:validator", "axum-valid?/validator", "summer-macros/validator"]
+garde = ["dep:garde", "axum-valid?/garde", "summer-macros/garde"]
+axum-valid = ["dep:axum-valid", "axum-valid/basic"]
 
 [dependencies]
 summer = { path = "../summer", version = "0.5" }
@@ -56,6 +59,9 @@ inventory = { workspace = true }
 socketioxide = { workspace = true, optional = true, features = ["tracing"] }
 rmpv = { workspace = true, optional = true, features = ["with-serde"] }
 aide = { workspace = true, optional = true }
+axum-valid = { workspace = true, optional = true, default-features = false }
+validator = { workspace = true, optional = true, features = ["derive"] }
+garde = { workspace = true, optional = true, features = ["derive", "email", "url", "pattern"] }
 
 [dev-dependencies]
 summer-sqlx = { path = "../summer-sqlx" }

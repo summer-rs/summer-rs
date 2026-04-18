@@ -16,6 +16,7 @@ mod route;
 mod socketioxide;
 mod stream;
 mod utils;
+mod validation;
 
 #[cfg(feature = "sa-token")]
 mod sa_token;
@@ -626,6 +627,52 @@ pub fn derive_problem_details(input: TokenStream) -> TokenStream {
     problem_details::expand_derive(input)
         .unwrap_or_else(syn::Error::into_compile_error)
         .into()
+}
+
+/// `#[derive(GardeSchema)]` — generate `schemars::JsonSchema` for garde types
+/// while filtering garde-specific attributes that can conflict with schema
+/// derivation.
+///
+/// This derive does not inject garde validation keywords into the schema.
+/// Use plain `#[derive(JsonSchema)]` when it already works for your type.
+#[cfg(feature = "garde")]
+#[proc_macro_derive(GardeSchema, attributes(garde, serde, schemars))]
+pub fn derive_garde_schema(input: TokenStream) -> TokenStream {
+    validation::schema::expand_garde(input)
+}
+
+/// `#[derive(ValidatorSchema)]` — generate `schemars::JsonSchema` for validator
+/// types while filtering validator-specific attributes during schema
+/// derivation.
+///
+/// This derive does not inject validator validation keywords into the schema.
+/// Use plain `#[derive(JsonSchema)]` when it already works for your type.
+#[cfg(feature = "validator")]
+#[proc_macro_derive(ValidatorSchema, attributes(validate, serde, schemars))]
+pub fn derive_validator_schema(input: TokenStream) -> TokenStream {
+    validation::schema::expand_validator(input)
+}
+
+/// `#[derive(ValidatorContext)]` — derive runtime validator context metadata
+/// from `#[validate(context = ...)]`.
+///
+/// This derive is intended for `validator::ValidateArgs` integration in
+/// `summer-web` runtime extractors. It does not generate `JsonSchema`.
+///
+/// # Usage
+///
+/// ```rust,ignore
+/// #[derive(Debug, Deserialize, validator::Validate, ValidatorContext)]
+/// #[validate(context = PageRules)]
+/// pub struct Paginator {
+///     #[validate(custom(function = "validate_page_size", use_context))]
+///     pub page_size: usize,
+/// }
+/// ```
+#[cfg(feature = "validator")]
+#[proc_macro_derive(ValidatorContext, attributes(validate))]
+pub fn derive_validator_context(input: TokenStream) -> TokenStream {
+    validation::context::expand_validator_context(input)
 }
 
 /// `#[cache]` - Transparent Redis-based caching for async functions.

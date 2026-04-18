@@ -3,6 +3,8 @@
 #![doc(html_favicon_url = "https://summer-rs.github.io/favicon.ico")]
 #![doc(html_logo_url = "https://summer-rs.github.io/logo.svg")]
 
+extern crate self as summer_web;
+
 /// summer-web config
 pub mod config;
 /// summer-web defined error
@@ -16,11 +18,29 @@ pub mod middleware;
 pub mod openapi;
 /// RFC 7807 Problem Details for HTTP APIs
 pub mod problem_details;
+#[cfg(any(feature = "garde", feature = "validator"))]
+pub mod validation;
 
 pub use summer_macros::ProblemDetails;
+#[cfg(feature = "garde")]
+pub use summer_macros::GardeSchema;
+#[cfg(feature = "validator")]
+pub use summer_macros::ValidatorSchema;
+#[cfg(feature = "validator")]
+pub use summer_macros::ValidatorContext;
+#[cfg(feature = "validator")]
+pub use validation::validator::ValidatorContextType;
 
 #[cfg(feature = "socket_io")]
 pub use { socketioxide, rmpv };
+
+#[cfg(feature = "axum-valid")]
+pub mod axum_valid {
+    #[cfg(feature = "garde")]
+    pub use ::axum_valid::Garde;
+    #[cfg(feature = "validator")]
+    pub use ::axum_valid::Valid;
+}
 
 pub use axum;
 pub use summer::async_trait;
@@ -265,7 +285,7 @@ impl Plugin for WebPlugin {
 
         #[cfg(feature = "socket_io")]
         if let Some(socketio_config) = socketio_config {
-            router =  enable_socketio(socketio_config, app, router);
+            router = enable_socketio(socketio_config, app, router);
         }
 
         app.add_component(router);
@@ -314,7 +334,6 @@ impl WebPlugin {
         if !config.global_prefix.is_empty() {
             router = axum::Router::new().nest(&config.global_prefix, router)
         };
-
 
         tracing::info!("axum server started");
         if config.connect_info {

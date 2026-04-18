@@ -9,7 +9,7 @@
 summer-web = { version = "<version>" }
 ```
 
-可选的**features**: 
+可选的**features**:
 * `http2`: http2
 * `multipart`: 文件上传
 * `ws`: websocket
@@ -18,6 +18,9 @@ summer-web = { version = "<version>" }
 * `openapi-redoc`: redoc文档界面
 * `openapi-scalar`: scalar文档界面
 * `openapi-swagger`: swagger文档界面
+* `validator`: validator 验证提取器（独立使用，不依赖 axum-valid）
+* `garde`: garde 验证提取器（独立使用，支持自定义 Context）
+* `axum-valid`: axum-valid 兼容层（可与 validator/garde 组合使用）
 
 ## 配置项
 
@@ -292,3 +295,103 @@ pub struct CustomErrorSchema {
     pub message: String,
 }
 ```
+
+# 验证支持
+
+summer-web 为两套验证框架提供运行时包装器，并统一把验证失败转换为 `ProblemDetails` 响应。
+
+按需开启功能即可：
+
+- `validator`：启用 validator 运行时包装器
+- `garde`：启用 garde 运行时包装器
+- `axum-valid`：只在需要兼容 `summer_web::axum_valid::*` 时开启
+
+## Validator 验证
+
+summer-web 不重复介绍 validator 自身规则，只补框架层能力：
+
+- `Validator<E>` 用于 `validator::Validate`
+- `ValidatorEx<E>` 用于 `validator::ValidateArgs`
+- 统一输出 `ProblemDetails`
+- 直接从 Summer 组件容器解析运行时参数
+
+最小用法：
+
+```rust,ignore
+use summer_web::axum::Json;
+use summer_web::validation::validator::{Validator, ValidatorEx};
+
+async fn create_user(
+    Validator(Json(body)): Validator<Json<CreateUserRequest>>,
+) -> Json<serde_json::Value> {
+    Json(serde_json::json!({ "ok": true }))
+}
+
+async fn paginator(
+    ValidatorEx(Json(body)): ValidatorEx<Json<Paginator>>,
+) -> Json<serde_json::Value> {
+    Json(serde_json::json!({ "ok": true }))
+}
+```
+
+说明：
+
+- `ValidatorContext` 会从 `#[validate(context = ...)]` 推导运行时 context 类型
+- `ValidatorEx<E>` 目前只支持 `Args = &A`
+- 支持的 extractor 组合包括 `Json`、`Query`、`Path`、`Form`
+- 验证失败会统一转换为 `ProblemDetails`
+
+如果使用运行时上下文，直接把对应规则类型注册成普通 Summer 组件即可：
+
+```rust,ignore
+#[derive(Clone, Debug)]
+struct PageRules {
+    max_page_size: usize,
+}
+
+#[summer::component]
+fn create_page_rules() -> PageRules {
+    PageRules { max_page_size: 100 }
+}
+```
+
+需要用到宏时，直接标在请求结构体上：
+
+```rust,ignore
+#[derive(Debug, Deserialize, validator::Validate, summer_web::ValidatorContext)]
+#[validate(context = PageRules)]
+struct Paginator {
+    #[validate(custom(function = "validate_page_size", use_context))]
+    page_size: usize,
+}
+```
+
+## Garde 验证
+
+summer-web 提供 `Garde<E>` 运行时包装器，并直接从 Summer 组件容器解析 garde 的原生 context：
+
+```rust,ignore
+use summer_web::axum::Json;
+use summer_web::validation::garde::Garde;
+
+async fn create_user(
+    Garde(Json(body)): Garde<Json<CreateUserRequest>>,
+) -> Json<serde_json::Value> {
+    Json(serde_json::json!({ "ok": true }))
+}
+```
+
+## OpenAPI Schema
+
+OpenAPI / JSON Schema 生成优先直接使用普通的 `#[derive(schemars::JsonSchema)]`。
+
+宏说明：
+
+- `ValidatorSchema` / `GardeSchema` 的编译期开销会高于直接使用 `JsonSchema`
+- 宏内部会先生成一个镜像辅助结构体，让 `schemars` 为这个辅助结构体生成基础 schema，再把验证关键字补丁式写回最终结果
+- 这样做能尽量保留 `schemars` 的原生行为，但也意味着会多一次宏展开和 derive 计算
+- 如果项目里这类结构体很多，建议只在真正需要 OpenAPI/schema 验证关键字的类型上使用这两个宏
+
+如果不需要这些验证关键字，也可以继续直接使用 `#[derive(JsonSchema)]`。
+
+完整代码参考 [`openapi-example`](https://github.com/summer-rs/summer-rs/tree/master/examples/openapi-example)

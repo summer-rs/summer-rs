@@ -18,6 +18,9 @@ optional **features**:
 * `openapi-redoc`: Redoc documentation interface
 * `openapi-scalar`: Scalar documentation interface
 * `openapi-swagger`: Swagger documentation interface
+* `validator`: validator extractors (standalone, no axum-valid dependency)
+* `garde`: garde extractors (standalone, with custom Context support)
+* `axum-valid`: axum-valid compatibility layer (optional, combinable with validator/garde)
 
 ## Configuration items
 
@@ -554,3 +557,111 @@ This will automatically generate responses with the request URI:
 }
 ```
 
+# Validation Support
+
+summer-web provides runtime validation wrappers for two validation frameworks.
+Both map validation failures to `ProblemDetails`.
+
+Enable the features you actually use:
+
+- `validator` for validator runtime wrappers
+- `garde` for garde runtime wrappers
+- `axum-valid` only if you also want compatibility with `summer_web::axum_valid::*`
+
+## Validator
+
+summer-web does not re-document validator's rules. It adds:
+
+- `Validator<E>` for plain `validator::Validate`
+- `ValidatorEx<E>` for `validator::ValidateArgs`
+- `ProblemDetails` output for validation and extractor errors
+- direct Summer component lookup for runtime args
+
+Minimal usage:
+
+```rust,ignore
+use summer_web::axum::Json;
+use summer_web::validation::validator::{Validator, ValidatorEx};
+
+async fn create_user(
+    Validator(Json(body)): Validator<Json<CreateUserRequest>>,
+) -> Json<serde_json::Value> {
+    Json(serde_json::json!({ "ok": true }))
+}
+
+async fn paginator(
+    ValidatorEx(Json(body)): ValidatorEx<Json<Paginator>>,
+) -> Json<serde_json::Value> {
+    Json(serde_json::json!({ "ok": true }))
+}
+```
+
+Notes:
+
+- `ValidatorContext` derives runtime context metadata from `#[validate(context = ...)]`
+- `ValidatorEx<E>` currently supports `Args = &A`
+- supported extractor combinations include `Json`, `Query`, `Path`, and `Form`
+- validation failures are converted to `ProblemDetails`
+
+If you use runtime context, register the concrete context type as a normal Summer component:
+
+```rust,ignore
+#[derive(Clone, Debug)]
+struct PageRules {
+    max_page_size: usize,
+}
+
+#[summer::component]
+fn create_page_rules() -> PageRules {
+    PageRules { max_page_size: 100 }
+}
+```
+
+Use macros on your request type only when you need them:
+
+```rust,ignore
+#[derive(Debug, Deserialize, validator::Validate, summer_web::ValidatorContext)]
+#[validate(context = PageRules)]
+struct Paginator {
+    #[validate(custom(function = "validate_page_size", use_context))]
+    page_size: usize,
+}
+```
+
+## Garde
+
+summer-web adds a `Garde<E>` runtime wrapper and resolves garde's native context
+type directly from the Summer component container:
+
+```rust,ignore
+use summer_web::axum::Json;
+use summer_web::validation::garde::Garde;
+
+async fn create_user(
+    Garde(Json(body)): Garde<Json<CreateUserRequest>>,
+) -> Json<serde_json::Value> {
+    Json(serde_json::json!({ "ok": true }))
+}
+```
+
+## OpenAPI Schema
+
+For OpenAPI / JSON Schema generation, use plain `#[derive(schemars::JsonSchema)]`
+when it already works for your type.
+
+Difference from plain `JsonSchema`:
+
+- `JsonSchema` only gives you baseline schemars output
+- `ValidatorSchema` / `GardeSchema` keep that baseline output and add static validation keywords
+- runtime-derived values are still not injected into OpenAPI
+
+Macro note:
+
+- `ValidatorSchema` / `GardeSchema` are heavier than plain `JsonSchema`
+- the macro internally builds a mirrored helper struct, lets `schemars` derive schema for that helper, then patches validation keywords into the final schema
+- this keeps schema behavior compatible, but it also means extra macro expansion and derive work
+- for projects with many schema-carrying structs, prefer using these derives only on types that really need OpenAPI/schema validation keywords
+
+If you don't need validation keywords in your schema, you can continue to use plain `#[derive(JsonSchema)]`.
+
+Full code reference: [`openapi-example`](https://github.com/summer-rs/summer-rs/tree/master/examples/openapi-example)
