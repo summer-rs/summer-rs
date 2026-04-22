@@ -1,0 +1,25 @@
+[package]
+name = "summer-pubsub"
+description = "Integrate Google Cloud Pub/Sub (google-cloud-pubsub) with summer-rs"
+version = "0.5.0"
+categories = ["network-programming"]
+keywords = ["pubsub", "gcp", "google-cloud", "summer"]
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+
+[dependencies]
+summer = { path = "../summer", version = "0.5" }
+summer-macros = { path = "../summer-macros", version = "0.5" }
+google-cloud-pubsub = { workspace = true }
+google-cloud-auth = { workspace = true }
+serde = { workspace = true, features = ["derive"] }
+serde_json = { workspace = true }
+schemars = { workspace = true }
+anyhow = { workspace = true }
+tracing = { workspace = true, features = ["log"] }
+inventory = { workspace = true }
+tokio = { workspace = true, features = ["sync"] }
+async-trait = { workspace = true }
+bytes = { workspace = true }

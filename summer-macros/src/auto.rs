@@ -8,12 +8,14 @@ use syn::{ItemFn, Stmt, Token};
 struct ConfigArgs {
     route: bool,
     job: bool,
+    pubsub: bool,
 }
 
 impl syn::parse::Parse for ConfigArgs {
     fn parse(args: syn::parse::ParseStream) -> syn::Result<Self> {
         let mut route = false;
         let mut job = false;
+        let mut pubsub = false;
 
         while !args.is_empty() {
             let ident = args.parse::<syn::Ident>().map_err(|mut err| {
@@ -30,13 +32,20 @@ impl syn::parse::Parse for ConfigArgs {
             if ident == "JobConfigurator" {
                 job = true;
             }
+            if ident == "PubSubConfigurator" {
+                pubsub = true;
+            }
             if !args.peek(Token![,]) {
                 break;
             }
             args.parse::<Token![,]>()?;
         }
 
-        Ok(ConfigArgs { route, job })
+        Ok(ConfigArgs {
+            route,
+            job,
+            pubsub,
+        })
     }
 }
 
@@ -139,6 +148,14 @@ fn add_method_call(call: ExprCall, args: &ConfigArgs) -> Expr {
                 punctuated
             },
         });
+    }
+    if args.pubsub {
+        expr = syn::parse_quote! {
+            ::summer_pubsub::PubSubConfigurator::add_consumer(
+                &mut #expr,
+                ::summer_pubsub::handler::auto_consumers(),
+            )
+        };
     }
     expr
 }

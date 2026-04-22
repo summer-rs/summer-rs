@@ -15,6 +15,7 @@ mod route;
 #[cfg(feature = "socket_io")]
 mod socketioxide;
 mod stream;
+mod pubsub;
 mod utils;
 
 #[cfg(feature = "sa-token")]
@@ -288,8 +289,9 @@ job_macro!(Cron, cron, "1/10 * * * * *");
 ///  use summer_macros::auto_config;
 ///  use summer_web::{WebPlugin, WebConfigurator};
 ///  use summer_job::{JobPlugin, JobConfigurator};
+///  use summer_pubsub::{PubSubPlugin, PubSubConfigurator};
 ///  use summer_boot::app::App;
-/// +#[auto_config(WebConfigurator, JobConfigurator)]
+/// +#[auto_config(WebConfigurator, JobConfigurator, PubSubConfigurator)]
 ///  #[tokio::main]
 ///  async fn main() {
 ///      App::new()
@@ -311,6 +313,12 @@ pub fn auto_config(args: TokenStream, input: TokenStream) -> TokenStream {
 #[proc_macro_attribute]
 pub fn stream_listener(args: TokenStream, input: TokenStream) -> TokenStream {
     stream::listener(args, input)
+}
+
+/// Google Cloud Pub/Sub listener (subscription id or full resource name).
+#[proc_macro_attribute]
+pub fn pubsub_listener(args: TokenStream, input: TokenStream) -> TokenStream {
+    pubsub::listener(args, input)
 }
 
 /// Configurable

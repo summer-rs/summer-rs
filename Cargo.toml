@@ -11,6 +11,7 @@ members = [
     "summer-postgres",
     "summer-sea-orm",
     "summer-stream",
+    "summer-pubsub",
     "summer-mail",
     "summer-opentelemetry",
     "summer-opendal",
@@ -47,6 +48,9 @@ chrono = "0.4"
 dashmap = "6.1"
 dotenvy = "0.15.7"
 futures-util = "0.3"
+google-cloud-auth = "1.9"
+google-cloud-pubsub = "0.33"
+bytes = "1"
 http = "1"
 http-body = "1"
 indexmap = "2.13"
