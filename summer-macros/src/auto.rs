@@ -152,7 +152,7 @@ fn add_method_call(call: ExprCall, args: &ConfigArgs) -> Expr {
     if args.pubsub {
         expr = syn::parse_quote! {
             ::summer_pubsub::PubSubConfigurator::add_consumer(
-                &mut #expr,
+                #expr,
                 ::summer_pubsub::handler::auto_consumers(),
             )
         };

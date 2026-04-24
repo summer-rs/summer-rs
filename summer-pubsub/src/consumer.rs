@@ -3,6 +3,7 @@ use google_cloud_pubsub::client::Subscriber;
 use summer::app::App;
 use summer::error::Result;
 use summer::plugin::ComponentRegistry;
+use summer::signal;
 use std::ops::Deref;
 use std::sync::Arc;
 
@@ -84,8 +85,21 @@ impl ConsumerInstance {
             "summer-pubsub: Subscriber component missing; add PubSubPlugin before consumers run",
         );
         let mut stream = subscriber.subscribe(subscription.as_str()).build();
+        let shutdown = signal::shutdown_signal("pubsub consumer");
+        tokio::pin!(shutdown);
+
         loop {
-            let next = stream.next().await;
+            let next = tokio::select! {
+                biased;
+                _ = &mut shutdown => {
+                    tracing::info!(
+                        "pubsub subscription {subscription}: shutdown signal received, stopping consumer"
+                    );
+                    break;
+                }
+                n = stream.next() => n,
+            };
+
             let Some(result) = next else {
                 tracing::warn!("pubsub subscription {subscription}: stream closed");
                 break;

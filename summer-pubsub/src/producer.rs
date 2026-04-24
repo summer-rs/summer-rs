@@ -1,6 +1,7 @@
 use crate::consumer::resolve_topic;
 use anyhow::Context;
 use bytes::Bytes;
+use google_cloud_auth::credentials::Credentials;
 use google_cloud_pubsub::client::Publisher;
 use google_cloud_pubsub::model::Message as GcpMessage;
 use std::collections::HashMap;
@@ -16,15 +17,21 @@ pub struct PubSubProducer {
 struct Inner {
     project_id: String,
     endpoint: Option<String>,
+    credentials: Option<Credentials>,
     publishers: Mutex<HashMap<String, Publisher>>,
 }
 
 impl PubSubProducer {
-    pub(crate) fn new(project_id: String, endpoint: Option<String>) -> Self {
+    pub(crate) fn new(
+        project_id: String,
+        endpoint: Option<String>,
+        credentials: Option<Credentials>,
+    ) -> Self {
         Self {
             inner: Arc::new(Inner {
                 project_id,
                 endpoint,
+                credentials,
                 publishers: Mutex::new(HashMap::new()),
             }),
         }
@@ -61,6 +68,9 @@ impl PubSubProducer {
         let mut b = Publisher::builder(full.clone());
         if let Some(ep) = &self.inner.endpoint {
             b = b.with_endpoint(ep.clone());
+        }
+        if let Some(ref creds) = self.inner.credentials {
+            b = b.with_credentials(creds.clone());
         }
         let publisher = b
             .build()
