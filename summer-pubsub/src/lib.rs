@@ -30,6 +30,8 @@ use summer::{
 use std::ops::Deref;
 use std::sync::Arc;
 
+pub use google_cloud_pubsub::*;
+
 pub trait PubSubConfigurator {
     fn add_consumer(&mut self, consumers: Consumers) -> &mut Self;
 }
@@ -63,13 +65,19 @@ impl Plugin for PubSubPlugin {
             return;
         }
 
+        let creds_opt = config
+            .credentials
+            .as_ref()
+            .map(|path| credentials_from_file(path))
+            .transpose()
+            .expect("summer-pubsub: load credentials failed");
+
         let mut sub_builder = Subscriber::builder();
         if let Some(endpoint) = &config.endpoint {
             sub_builder = sub_builder.with_endpoint(endpoint.clone());
         }
-        if let Some(path) = &config.credentials {
-            let creds = credentials_from_file(path).expect("summer-pubsub: load credentials failed");
-            sub_builder = sub_builder.with_credentials(creds);
+        if let Some(ref creds) = creds_opt {
+            sub_builder = sub_builder.with_credentials(creds.clone());
         }
 
         let subscriber = sub_builder
@@ -77,7 +85,11 @@ impl Plugin for PubSubPlugin {
             .await
             .expect("summer-pubsub: create Subscriber failed");
 
-        let producer = PubSubProducer::new(config.project_id.clone(), config.endpoint.clone());
+        let producer = PubSubProducer::new(
+            config.project_id.clone(),
+            config.endpoint.clone(),
+            creds_opt,
+        );
         app.add_component(subscriber.clone());
         app.add_component(producer);
 
