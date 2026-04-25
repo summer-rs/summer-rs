@@ -24,6 +24,7 @@ impl FromPubSubMsg for Message {
         Message::new(
             grpc.message_id.clone(),
             grpc.data.clone(),
+            grpc.attributes.clone(),
             env.ack.clone(),
         )
     }

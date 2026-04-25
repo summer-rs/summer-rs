@@ -1,0 +1,16 @@
+[web]
+port = 8000
+graceful = true
+
+[web.openapi]
+doc_prefix = "/docs"
+info = { title = "pubsub example", version = "0.0.1" }
+
+[sqlx]
+uri = "postgres://postgres:xudjf23adj213@127.0.0.1:5432/postgres"
+
+[pubsub]
+enabled = true
+project_id = "summerrs-pubsub"
+credentials = "credentials.json" # path to the credentials file
+# The credentials could be obtained from the GCP console or from the command line

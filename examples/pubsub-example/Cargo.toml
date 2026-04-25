@@ -1,0 +1,15 @@
+[package]
+name = "pubsub-example"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+schemars = "1.2"
+serde = { version = "1", features = ["derive"] }
+summer = { path = "../../summer" }
+summer-stream = { path = "../../summer-stream" }
+summer-web = { path = "../../summer-web" }
+summer-sqlx = { path = "../../summer-sqlx", features = ["postgres"] }
+summer-redis = { path = "../../summer-redis" }
+summer-pubsub = { path = "../../summer-pubsub" }
+tokio = { workspace = true, features = ["full", "tracing"] }

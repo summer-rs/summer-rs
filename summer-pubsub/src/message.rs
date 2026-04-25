@@ -1,20 +1,28 @@
 use bytes::Bytes;
 use google_cloud_pubsub::subscriber::handler::Handler;
+use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
 
-/// Incoming Pub/Sub payload plus shared acknowledgement state.
+/// Incoming Pub/Sub payload plus shared acknowledgement state
 #[derive(Clone)]
 pub struct Message {
     pub message_id: String,
     pub data: Bytes,
+    pub attributes: HashMap<String, String>,
     ack: Arc<Mutex<Option<Handler>>>,
 }
 
 impl Message {
-    pub(crate) fn new(message_id: String, data: Bytes, ack: Arc<Mutex<Option<Handler>>>) -> Self {
+    pub(crate) fn new(
+        message_id: String,
+        data: Bytes,
+        attributes: HashMap<String, String>,
+        ack: Arc<Mutex<Option<Handler>>>,
+    ) -> Self {
         Self {
             message_id,
             data,
+            attributes,
             ack,
         }
     }
