@@ -161,20 +161,13 @@ impl JobPlugin {
         let mut sched = app.get_expect_component::<JobScheduler>();
         let jobs = app.get_component_ref::<Jobs>();
 
-        let jobs = match jobs {
-            None => {
-                let msg = "No tasks are registered, so the task scheduler does not start.";
-                tracing::info!(msg);
-                return Ok(msg.to_string());
+        if let Some(jobs) = jobs {
+            for job in jobs.deref().iter() {
+                sched
+                    .add(job.to_owned().build(app.clone()))
+                    .await
+                    .context("add job failed")?;
             }
-            Some(jobs) => jobs,
-        };
-
-        for job in jobs.deref().iter() {
-            sched
-                .add(job.to_owned().build(app.clone()))
-                .await
-                .context("add job failed")?;
         }
 
         let mut l = sched.clone();
