@@ -16,8 +16,8 @@
 | `summer/` | 核心：配置、插件、组件与 `App` |
 | `summer-macros/` | 过程宏（如 `#[auto_config]`） |
 | `summer-web/`、`summer-grpc/`、`summer-job/` 等 | 官方插件 |
-| `contrib-plugins/`（独立仓库 [contrib-plugins](https://github.com/spring-rs/contrib-plugins)） | 社区维护的 summer 插件；对 `summer` 等依赖使用 **crates.io 版本号**，**不参与** `summer-rs` 的 Cargo workspace；其中 **`summer-ext-macros`** 为 Sa-Token / Pub/Sub 等扩展提供过程宏（由 **`summer-sa-token`**、**`summer-pubsub`** 重导出，应用侧一般无需直接依赖） |
-| `summer-rs/contrib-plugins` | 可选：在 `summer-rs` 内建立指向并列目录 `../contrib-plugins` 的符号链接，以便 `examples/integrations/plugin-example` 等仍使用 `../../../contrib-plugins/...` 路径（与 CI 检出方式一致） |
+| `contrib-plugins/`（独立仓库 [contrib-plugins](https://github.com/summer-rs/contrib-plugins)） | 社区维护的 summer 插件；对 `summer` 等依赖使用 **crates.io 版本号**，**不参与** `summer-rs` 的 Cargo workspace；其中 **`summer-ext-macros`** 为 Sa-Token / Pub/Sub 等扩展提供过程宏（由 **`summer-sa-token`**、**`summer-pubsub`** 重导出，应用侧一般无需直接依赖） |
+| `summer-rs/contrib-plugins` | **不在本仓库中提交**：本地开发可在 `summer-rs` 根目录建指向 `../contrib-plugins` 的符号链接（已被 `.gitignore` 忽略），以便 `examples/integrations/plugin-example` 等 `path = "../../../contrib-plugins/..."` 能解析；CI 通过单独 checkout 该仓库到 `contrib-plugins/` |
 | `examples/<主题>/*` | 示例应用（按子目录分组；工作区成员；`default-members` 不含示例） |
 | `docs/` | 站点与文档源码（Zola 等） |
 
