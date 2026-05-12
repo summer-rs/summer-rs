@@ -18,6 +18,12 @@ jobs:
       - name: Check out the code
         uses: actions/checkout@v4
 
+      - name: Checkout contrib-plugins
+        uses: actions/checkout@v4
+        with:
+          repository: summer-rs/contrib-plugins
+          path: contrib-plugins
+
       - name: Install protoc
         run: |
           sudo apt-get update
@@ -47,6 +53,12 @@ jobs:
     steps:
       - name: Check out the code
         uses: actions/checkout@v4
+
+      - name: Checkout contrib-plugins
+        uses: actions/checkout@v4
+        with:
+          repository: summer-rs/contrib-plugins
+          path: contrib-plugins
 
       - name: Install protoc
         run: |
@@ -106,6 +118,12 @@ jobs:
       - name: Check out the code
         uses: actions/checkout@v4
 
+      - name: Checkout contrib-plugins
+        uses: actions/checkout@v4
+        with:
+          repository: summer-rs/contrib-plugins
+          path: contrib-plugins
+
       - name: Install protoc (Ubuntu)
         if: matrix.os == 'ubuntu-latest'
         run: |
@@ -164,6 +182,12 @@ jobs:
       - name: Check out the code
         uses: actions/checkout@v4
 
+      - name: Checkout contrib-plugins
+        uses: actions/checkout@v4
+        with:
+          repository: summer-rs/contrib-plugins
+          path: contrib-plugins
+
       - name: Install protoc
         run: |
           sudo apt-get update
@@ -184,6 +208,12 @@ jobs:
     steps:
       - name: Check out the code
         uses: actions/checkout@v4
+
+      - name: Checkout contrib-plugins
+        uses: actions/checkout@v4
+        with:
+          repository: summer-rs/contrib-plugins
+          path: contrib-plugins
 
       - name: Install protoc
         run: |

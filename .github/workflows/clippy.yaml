@@ -13,6 +13,13 @@ jobs:
       - name: Check out the code
         uses: actions/checkout@v3
 
+      # plugin-example and others use path = "contrib-plugins/..." — must exist for workspace resolution.
+      - name: Checkout contrib-plugins
+        uses: actions/checkout@v4
+        with:
+          repository: summer-rs/contrib-plugins
+          path: contrib-plugins
+
       - name: Install protoc
         run: |
           sudo apt-get update
@@ -32,6 +39,13 @@ jobs:
     steps:
       - name: Check out the code
         uses: actions/checkout@v3
+
+      - name: Checkout contrib-plugins
+        uses: actions/checkout@v4
+        with:
+          repository: summer-rs/contrib-plugins
+          path: contrib-plugins
+
       - name: Install protoc
         run: |
           sudo apt-get update
