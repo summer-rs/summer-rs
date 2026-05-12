@@ -1,0 +1,21 @@
+[package]
+name = "grpc-example"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[dependencies]
+summer = { path = "../../../summer" }
+summer-web = { path = "../../../summer-web" }
+summer-grpc = { path = "../../../summer-grpc" }
+prost = { workspace = true }
+tonic = { workspace = true }
+tonic-prost = { workspace = true }
+tokio = { workspace = true, features = ["full", "tracing"] }
+anyhow = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+
+[build-dependencies]
+tonic-prost-build = { workspace = true }

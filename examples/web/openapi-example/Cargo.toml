@@ -1,0 +1,22 @@
+[package]
+name = "openapi-example"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[dependencies]
+summer = { path = "../../../summer" }
+summer-web = { path = "../../../summer-web", features = [
+    "openapi",
+    # "openapi-swagger",
+    # "openapi-redoc",
+    "openapi-scalar",
+] }
+tokio = { workspace = true, features = ["full", "tracing"] }
+anyhow = { workspace = true }
+serde = { workspace = true }
+schemars = { workspace = true }
+thiserror = { workspace = true }
+summer-sqlx = { path = "../../../summer-sqlx", features = ["postgres"] }
+tracing = { workspace = true }

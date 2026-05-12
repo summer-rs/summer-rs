@@ -15,11 +15,7 @@ mod route;
 #[cfg(feature = "socket_io")]
 mod socketioxide;
 mod stream;
-mod pubsub;
 mod utils;
-
-#[cfg(feature = "sa-token")]
-mod sa_token;
 
 use proc_macro::TokenStream;
 use syn::DeriveInput;
@@ -289,7 +285,7 @@ job_macro!(Cron, cron, "1/10 * * * * *");
 ///  use summer_macros::auto_config;
 ///  use summer_web::{WebPlugin, WebConfigurator};
 ///  use summer_job::{JobPlugin, JobConfigurator};
-///  use summer_pubsub::{PubSubPlugin, PubSubConfigurator};
+///  use summer_pubsub::{pubsub_listener, PubSubPlugin, PubSubConfigurator};
 ///  use summer_boot::app::App;
 /// +#[auto_config(WebConfigurator, JobConfigurator, PubSubConfigurator)]
 ///  #[tokio::main]
@@ -313,12 +309,6 @@ pub fn auto_config(args: TokenStream, input: TokenStream) -> TokenStream {
 #[proc_macro_attribute]
 pub fn stream_listener(args: TokenStream, input: TokenStream) -> TokenStream {
     stream::listener(args, input)
-}
-
-/// Google Cloud Pub/Sub listener (subscription id or full resource name).
-#[proc_macro_attribute]
-pub fn pubsub_listener(args: TokenStream, input: TokenStream) -> TokenStream {
-    pubsub::listener(args, input)
 }
 
 /// Configurable
@@ -764,143 +754,3 @@ pub fn on_fallback(args: TokenStream, input: TokenStream) -> TokenStream {
     socketioxide::on_fallback(args, input)
 }
 
-// ============================================================================
-// Sa-Token authentication macros
-// ============================================================================
-
-#[cfg(feature = "sa-token")]
-/// Check login status
-///
-/// Returns 401 Unauthorized if user is not logged in.
-///
-/// # Example
-/// ```rust,ignore
-/// #[sa_check_login]
-/// async fn user_info() -> Result<impl IntoResponse> {
-///     Ok("User info")
-/// }
-/// ```
-#[proc_macro_attribute]
-pub fn sa_check_login(attr: TokenStream, input: TokenStream) -> TokenStream {
-    sa_token::sa_check_login_impl(attr, input)
-}
-
-#[cfg(feature = "sa-token")]
-/// Check user role
-///
-/// Returns 401 if not logged in, 403 Forbidden if user doesn't have the required role.
-///
-/// # Example
-/// ```rust,ignore
-/// #[sa_check_role("admin")]
-/// async fn admin_panel() -> Result<impl IntoResponse> {
-///     Ok("Admin panel")
-/// }
-/// ```
-#[proc_macro_attribute]
-pub fn sa_check_role(attr: TokenStream, input: TokenStream) -> TokenStream {
-    sa_token::sa_check_role_impl(attr, input)
-}
-
-#[cfg(feature = "sa-token")]
-/// Check user permission
-///
-/// Returns 401 if not logged in, 403 Forbidden if user doesn't have the required permission.
-///
-/// # Example
-/// ```rust,ignore
-/// #[sa_check_permission("user:delete")]
-/// async fn delete_user() -> Result<impl IntoResponse> {
-///     Ok("User deleted")
-/// }
-/// ```
-#[proc_macro_attribute]
-pub fn sa_check_permission(attr: TokenStream, input: TokenStream) -> TokenStream {
-    sa_token::sa_check_permission_impl(attr, input)
-}
-
-#[cfg(feature = "sa-token")]
-/// Check multiple roles with AND logic
-///
-/// User must have ALL specified roles to access.
-///
-/// # Example
-/// ```rust,ignore
-/// #[sa_check_roles_and("admin", "super")]
-/// async fn super_admin() -> Result<impl IntoResponse> {
-///     Ok("Super admin")
-/// }
-/// ```
-#[proc_macro_attribute]
-pub fn sa_check_roles_and(attr: TokenStream, input: TokenStream) -> TokenStream {
-    sa_token::sa_check_roles_and_impl(attr, input)
-}
-
-#[cfg(feature = "sa-token")]
-/// Check multiple roles with OR logic
-///
-/// User must have ANY of the specified roles to access.
-///
-/// # Example
-/// ```rust,ignore
-/// #[sa_check_roles_or("admin", "manager")]
-/// async fn management() -> Result<impl IntoResponse> {
-///     Ok("Management area")
-/// }
-/// ```
-#[proc_macro_attribute]
-pub fn sa_check_roles_or(attr: TokenStream, input: TokenStream) -> TokenStream {
-    sa_token::sa_check_roles_or_impl(attr, input)
-}
-
-#[cfg(feature = "sa-token")]
-/// Check multiple permissions with AND logic
-///
-/// User must have ALL specified permissions to access.
-///
-/// # Example
-/// ```rust,ignore
-/// #[sa_check_permissions_and("user:read", "user:write")]
-/// async fn user_rw() -> Result<impl IntoResponse> {
-///     Ok("User read/write")
-/// }
-/// ```
-#[proc_macro_attribute]
-pub fn sa_check_permissions_and(attr: TokenStream, input: TokenStream) -> TokenStream {
-    sa_token::sa_check_permissions_and_impl(attr, input)
-}
-
-#[cfg(feature = "sa-token")]
-/// Check multiple permissions with OR logic
-///
-/// User must have ANY of the specified permissions to access.
-///
-/// # Example
-/// ```rust,ignore
-/// #[sa_check_permissions_or("admin:*", "user:delete")]
-/// async fn delete() -> Result<impl IntoResponse> {
-///     Ok("Delete operation")
-/// }
-/// ```
-#[proc_macro_attribute]
-pub fn sa_check_permissions_or(attr: TokenStream, input: TokenStream) -> TokenStream {
-    sa_token::sa_check_permissions_or_impl(attr, input)
-}
-
-#[cfg(feature = "sa-token")]
-/// Ignore authentication for this endpoint
-///
-/// This macro marks an endpoint to skip authentication checks,
-/// even if it's under a path that normally requires authentication.
-///
-/// # Example
-/// ```rust,ignore
-/// #[sa_ignore]
-/// async fn public_endpoint() -> impl IntoResponse {
-///     "This endpoint is public"
-/// }
-/// ```
-#[proc_macro_attribute]
-pub fn sa_ignore(attr: TokenStream, input: TokenStream) -> TokenStream {
-    sa_token::sa_ignore_impl(attr, input)
-}

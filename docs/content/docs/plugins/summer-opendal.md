@@ -14,4 +14,4 @@ top = false
 
 <img style="width:100%" src="https://opendal.apache.org/img/external/e90fb803e25e12f621eafa3d092fe628.png" alt="OpenDAL"/>
 
-{{ include(path="../../summer-opendal/README.md") }}
+{{ include(path="../../contrib-plugins/summer-opendal/README.md") }}

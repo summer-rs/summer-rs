@@ -34,7 +34,7 @@ jobs:
       uses: dtolnay/rust-toolchain@stable
 
     - name: Build plugin-example
-      run: cargo build --manifest-path examples/plugin-example/Cargo.toml
+      run: cargo build --manifest-path examples/integrations/plugin-example/Cargo.toml
 
     - name: Copy config-schema.json
       run: |

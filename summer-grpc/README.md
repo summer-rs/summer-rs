@@ -107,4 +107,4 @@ impl Greeter for MyGreeter {
 ```
 
 
-Complete code reference [`grpc-example`](https://github.com/summer-rs/summer-rs/tree/master/examples/grpc-example)
+Complete code reference [`grpc-example`](https://github.com/summer-rs/summer-rs/tree/master/examples/grpc/grpc-example)

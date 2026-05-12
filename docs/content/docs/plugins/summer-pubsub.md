@@ -12,4 +12,4 @@ toc = true
 top = false
 +++
 
-{{ include(path="../../summer-pubsub/README.md") }}
+{{ include(path="../../contrib-plugins/summer-pubsub/README.md") }}

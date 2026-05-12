@@ -61,4 +61,4 @@ async fn cachable_func(key: &str) -> String {
 - 可以返回 `Result<T, E>` 或普通值 `T`
 - 返回类型必须实现 `serde::Serialize` 和 `serde::Deserialize`，底层使用`serde_json`进行序列化
 
-完整代码参考[`redis-example`](https://github.com/summer-rs/summer-rs/tree/master/examples/redis-example)
+完整代码参考[`redis-example`](https://github.com/summer-rs/summer-rs/tree/master/examples/data/redis-example)

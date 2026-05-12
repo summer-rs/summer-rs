@@ -102,4 +102,4 @@ async fn get_todo_list(
 }
 ```
 
-For the complete code, please refer to [`sea-orm-example`](https://github.com/summer-rs/summer-rs/tree/master/examples/sea-orm-example)
+For the complete code, please refer to [`sea-orm-example`](https://github.com/summer-rs/summer-rs/tree/master/examples/data/sea-orm-example)

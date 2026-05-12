@@ -1,3 +1,0 @@
-[opendal]
-scheme = "fs"
-options = { root = "/tmp" }

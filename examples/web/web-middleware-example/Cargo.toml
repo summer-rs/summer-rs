@@ -1,0 +1,19 @@
+[package]
+name = "web-middleware-example"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[dependencies]
+summer = { path = "../../../summer" }
+summer-web = { path = "../../../summer-web", features = ["openapi"] }
+summer-sqlx = { path = "../../../summer-sqlx", features = ["postgres"] }
+tokio = { workspace = true, features = ["full", "tracing"] }
+tower = { workspace = true }
+tower-http = { workspace = true }
+anyhow = { workspace = true }
+serde = { workspace = true, features = ["derive"] }
+serde_json = { workspace = true }
+schemars = { workspace = true }
+problemdetails = { version = "0.5", features = ["axum"] }

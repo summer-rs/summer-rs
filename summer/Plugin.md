@@ -55,4 +55,4 @@ struct Config {
 }
 ```
 
-For the complete code, refer to [`plugin-example`](https://github.com/summer-rs/summer-rs/tree/master/examples/plugin-example), or refer to other built-in plugin codes.
+For the complete code, refer to [`plugin-example`](https://github.com/summer-rs/summer-rs/tree/master/examples/integrations/plugin-example), or refer to other built-in plugin codes.

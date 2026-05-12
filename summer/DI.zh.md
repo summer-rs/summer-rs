@@ -33,7 +33,7 @@ struct UserWithOptionalComponentService {
 }
 ```
 
-完整代码参考[`dependency-inject-example`](https://github.com/summer-rs/summer-rs/tree/master/examples/dependency-inject-example)。
+完整代码参考[`dependency-inject-example`](https://github.com/summer-rs/summer-rs/tree/master/examples/di/dependency-inject-example)。
 
 > Service还支持grpc模式，可结合[summer-grpc](https://summer-rs.github.io/zh/docs/plugins/summer-grpc/)插件一起使用
 
@@ -104,4 +104,4 @@ struct OtherService {
 使用 `LazyComponent<T>` 时不必显式添加 `#[inject]` 属性，框架会自动检测。
 在内部，它只是对 `Arc<RwLock<...>>` 的封装，因此是线程安全的。
 
-完整代码请参见 [`circular-dependency-injection-example`](https://github.com/summer-rs/summer-rs/tree/master/examples/circular-dependency-injection-example)。
+完整代码请参见 [`circular-dependency-injection-example`](https://github.com/summer-rs/summer-rs/tree/master/examples/di/circular-dependency-injection-example)。

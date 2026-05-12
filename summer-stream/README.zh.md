@@ -108,7 +108,7 @@ fn fill_file_consumer_options(opts: &mut FileConsumerOptions) {
 }
 ```
 
-完整示例代码查看[stream-file-example](https://github.com/summer-rs/summer-rs/tree/master/examples/stream-file-example)、[stream-redis-example](https://github.com/summer-rs/summer-rs/tree/master/examples/stream-redis-example)、[stream-kafka-example](https://github.com/summer-rs/summer-rs/tree/master/examples/stream-kafka-example)
+完整示例代码查看[stream-file-example](https://github.com/summer-rs/summer-rs/tree/master/examples/stream/stream-file-example)、[stream-redis-example](https://github.com/summer-rs/summer-rs/tree/master/examples/stream/stream-redis-example)、[stream-kafka-example](https://github.com/summer-rs/summer-rs/tree/master/examples/stream/stream-kafka-example)
 
 ## 读取配置
 

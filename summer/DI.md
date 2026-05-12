@@ -34,7 +34,7 @@ struct UserWithOptionalComponentService {
 }
 ```
 
-For the complete code, see [`dependency-inject-example`](https://github.com/summer-rs/summer-rs/tree/master/examples/dependency-inject-example).
+For the complete code, see [`dependency-inject-example`](https://github.com/summer-rs/summer-rs/tree/master/examples/di/dependency-inject-example).
 
 > Service also supports grpc mode and can be used in conjunction with the [summer-grpc](https://summer-rs.github.io/docs/plugins/summer-grpc/) plug-in
 
@@ -97,5 +97,5 @@ It's not necessary to use the `#[inject]` attribute with `LazyComponent<T>`, as 
 Internally, this type is just a wrapper around `Arc<RwLock<...>>`, making it thread-safe.
 
 
-For the complete code, see [`circular-dependency-injection-example`](https://github.com/summer-rs/summer-rs/tree/master/examples/circular-dependency-injection-example)
+For the complete code, see [`circular-dependency-injection-example`](https://github.com/summer-rs/summer-rs/tree/master/examples/di/circular-dependency-injection-example)
 

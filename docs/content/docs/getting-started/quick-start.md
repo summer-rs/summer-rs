@@ -35,7 +35,7 @@ tokio = "1"
 ## Write code
 
 ```rust
-{{ include_code(path="../../examples/hello-world-example/src/main.rs") }}
+{{ include_code(path="../../examples/getting-started/hello-world-example/src/main.rs") }}
 ```
 
 ## Configure the application

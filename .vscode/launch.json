@@ -137,7 +137,7 @@
             "env": {
                 "RUST_BACKTRACE": "1",
             },
-            "cwd": "${workspaceFolder}/examples/postgres-example"
+            "cwd": "${workspaceFolder}/examples/data/postgres-example"
         },
         {
             "type": "lldb",
@@ -158,7 +158,7 @@
             "env": {
                 "RUST_BACKTRACE": "1",
             },
-            "cwd": "${workspaceFolder}/examples/job-example"
+            "cwd": "${workspaceFolder}/examples/job/job-example"
         },
         {
             "type": "lldb",
@@ -179,7 +179,7 @@
             "env": {
                 "RUST_BACKTRACE": "1",
             },
-            "cwd": "${workspaceFolder}/examples/mail-example"
+            "cwd": "${workspaceFolder}/examples/integrations/mail-example"
         },
         {
             "type": "lldb",
@@ -200,7 +200,7 @@
             "env": {
                 "RUST_BACKTRACE": "1",
             },
-            "cwd": "${workspaceFolder}/examples/plugin-example"
+            "cwd": "${workspaceFolder}/examples/integrations/plugin-example"
         },
         {
             "type": "lldb",
@@ -221,7 +221,7 @@
             "env": {
                 "RUST_BACKTRACE": "1",
             },
-            "cwd": "${workspaceFolder}/examples/redis-example"
+            "cwd": "${workspaceFolder}/examples/data/redis-example"
         },
         {
             "type": "lldb",
@@ -242,7 +242,7 @@
             "env": {
                 "RUST_BACKTRACE": "1",
             },
-            "cwd": "${workspaceFolder}/examples/sea-orm-example"
+            "cwd": "${workspaceFolder}/examples/data/sea-orm-example"
         },
         {
             "type": "lldb",
@@ -263,7 +263,7 @@
             "env": {
                 "RUST_BACKTRACE": "1",
             },
-            "cwd": "${workspaceFolder}/examples/web-example"
+            "cwd": "${workspaceFolder}/examples/web/web-example"
         },
         {
             "type": "lldb",
@@ -284,7 +284,7 @@
             "env": {
                 "RUST_BACKTRACE": "1",
             },
-            "cwd": "${workspaceFolder}/examples/web-example"
+            "cwd": "${workspaceFolder}/examples/web/web-example"
         },
         {
             "type": "lldb",
@@ -305,7 +305,7 @@
             "env": {
                 "RUST_BACKTRACE": "1",
             },
-            "cwd": "${workspaceFolder}/examples/web-example"
+            "cwd": "${workspaceFolder}/examples/web/web-example"
         },
         {
             "type": "lldb",
@@ -326,7 +326,7 @@
             "env": {
                 "RUST_BACKTRACE": "1",
             },
-            "cwd": "${workspaceFolder}/examples/web-example"
+            "cwd": "${workspaceFolder}/examples/web/web-example"
         },
         {
             "type": "lldb",
@@ -347,7 +347,7 @@
             "env": {
                 "RUST_BACKTRACE": "1",
             },
-            "cwd": "${workspaceFolder}/examples/stream-file-example"
+            "cwd": "${workspaceFolder}/examples/stream/stream-file-example"
         },
         {
             "type": "lldb",
@@ -368,7 +368,7 @@
             "env": {
                 "RUST_BACKTRACE": "1",
             },
-            "cwd": "${workspaceFolder}/examples/opentelemetry-example"
+            "cwd": "${workspaceFolder}/examples/integrations/opentelemetry-example"
         },
         {
             "type": "lldb",
@@ -389,7 +389,7 @@
             "env": {
                 "RUST_BACKTRACE": "1",
             },
-            "cwd": "${workspaceFolder}/examples/hello-world-example"
+            "cwd": "${workspaceFolder}/examples/getting-started/hello-world-example"
         },
         {
             "type": "lldb",
@@ -410,7 +410,7 @@
             "env": {
                 "RUST_BACKTRACE": "1",
             },
-            "cwd": "${workspaceFolder}/examples/dependency-inject-example"
+            "cwd": "${workspaceFolder}/examples/di/dependency-inject-example"
         },
         {
             "type": "lldb",

@@ -179,7 +179,7 @@ a = 1
 b = true
 ```
 
-完整代码参考[`web-example`](https://github.com/summer-rs/summer-rs/tree/master/examples/web-example)
+完整代码参考[`web-example`](https://github.com/summer-rs/summer-rs/tree/master/examples/web/web-example)
 
 ## 在Middleware中使用Component抽取注册的组件
 
@@ -214,7 +214,7 @@ mod routes {
 ```
 
 
-完整代码参考[`web-middleware-example`](https://github.com/summer-rs/summer-rs/tree/master/examples/web-middleware-example)
+完整代码参考[`web-middleware-example`](https://github.com/summer-rs/summer-rs/tree/master/examples/web/web-middleware-example)
 
 summer-web是围绕axum的一层薄薄的封装, 提供了一些宏以简化开发. [axum官方的examples](https://github.com/tokio-rs/axum/tree/main/examples)大多只要稍作修改即可运行在summer-web中。
 
@@ -231,13 +231,13 @@ SocketIO 是 WebSocket 的一种实现，提供更多的定义功能：
 * 房间 / 命名空间，用于对客户端进行分组
 * 如果 WebSocket 不可用，可回退到其他传输方式
 
-你可以参考 [socketio-example](https://github.com/summer-rs/summer-rs/tree/master/examples/web-socketio-example) 来查看在 summer-web 中使用 SocketIO 的示例。
+你可以参考 [socketio-example](https://github.com/summer-rs/summer-rs/tree/master/examples/web/socket-io-example) 来查看在 summer-web 中使用 SocketIO 的示例。
 
 我们可以在 SocketIO 处理器中共享插件注册的组件，就像在普通 HTTP 处理器中一样，例如使用由 `SqlxPlugin` 插件注册的 Sqlx 连接池组件。
 
 # OpenAPI 支持
 
-你可以启用 `summer-web` 的 `openapi` 功能来生成 OpenAPI 文档。你可以参考 [openapi-example](https://github.com/summer-rs/summer-rs/tree/master/examples/openapi-example) 获取更多信息。
+你可以启用 `summer-web` 的 `openapi` 功能来生成 OpenAPI 文档。你可以参考 [openapi-example](https://github.com/summer-rs/summer-rs/tree/master/examples/web/openapi-example) 获取更多信息。
 
 此外，你需要启用以下文档界面功能之一：`openapi-redoc`、`openapi-scalar` 或 `openapi-swagger`，以生成相应的文档界面。
 

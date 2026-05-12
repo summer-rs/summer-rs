@@ -53,7 +53,7 @@ summer-stream = { version = "0.1.1", features=["file","json"] }
 ```
 
 ```rust, linenos
-{{ include_code(path="../../examples/stream-file-example/src/bin/producer.rs") }}
+{{ include_code(path="../../examples/stream/stream-file-example/src/bin/producer.rs") }}
 ```
 
 ### Consume messages
@@ -61,10 +61,10 @@ summer-stream = { version = "0.1.1", features=["file","json"] }
 `summer-stream` provides a process macro called `stream_listener` to subscribe to messages from a specified topic. The code is as follows:
 
 ```rust, linenos
-{{ include_code(path="../../examples/stream-file-example/src/bin/consumer.rs") }}
+{{ include_code(path="../../examples/stream/stream-file-example/src/bin/consumer.rs") }}
 ``` 
 
-View the complete example code [stream-file-example](https://github.com/summer-rs/summer-rs/tree/master/examples/stream-file-example), [stream-redis-example](https://github.com/summer-rs/summer-rs/tree/master/examples/stream-redis-example), [stream-kafka-example](https://github.com/summer-rs/summer-rs/tree/master/examples/stream-kafka-example)
+View the complete example code [stream-file-example](https://github.com/summer-rs/summer-rs/tree/master/examples/stream/stream-file-example), [stream-redis-example](https://github.com/summer-rs/summer-rs/tree/master/examples/stream/stream-redis-example), [stream-kafka-example](https://github.com/summer-rs/summer-rs/tree/master/examples/stream/stream-kafka-example)
 
 ## Read configuration
 

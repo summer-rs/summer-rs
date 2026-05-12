@@ -1,0 +1,18 @@
+[package]
+name = "sea-orm-example"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[dependencies]
+summer = { path = "../../../summer" }
+summer-web = { path = "../../../summer-web" }
+summer-sea-orm = { path = "../../../summer-sea-orm", features = [
+    "postgres",
+    "with-web",
+] }
+tokio = { workspace = true }
+anyhow = { workspace = true }
+sea-orm = { workspace = true }
+serde = { workspace = true }

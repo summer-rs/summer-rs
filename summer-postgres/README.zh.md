@@ -58,4 +58,4 @@ async fn hello_postgres(Component(pg): Component<Postgres>) -> Result<impl IntoR
 }
 ```
 
-完整代码参考[`postgres-example`](https://github.com/summer-rs/summer-rs/tree/master/examples/postgres-example)
+完整代码参考[`postgres-example`](https://github.com/summer-rs/summer-rs/tree/master/examples/data/postgres-example)

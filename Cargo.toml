@@ -11,19 +11,23 @@ members = [
     "summer-postgres",
     "summer-sea-orm",
     "summer-stream",
-    "summer-pubsub",
     "summer-mail",
     "summer-opentelemetry",
-    "summer-opendal",
     "summer-apalis",
-    "summer-sa-token",
-    "examples/*",
+    "examples/getting-started/*",
+    "examples/web/*",
+    "examples/grpc/*",
+    "examples/stream/*",
+    "examples/data/*",
+    "examples/job/*",
+    "examples/integrations/*",
+    "examples/di/*",
 ]
 default-members = ["summer", "summer-*"]
 exclude = ["examples/**"]
 
 [workspace.package]
-version = "0.5.0"
+version = "0.6.0"
 edition = "2021"
 license = "MIT"
 authors = ["holmofy"]

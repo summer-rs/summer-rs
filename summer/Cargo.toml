@@ -1,7 +1,7 @@
 [package]
 name = "summer"
 description = "Rust microservice framework like spring boot in java"
-version = "0.5.1"
+version = "0.6.0"
 categories = ["config"]
 keywords = ["framework", "summer", "spring"]
 edition.workspace = true
@@ -10,7 +10,7 @@ authors.workspace = true
 repository.workspace = true
 
 [dependencies]
-summer-macros = { path = "../summer-macros", version = "0.5" }
+summer-macros = { path = "../summer-macros", version = "0.6.0" }
 anyhow = { workspace = true }
 thiserror = { workspace = true }
 serde = { workspace = true, features = ["derive"] }

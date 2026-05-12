@@ -1,0 +1,11 @@
+[package]
+name = "socket-io-example"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[dependencies]
+summer = { path = "../../../summer" }
+summer-web = { path = "../../../summer-web", features = ["socket_io"]}
+tokio = { workspace = true, features = ["full", "tracing"] }

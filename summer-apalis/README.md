@@ -3,4 +3,4 @@
 
 [apalis](https://github.com/geofmureithi/apalis) is a task scheduling framework that supports multiple storage systems and also provides support for cron and step tasks.
 
-For the complete code, see [`apalis-redis-demo`](https://github.com/summer-rs/summer-rs/tree/master/examples/apalis-redis-demo)
+For the complete code, see [`apalis-redis-demo`](https://github.com/summer-rs/summer-rs/tree/master/examples/job/apalis-redis-example)

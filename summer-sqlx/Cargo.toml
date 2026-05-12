@@ -1,7 +1,7 @@
 [package]
 name = "summer-sqlx"
 description = "Integration of summer-rs framework and sqlx"
-version = "0.5.0"
+version = "0.6.0"
 categories = ["database"]
 keywords = ["sql-database", "sql-query", "database", "summer"]
 edition.workspace = true
@@ -31,7 +31,7 @@ runtime-tokio-native-tls = ["sqlx?/runtime-tokio-native-tls", "runtime-tokio"]
 runtime-tokio-rustls = ["sqlx?/runtime-tokio-rustls", "runtime-tokio"]
 
 [dependencies]
-summer = { path = "../summer", version = "0.5" }
+summer = { path = "../summer", version = "0.6.0" }
 serde = { workspace = true, features = ["derive"] }
 anyhow = { workspace = true }
 tracing = { workspace = true, features = ["log"] }

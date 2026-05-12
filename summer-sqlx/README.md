@@ -61,4 +61,4 @@ async fn mysql_version(Component(pool): Component<ConnectPool>) -> Result<String
 }
 ```
 
-Complete code reference [`sqlx-example`](https://github.com/summer-rs/summer-rs/tree/master/examples/sqlx-example)
+Complete code reference [`sqlx-example`](https://github.com/summer-rs/summer-rs/tree/master/examples/getting-started/hello-world-example)

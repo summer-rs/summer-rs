@@ -27,6 +27,6 @@ enable = false    # 运行时是否启用该插件
 * [SDK Configuration](https://opentelemetry.io/docs/languages/sdk-configuration/)
 * [Environment Variable Specification](https://opentelemetry.io/docs/specs/otel/configuration/sdk-environment-variables/)
 
-完整代码参考[`opentelemetry-example`](https://github.com/summer-rs/summer-rs/tree/master/examples/opentelemetry-example)
+完整代码参考[`opentelemetry-example`](https://github.com/summer-rs/summer-rs/tree/master/examples/integrations/opentelemetry-example)
 
 **注意**: [opentelemetry-rust](https://github.com/open-telemetry/opentelemetry-rust/issues/1678)尚未稳定，与[tracing](https://github.com/open-telemetry/opentelemetry-rust/issues/1571)的部分功能需要整合。插件会持续跟踪opentelemetry-rust和tracing的相关动态，并及时更新。

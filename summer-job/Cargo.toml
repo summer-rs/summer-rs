@@ -1,7 +1,7 @@
 [package]
 name = "summer-job"
 description = "Integrate tokio-cron-scheduler with summer-rs framework"
-version = "0.5.1"
+version = "0.6.0"
 categories = ["date-and-time"]
 keywords = ["cron-scheduler", "task-scheduling", "cron-job", "summer"]
 edition.workspace = true
@@ -14,8 +14,8 @@ postgres_storage = ["tokio-cron-scheduler/postgres_storage"]
 nats_storage = ["tokio-cron-scheduler/nats_storage"]
 
 [dependencies]
-summer = { path = "../summer", version = "0.5" }
-summer-macros = { path = "../summer-macros", version = "0.5" }
+summer = { path = "../summer", version = "0.6.0" }
+summer-macros = { path = "../summer-macros", version = "0.6.0" }
 tokio-cron-scheduler = { workspace = true }
 anyhow = { workspace = true }
 serde = { workspace = true, features = ["derive"] }

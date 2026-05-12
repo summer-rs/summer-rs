@@ -202,7 +202,7 @@ b = true
 
 Complete code reference [`web-example`][web-example]
 
-[web-example]: https://github.com/summer-rs/summer-rs/tree/master/examples/web-example
+[web-example]: https://github.com/summer-rs/summer-rs/tree/master/examples/web/web-example
 
 ## Use Extractor in Middleware
 
@@ -241,7 +241,7 @@ This middleware will:
 
 Complete code reference [`web-middleware-example`][web-middleware-example]
 
-[web-middleware-example]: https://github.com/summer-rs/summer-rs/tree/master/examples/web-middleware-example
+[web-middleware-example]: https://github.com/summer-rs/summer-rs/tree/master/examples/web/web-middleware-example
 
 summer-web is a thin wrapper around axum, adding some macros to simplify development. [The examples of axum](https://github.com/tokio-rs/axum/tree/main/examples) can be run in summer-web.
 
@@ -256,14 +256,14 @@ SocketIO is a implementation of WebSocket with more definitions.
 - Rooms / Namespaces to group clients
 - Fallbacks to other transports if WebSocket isn't available
 
-You can refer to the [socketio-example](https://github.com/summer-rs/summer-rs/tree/master/examples/web-socketio-example) for a example of using SocketIO in summer-web.
+You can refer to the [socketio-example](https://github.com/summer-rs/summer-rs/tree/master/examples/web/socket-io-example) for a example of using SocketIO in summer-web.
 
 We can share components registered by plugins in SocketIO handlers, just like in normal HTTP handlers, for example, using the Sqlx connection pool component registered by the `SqlxPlugin` plugin.
 
 
 # OpenAPI support
 
-You can enable the `openapi` feature of `summer-web` to use OpenAPI documentation generation. You can refer to the [openapi-example](https://github.com/summer-rs/summer-rs/tree/master/examples/openapi-example) for more information.
+You can enable the `openapi` feature of `summer-web` to use OpenAPI documentation generation. You can refer to the [openapi-example](https://github.com/summer-rs/summer-rs/tree/master/examples/web/openapi-example) for more information.
 
 Besides you need to enable one of the documentation interface features: `openapi-redoc`, `openapi-scalar` or `openapi-swagger` to generate the corresponding documentation interface.
 

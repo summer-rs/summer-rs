@@ -16,7 +16,9 @@
 | `summer/` | 核心：配置、插件、组件与 `App` |
 | `summer-macros/` | 过程宏（如 `#[auto_config]`） |
 | `summer-web/`、`summer-grpc/`、`summer-job/` 等 | 官方插件 |
-| `examples/*` | 示例应用（工作区成员；根目录 `default-members` 不含示例，全量测试请用 `cargo test --workspace`） |
+| `contrib-plugins/`（独立仓库 [contrib-plugins](https://github.com/spring-rs/contrib-plugins)） | 社区维护的 summer 插件；对 `summer` 等依赖使用 **crates.io 版本号**，**不参与** `summer-rs` 的 Cargo workspace；其中 **`summer-ext-macros`** 为 Sa-Token / Pub/Sub 等扩展提供过程宏（由 **`summer-sa-token`**、**`summer-pubsub`** 重导出，应用侧一般无需直接依赖） |
+| `summer-rs/contrib-plugins` | 可选：在 `summer-rs` 内建立指向并列目录 `../contrib-plugins` 的符号链接，以便 `examples/integrations/plugin-example` 等仍使用 `../../../contrib-plugins/...` 路径（与 CI 检出方式一致） |
+| `examples/<主题>/*` | 示例应用（按子目录分组；工作区成员；`default-members` 不含示例） |
 | `docs/` | 站点与文档源码（Zola 等） |
 
 插件需实现 `Plugin`；配置需实现 `Configurable`；可作为组件注入的类型需 `Clone`。详见 `summer/Plugin.md` 与 `summer/DI.md`。
@@ -38,6 +40,22 @@ cargo fmt --all -- --check
 cargo test -p summer
 cargo test -p summer-web
 ```
+
+## 运行示例（Examples）
+
+默认从**进程当前工作目录**读取 `./config/app.toml`（见 `summer` 中 `App` 的配置路径约定）。因此运行某个示例时，应**先 `cd` 到该 example 的包根目录**（即含有 `config/` 与 `Cargo.toml` 的目录），再执行 `cargo run`，避免在仓库根目录用 `cargo run -p …` 导致配置缺失或字段反序列化失败。
+
+许多示例带有 **`compose.yaml`**，用于在本机拉起该示例所需的外部依赖（数据库、Redis、Kafka、Jaeger 等）。典型流程：
+
+```bash
+cd examples/<分组>/<示例目录>
+docker compose up -d    # 若存在 compose.yaml，按需启动依赖
+cargo run               # 多二进制示例需加 --bin，例如 grpc-example
+# …
+docker compose down     # 用完后可关闭
+```
+
+**Stream 示例**：`examples/stream/` 下的 `stream-file-example`、`stream-kafka-example`、`stream-redis-example` 依赖文件流、Kafka（常见为 compose 里的 Redpanda）或 Redis，镜像与就绪等待较重。**全量冒烟、批量跑 examples 或 Agent 自检时默认跳过**；仅在任务明确要求或需要验证 `summer-stream` 时再进入对应目录，按该目录 `README.md` 与 `compose.yaml` 单独运行（多二进制需 `cargo run --bin producer` / `--bin consumer`）。
 
 ## 修改时的约定
 

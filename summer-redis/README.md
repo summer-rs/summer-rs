@@ -64,4 +64,4 @@ The function wrapped by `cache` must meet the following requirements:
 
 Complete code reference [`redis-example`][redis-example]
 
-[redis-example]: https://github.com/summer-rs/summer-rs/tree/master/examples/redis-example
+[redis-example]: https://github.com/summer-rs/summer-rs/tree/master/examples/data/redis-example

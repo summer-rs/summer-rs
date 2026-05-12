@@ -58,4 +58,4 @@ async fn hello_postgres(Component(pg): Component<Postgres>) -> Result<impl IntoR
 }
 ```
 
-Complete code reference [`postgres-example`](https://github.com/summer-rs/summer-rs/tree/master/examples/postgres-example)
+Complete code reference [`postgres-example`](https://github.com/summer-rs/summer-rs/tree/master/examples/data/postgres-example)

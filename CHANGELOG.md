@@ -2,6 +2,7 @@
 
 ## Unrelease
 
+- **changed**: bump `[workspace.package]` version and all workspace members to **0.6.0** (`summer-apalis` / `summer-sea-orm` remain **0.6.0-rc.1**); path dependency `version` pins for `summer` / `summer-*` and `summer-macros` use **0.6.0** (contrib-plugins on crates.io still declare `summer = "0.5"` until **0.6.0** is published).
 - **added:** [#14 summer-tarpc plugin](https://github.com/summer-rs/summer-rs/issues/14)
 
 ## after 0.1.2 CHANGELOG

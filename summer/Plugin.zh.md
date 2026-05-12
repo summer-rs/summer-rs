@@ -50,4 +50,4 @@ struct Config {
 }
 ```
 
-完整代码参考[`plugin-example`](https://github.com/summer-rs/summer-rs/tree/master/examples/plugin-example)，也可以参考自带的其他插件代码。
+完整代码参考[`plugin-example`](https://github.com/summer-rs/summer-rs/tree/master/examples/integrations/plugin-example)，也可以参考自带的其他插件代码。

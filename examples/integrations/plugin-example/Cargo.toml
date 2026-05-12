@@ -1,0 +1,39 @@
+[package]
+name = "plugin-example"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[dependencies]
+summer = { path = "../../../summer" }
+serde = { workspace = true, features = ["derive"] }
+tokio = { workspace = true }
+schemars = { workspace = true }
+
+[build-dependencies]
+summer = { path = "../../../summer" }
+# generate plugin config schema with all features enabled
+# Enable all features for apalis
+summer-apalis = { path = "../../../summer-apalis", features = ["redis", "amqp", "sql-postgres", "sql-sqlite", "sql-mysql", "workflow", "board", "board-web"] }
+summer-grpc = { path = "../../../summer-grpc" }
+# Enable all features for job
+summer-job = { path = "../../../summer-job", features = ["postgres_storage", "nats_storage"] }
+summer-mail = { path = "../../../summer-mail" }
+# Enable common services for opendal (not all to avoid compilation issues)
+summer-opendal = { path = "../../../contrib-plugins/summer-opendal", features = ["services-fs", "services-memory", "services-s3", "services-oss", "services-cos", "services-azblob", "services-gcs", "services-obs", "layers-metrics", "layers-tracing"] }
+# Enable all features for opentelemetry
+summer-opentelemetry = { path = "../../../summer-opentelemetry", features = ["jaeger", "zipkin", "more-resource", "grpc", "http"] }
+# Enable all features for postgres
+summer-postgres = { path = "../../../summer-postgres", features = ["array-impls", "with-chrono-0_4", "with-serde_json-1", "with-time-0_3", "with-uuid-1"] }
+summer-redis = { path = "../../../summer-redis" }
+# Enable all features for sa-token
+summer-sa-token = { path = "../../../contrib-plugins/summer-sa-token", features = ["memory", "with-web", "with-summer-redis", "openapi"] }
+# Enable all features for sea-orm
+summer-sea-orm = { path = "../../../summer-sea-orm", features = ["with-web", "with-web-openapi", "mysql", "sqlite", "postgres"] }
+# Enable all features for sqlx
+summer-sqlx = { path = "../../../summer-sqlx", features = ["postgres", "mysql", "sqlite", "with-json", "with-chrono", "with-rust_decimal", "with-bigdecimal", "with-uuid", "with-time"] }
+# Enable all features for stream
+summer-stream = { path = "../../../summer-stream", features = ["kafka", "redis", "file", "stdio", "json"] }
+# Enable all features for web
+summer-web = { path = "../../../summer-web", features = ["openapi", "openapi-redoc", "openapi-scalar", "openapi-swagger", "socket_io", "multipart", "ws"] }

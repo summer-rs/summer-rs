@@ -1,7 +1,7 @@
 [package]
 name = "summer-macros"
 description = "summer-rs Procedural Macros implementation"
-version = "0.5.3"
+version = "0.6.0"
 categories = ["development-tools::procedural-macro-helpers"]
 keywords = ["proc-macro", "web", "cron", "stream", "summer"]
 edition.workspace = true
@@ -14,7 +14,6 @@ proc-macro = true
 
 [features]
 socket_io = ["summer-web/socket_io"]
-sa-token = []
 
 [dependencies]
 proc-macro2 = { workspace = true }

@@ -46,4 +46,4 @@ async fn send_mail(Component(mailer): Component<Mailer>) -> Result<impl IntoResp
 }
 ```
 
-For the complete code, please refer to [`mail-example`](https://github.com/summer-rs/summer-rs/tree/master/examples/mail-example)
+For the complete code, please refer to [`mail-example`](https://github.com/summer-rs/summer-rs/tree/master/examples/integrations/mail-example)
