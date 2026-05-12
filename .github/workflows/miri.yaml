@@ -20,6 +20,13 @@ jobs:
       - name: Check out the code
         uses: actions/checkout@v4
 
+      # Workspace includes examples/integrations/plugin-example with path = "contrib-plugins/...".
+      - name: Checkout contrib-plugins
+        uses: actions/checkout@v4
+        with:
+          repository: summer-rs/contrib-plugins
+          path: contrib-plugins
+
       - name: Install protoc
         run: |
           sudo apt-get update
