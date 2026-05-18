@@ -1,11 +1,13 @@
-use aide::{Error, generate::GenContext, openapi::{Operation, ReferenceOr, Response, StatusCode}};
+use aide::{
+    generate::GenContext,
+    openapi::{Operation, ReferenceOr, Response, StatusCode},
+    Error,
+};
 
 // Re-export Problem Details OpenAPI utilities
 #[cfg(feature = "openapi")]
 pub use crate::problem_details::{
-    ProblemDetailsVariantInfo,
-    problem_details_schema,
-    register_error_response_by_variant,
+    problem_details_schema, register_error_response_by_variant, ProblemDetailsVariantInfo,
 };
 
 pub fn set_inferred_response(
@@ -34,7 +36,8 @@ pub fn set_inferred_response(
             };
 
             if existing_response.description != res.description {
-                existing_response.description = format!("- {}\n- {}", existing_response.description, res.description);
+                existing_response.description =
+                    format!("- {}\n- {}", existing_response.description, res.description);
             }
         }
         None => {

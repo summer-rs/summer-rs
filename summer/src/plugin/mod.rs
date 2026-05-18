@@ -14,7 +14,7 @@ use component::ComponentRef;
 pub use lazy::LazyComponent;
 pub use service::Service;
 use std::{
-    any::{self, Any},
+    any::{self, Any, TypeId},
     ops::Deref,
     sync::Arc,
 };
@@ -75,6 +75,34 @@ pub trait Plugin: Any + Send + Sync {
 impl PluginRef {
     pub(crate) fn new<T: Plugin>(plugin: T) -> Self {
         Self(Arc::new(plugin))
+    }
+
+    pub(crate) fn concrete_type_id(&self) -> TypeId {
+        (self.0.as_ref() as &dyn Any).type_id()
+    }
+}
+
+/// Bridges inventory-registered `&'static dyn Plugin` entries into [`PluginRef::new`].
+#[async_trait]
+impl Plugin for &'static dyn Plugin {
+    async fn build(&self, app: &mut AppBuilder) {
+        (**self).build(app).await
+    }
+
+    fn immediately_build(&self, app: &mut AppBuilder) {
+        (**self).immediately_build(app)
+    }
+
+    fn name(&self) -> &str {
+        (**self).name()
+    }
+
+    fn dependencies(&self) -> Vec<&str> {
+        (**self).dependencies()
+    }
+
+    fn immediately(&self) -> bool {
+        (**self).immediately()
     }
 }
 

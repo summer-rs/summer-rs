@@ -4,12 +4,12 @@ use crate::error::{Result, WebError};
 use crate::AppState;
 use anyhow::Context;
 use axum::http::request::Parts;
-use summer::config::{ConfigRegistry, Configurable};
-use summer::plugin::ComponentRegistry;
-use summer::App;
 use std::ops::{Deref, DerefMut};
 use std::result::Result as StdResult;
 use std::sync::Arc;
+use summer::config::{ConfigRegistry, Configurable};
+use summer::plugin::ComponentRegistry;
+use summer::App;
 
 /// Extending the functionality of RequestParts
 pub trait RequestPartsExt {

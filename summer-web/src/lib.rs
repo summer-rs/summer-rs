@@ -20,7 +20,7 @@ pub mod problem_details;
 pub use summer_macros::ProblemDetails;
 
 #[cfg(feature = "socket_io")]
-pub use { socketioxide, rmpv };
+pub use {rmpv, socketioxide};
 
 pub use axum;
 pub use summer::async_trait;
@@ -99,6 +99,7 @@ use anyhow::Context;
 use axum::Extension;
 use config::ServerConfig;
 use config::WebConfig;
+use std::{net::SocketAddr, ops::Deref, sync::Arc};
 use summer::plugin::component::ComponentRef;
 use summer::plugin::ComponentRegistry;
 use summer::plugin::MutableComponentRegistry;
@@ -106,9 +107,9 @@ use summer::{
     app::{App, AppBuilder},
     config::ConfigRegistry,
     error::Result,
+    event::{Event, EventPublisher},
     plugin::Plugin,
 };
-use std::{net::SocketAddr, ops::Deref, sync::Arc};
 
 #[cfg(feature = "socket_io")]
 use config::SocketIOConfig;
@@ -235,6 +236,24 @@ pub struct AppState {
 /// Web Plugin Definition
 pub struct WebPlugin;
 
+/// Published after the web server TCP listener has been bound.
+#[derive(Debug, Clone)]
+pub struct WebServerInitializedEvent {
+    /// Bound socket address.
+    pub addr: SocketAddr,
+}
+
+impl Event for WebServerInitializedEvent {}
+
+/// Published immediately before the axum server starts serving requests.
+#[derive(Debug, Clone)]
+pub struct WebServerStartedEvent {
+    /// Bound socket address.
+    pub addr: SocketAddr,
+}
+
+impl Event for WebServerStartedEvent {}
+
 #[async_trait]
 impl Plugin for WebPlugin {
     async fn build(&self, app: &mut AppBuilder) {
@@ -265,7 +284,7 @@ impl Plugin for WebPlugin {
 
         #[cfg(feature = "socket_io")]
         if let Some(socketio_config) = socketio_config {
-            router =  enable_socketio(socketio_config, app, router);
+            router = enable_socketio(socketio_config, app, router);
         }
 
         app.add_component(router);
@@ -300,6 +319,7 @@ impl WebPlugin {
             .await
             .with_context(|| format!("bind tcp listener failed:{addr}"))?;
         tracing::info!("bind tcp listener: {addr}");
+        app.publish(WebServerInitializedEvent { addr }).await?;
 
         // 3. openapi
         #[cfg(feature = "openapi")]
@@ -309,14 +329,14 @@ impl WebPlugin {
         };
 
         // 4. axum server
-        let mut router = router.layer(Extension(AppState { app }));
+        let mut router = router.layer(Extension(AppState { app: app.clone() }));
 
         if !config.global_prefix.is_empty() {
             router = axum::Router::new().nest(&config.global_prefix, router)
         };
 
-
         tracing::info!("axum server started");
+        app.publish(WebServerStartedEvent { addr }).await?;
         if config.connect_info {
             // with client connect info
             let service = router.into_make_service_with_connect_info::<SocketAddr>();
@@ -354,22 +374,28 @@ pub fn enable_openapi() {
 }
 
 #[cfg(feature = "socket_io")]
-pub fn enable_socketio(socketio_config: SocketIOConfig, app: &mut AppBuilder, router: Router) -> Router {
-    tracing::info!("Configuring SocketIO with namespace: {}", socketio_config.default_namespace);
-    
-    let (layer, io) = socketioxide::SocketIo::builder()
-        .build_layer();
-    
+pub fn enable_socketio(
+    socketio_config: SocketIOConfig,
+    app: &mut AppBuilder,
+    router: Router,
+) -> Router {
+    tracing::info!(
+        "Configuring SocketIO with namespace: {}",
+        socketio_config.default_namespace
+    );
+
+    let (layer, io) = socketioxide::SocketIo::builder().build_layer();
+
     let ns_path = socketio_config.default_namespace.clone();
     let ns_path_for_closure = ns_path.clone();
     io.ns(ns_path, move |socket: socketioxide::extract::SocketRef| async move {
         use summer::tracing::info;
-        
+
         info!(socket_id = ?socket.id, "New socket connected to namespace: {}", ns_path_for_closure);
-        
+
         crate::handler::auto_socketio_setup(&socket);
     });
-    
+
     app.add_component(io);
     router.layer(layer)
 }
@@ -381,7 +407,10 @@ fn finish_openapi(
     openapi_conf: OpenApiConfig,
     global_prefix: &str,
 ) -> axum::Router {
-    let router = router.nest_api_service(&openapi_conf.doc_prefix, docs_routes(&openapi_conf, global_prefix));
+    let router = router.nest_api_service(
+        &openapi_conf.doc_prefix,
+        docs_routes(&openapi_conf, global_prefix),
+    );
 
     let mut api = app.get_component::<OpenApi>().unwrap_or_else(|| OpenApi {
         info: openapi_conf.info,
@@ -409,7 +438,10 @@ fn finish_openapi(
 }
 
 #[cfg(feature = "openapi")]
-pub fn docs_routes(OpenApiConfig { doc_prefix, info }: &OpenApiConfig, global_prefix: &str) -> aide::axum::ApiRouter {
+pub fn docs_routes(
+    OpenApiConfig { doc_prefix, info }: &OpenApiConfig,
+    global_prefix: &str,
+) -> aide::axum::ApiRouter {
     let router = aide::axum::ApiRouter::new();
     let _openapi_path = &format!("{global_prefix}{doc_prefix}/openapi.json");
     let _doc_title = &info.title;

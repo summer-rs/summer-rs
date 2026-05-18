@@ -2,6 +2,10 @@ use crate::banner;
 use crate::config::env::Env;
 use crate::config::toml::TomlConfigRegistry;
 use crate::config::ConfigRegistry;
+use crate::event::{
+    AppBuiltEvent, ConfigEvent, ConfigSource, EventBus, EventPublisher, PluginsBuiltEvent,
+    ServicesInjectedEvent, ShutdownEvent, ShutdownPhase,
+};
 use crate::log::{BoxLayer, LogPlugin};
 use crate::plugin::component::ComponentRef;
 use crate::plugin::{service, ComponentRegistry, MutableComponentRegistry, Plugin};
@@ -10,40 +14,15 @@ use crate::{
     plugin::{component::DynComponentRef, PluginRef},
 };
 use dashmap::DashMap;
-use std::sync::LazyLock;
 use std::any::{Any, TypeId};
 use std::str::FromStr;
+use std::sync::LazyLock;
 use std::sync::RwLock;
-use std::{collections::HashSet, future::Future, path::Path, sync::Arc};
+use std::{collections::HashSet, future::Future, path::Path, path::PathBuf, sync::Arc};
 use tracing_subscriber::Layer;
 
-/// Wrapper for dynamically registered plugins (from inventory)
-struct DynPluginWrapper(&'static dyn Plugin);
-
-#[async_trait::async_trait]
-impl Plugin for DynPluginWrapper {
-    async fn build(&self, app: &mut AppBuilder) {
-        self.0.build(app).await
-    }
-
-    fn immediately_build(&self, app: &mut AppBuilder) {
-        self.0.immediately_build(app)
-    }
-
-    fn name(&self) -> &str {
-        self.0.name()
-    }
-
-    fn dependencies(&self) -> Vec<&str> {
-        self.0.dependencies()
-    }
-
-    fn immediately(&self) -> bool {
-        self.0.immediately()
-    }
-}
-
 type Registry<T> = DashMap<TypeId, T>;
+type PluginRegistry = DashMap<String, PluginRef>;
 type Scheduler<T> = dyn FnOnce(Arc<App>) -> Box<dyn Future<Output = Result<T>> + Send>;
 
 /// Running Applications
@@ -64,14 +43,14 @@ pub struct AppBuilder {
     pub(crate) env: Env,
     /// Tracing Layer
     pub(crate) layers: Vec<BoxLayer>,
-    /// Plugin
-    pub(crate) plugin_registry: Registry<PluginRef>,
-    /// Dynamic plugins from inventory (auto-registered via #[component] macro)
-    dynamic_plugins: Vec<&'static dyn Plugin>,
+    /// Plugin registry keyed by [`Plugin::name`]
+    pub(crate) plugin_registry: PluginRegistry,
     /// Component
     components: Registry<DynComponentRef>,
     /// Configuration read from `config_path`
     config: TomlConfigRegistry,
+    /// Source used to load the current configuration
+    config_source: ConfigSource,
     /// task
     schedulers: Vec<Box<Scheduler<String>>>,
     shutdown_hooks: Vec<Box<Scheduler<String>>>,
@@ -108,10 +87,9 @@ impl App {
     }
 }
 
-static GLOBAL_APP: LazyLock<RwLock<Arc<App>>> = LazyLock::new(|| RwLock::new(Arc::new(App::default())));
+static GLOBAL_APP: LazyLock<RwLock<Arc<App>>> =
+    LazyLock::new(|| RwLock::new(Arc::new(App::default())));
 
-unsafe impl Send for AppBuilder {}
-unsafe impl Sync for AppBuilder {}
 
 impl AppBuilder {
     /// Currently active environment
@@ -128,13 +106,12 @@ impl AppBuilder {
             plugin.immediately_build(self);
             return self;
         }
-        let plugin_id = TypeId::of::<T>();
-        if self.plugin_registry.contains_key(&plugin_id) {
-            let plugin_name = plugin.name();
+        let plugin_name = plugin.name().to_string();
+        if self.plugin_registry.contains_key(&plugin_name) {
             panic!("Error adding plugin {plugin_name}: plugin was already added in application")
         }
         self.plugin_registry
-            .insert(plugin_id, PluginRef::new(plugin));
+            .insert(plugin_name, PluginRef::new(plugin));
         self
     }
 
@@ -148,20 +125,20 @@ impl AppBuilder {
     fn add_auto_plugins(&mut self) {
         let plugins: Vec<_> = inventory::iter::<&dyn Plugin>.into_iter().collect();
         log::debug!("Found {} auto plugins via inventory", plugins.len());
-        
+
         for plugin in plugins {
             log::debug!("Adding auto plugin: {}", plugin.name());
-            
-            // Check if already added by name
-            let plugin_name = plugin.name();
-            if self.dynamic_plugins.iter().any(|p| p.name() == plugin_name) {
+
+            let plugin_name = plugin.name().to_string();
+            if self.plugin_registry.contains_key(&plugin_name) {
                 panic!("Error adding plugin {plugin_name}: plugin was already added in application")
             }
-            
+
             if plugin.immediately() {
                 plugin.immediately_build(self);
             } else {
-                self.dynamic_plugins.push(*plugin);
+                self.plugin_registry
+                    .insert(plugin_name, PluginRef::new(*plugin));
             }
         }
     }
@@ -169,7 +146,11 @@ impl AppBuilder {
     /// Returns `true` if the [`Plugin`] has already been added.
     #[inline]
     pub fn is_plugin_added<T: Plugin>(&self) -> bool {
-        self.plugin_registry.contains_key(&TypeId::of::<T>())
+        let tid = TypeId::of::<T>();
+        let default_name = std::any::type_name::<T>();
+        self.plugin_registry.iter().any(|entry| {
+            entry.value().concrete_type_id() == tid || entry.key().as_str() == default_name
+        })
     }
 
     /// The path of the configuration file, default is `./config/app.toml`.
@@ -183,6 +164,7 @@ impl AppBuilder {
     pub fn use_config_file(&mut self, config_path: &str) -> &mut Self {
         self.config = TomlConfigRegistry::new(Path::new(config_path), self.env)
             .expect("config file load failed");
+        self.config_source = ConfigSource::File(PathBuf::from(config_path));
         self
     }
 
@@ -193,6 +175,7 @@ impl AppBuilder {
     pub fn use_config_str(&mut self, toml_content: &str) -> &mut Self {
         self.config =
             TomlConfigRegistry::from_str(toml_content).expect("config content parse failed");
+        self.config_source = ConfigSource::Inline;
         self
     }
 
@@ -243,10 +226,11 @@ impl AppBuilder {
         banner::print_banner(self);
 
         // 2. build plugin
-        self.build_plugins().await;
+        self.build_plugins().await?;
 
         // 3. service dependency inject
         service::auto_inject_service(self)?;
+        self.publish(ServicesInjectedEvent).await?;
 
         // 4. schedule
         self.schedule().await
@@ -256,33 +240,31 @@ impl AppBuilder {
     /// This method returns the built App, and developers can implement logic such as command lines and task scheduling by themselves.
     pub async fn build(&mut self) -> Result<Arc<App>> {
         // 1. build plugin
-        self.build_plugins().await;
+        self.build_plugins().await?;
 
         // 2. service dependency inject
         service::auto_inject_service(self)?;
+        self.publish(ServicesInjectedEvent).await?;
 
-        Ok(self.build_app())
+        self.build_app().await
     }
 
-    async fn build_plugins(&mut self) {
-        LogPlugin.immediately_build(self);
-
-        // Automatically collect plugins registered via #[component] macro
+    async fn build_plugins(&mut self) -> Result<()> {
+        // Register inventory plugins first so ConfigEvent subscribers see the full plugin set.
         self.add_auto_plugins();
 
-        // Collect all plugins (both static and dynamic)
+        self.publish(ConfigEvent {
+            env: self.env,
+            source: self.config_source.clone(),
+        })
+        .await?;
+        LogPlugin.immediately_build(self);
+
+        // Collect all plugins
         let registry = std::mem::take(&mut self.plugin_registry);
-        let mut to_register: Vec<PluginRef> = registry
-            .iter()
-            .map(|e| e.value().to_owned())
-            .collect();
-        
-        // Add dynamic plugins (from inventory)
-        let dynamic_plugins = std::mem::take(&mut self.dynamic_plugins);
-        for plugin in dynamic_plugins {
-            to_register.push(PluginRef::new(DynPluginWrapper(plugin)));
-        }
-        
+        let mut to_register: Vec<PluginRef> =
+            registry.iter().map(|e| e.value().to_owned()).collect();
+
         let mut registered: HashSet<String> = HashSet::new();
 
         while !to_register.is_empty() {
@@ -308,10 +290,12 @@ impl AppBuilder {
             to_register = next_round;
         }
         self.plugin_registry = registry;
+        self.publish(PluginsBuiltEvent).await?;
+        Ok(())
     }
 
     async fn schedule(&mut self) -> Result<()> {
-        let app = self.build_app();
+        let app = self.build_app().await?;
 
         let schedulers = std::mem::take(&mut self.schedulers);
         let mut handles = vec![];
@@ -328,15 +312,24 @@ impl AppBuilder {
             }
         }
 
+        app.publish(ShutdownEvent {
+            phase: ShutdownPhase::Starting,
+        })
+        .await?;
+
         // FILO: The hooks added by the plugin built first should be executed later
         while let Some(hook) = self.shutdown_hooks.pop() {
             let result = Box::into_pin(hook(app.clone())).await?;
             log::info!("shutdown result: {result}");
         }
+        app.publish(ShutdownEvent {
+            phase: ShutdownPhase::Completed,
+        })
+        .await?;
         Ok(())
     }
 
-    fn build_app(&mut self) -> Arc<App> {
+    async fn build_app(&mut self) -> Result<Arc<App>> {
         let components = std::mem::take(&mut self.components);
         let config = std::mem::take(&mut self.config);
         let app = Arc::new(App {
@@ -345,7 +338,8 @@ impl AppBuilder {
             config,
         });
         App::set_global(app.clone());
-        app
+        app.publish(AppBuiltEvent { app: app.clone() }).await?;
+        Ok(app)
     }
 }
 
@@ -354,16 +348,18 @@ impl Default for AppBuilder {
         let env = Env::init();
         let config = TomlConfigRegistry::new(Path::new("./config/app.toml"), env)
             .expect("toml config load failed");
-        Self {
+        let mut builder = Self {
             env,
             config,
+            config_source: ConfigSource::File(PathBuf::from("./config/app.toml")),
             layers: Default::default(),
             plugin_registry: Default::default(),
-            dynamic_plugins: Default::default(),
             components: Default::default(),
             schedulers: Default::default(),
             shutdown_hooks: Default::default(),
-        }
+        };
+        builder.add_component(EventBus::default());
+        builder
     }
 }
 
@@ -440,6 +436,7 @@ impl MutableComponentRegistry for AppBuilder {
 
 #[cfg(test)]
 mod tests {
+    use crate::plugin::Plugin;
     use crate::plugin::{ComponentRegistry, MutableComponentRegistry};
     use crate::App;
 
@@ -485,5 +482,43 @@ mod tests {
 
         let p = app.get_component::<Point<i32>>();
         assert!(p.is_none())
+    }
+
+    struct LifecycleListenerPlugin {
+        calls: std::sync::Arc<std::sync::atomic::AtomicUsize>,
+    }
+
+    #[crate::async_trait]
+    impl Plugin for LifecycleListenerPlugin {
+        async fn build(&self, app: &mut super::AppBuilder) {
+            use crate::event::{EventSubscriber, PluginsBuiltEvent};
+            use std::sync::atomic::Ordering;
+
+            let calls = self.calls.clone();
+            app.listen(move |_: PluginsBuiltEvent| {
+                let calls = calls.clone();
+                async move {
+                    calls.fetch_add(1, Ordering::SeqCst);
+                    Ok(())
+                }
+            });
+        }
+    }
+
+    #[tokio::test]
+    async fn test_plugin_can_subscribe_to_lifecycle_events() {
+        use std::sync::{
+            atomic::{AtomicUsize, Ordering},
+            Arc,
+        };
+
+        let calls = Arc::new(AtomicUsize::new(0));
+        let mut app = App::new();
+        app.add_plugin(LifecycleListenerPlugin {
+            calls: calls.clone(),
+        });
+
+        app.build().await.expect("app build failed");
+        assert_eq!(calls.load(Ordering::SeqCst), 1);
     }
 }

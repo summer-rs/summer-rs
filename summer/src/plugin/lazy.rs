@@ -1,7 +1,7 @@
-use std::sync::{Arc, RwLock};
 use crate::error::Result;
 use crate::plugin::ComponentRegistry;
 use crate::App;
+use std::sync::{Arc, RwLock};
 
 /// A lazy-loaded component wrapper that allows circular dependencies.
 /// The component is resolved on first access from the global app registry.
@@ -65,13 +65,13 @@ impl<T: Clone + Send + Sync + 'static> LazyComponent<T> {
                 return Ok(component.clone());
             }
         }
-        
+
         let mut guard = self.component.write().unwrap();
-        
+
         if let Some(component) = guard.as_ref() {
             return Ok(component.clone());
         }
-        
+
         let component = App::global().try_get_component::<T>()?;
         *guard = Some(component.clone());
         Ok(component)
