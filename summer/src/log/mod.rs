@@ -3,12 +3,12 @@ mod bootstrap;
 mod config;
 
 pub use bootstrap::install_bootstrap_logger;
+pub(crate) use config::{LogLevel, LoggerConfig};
 
 use crate::app::AppBuilder;
 use crate::config::ConfigRegistry;
 use crate::plugin::Plugin;
-use config::{Format, LogLevel, LoggerConfig, TimeStyle, WithFields};
-use nu_ansi_term::Color;
+use config::{Format, TimeStyle, WithFields};
 use std::sync::OnceLock;
 use tracing_appender::non_blocking::WorkerGuard;
 use tracing_error::ErrorLayer;
@@ -33,20 +33,6 @@ impl Plugin for LogPlugin {
         let config = app
             .get_config::<LoggerConfig>()
             .expect("tracing plugin config load failed");
-
-        if config.enable {
-            let level = match config.level {
-                LogLevel::Off => Color::LightRed.paint("Disabled"),
-                LogLevel::Trace => Color::Purple.paint("TRACE"),
-                LogLevel::Debug => Color::Blue.paint("DEBUG"),
-                LogLevel::Info => Color::Green.paint("INFO "),
-                LogLevel::Warn => Color::Yellow.paint("WARN "),
-                LogLevel::Error => Color::Red.paint("ERROR"),
-            };
-            println!("     logger: {level}\n");
-        } else {
-            println!("     logger: {}\n", Color::LightRed.paint("Disabled"));
-        }
 
         if config.pretty_backtrace {
             std::env::set_var("RUST_BACKTRACE", "1");
