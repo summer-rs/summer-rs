@@ -35,6 +35,15 @@ impl TomlConfigRegistry {
         Ok(Self { config })
     }
 
+    /// Merges a TOML document into the current registry (later keys override earlier ones).
+    pub fn merge_str(&mut self, toml: &str) -> Result<()> {
+        let overlay = toml::from_str::<Table>(toml)
+            .with_context(|| "Failed to parse remote config as TOML")?;
+        self.config = merge_tables(self.config.clone(), overlay)
+            .map_err(|e| AppError::TomlMergeError(e.to_string()))?;
+        Ok(())
+    }
+
     /// Get all configurations for a specified prefix
     pub fn get_by_prefix(&self, prefix: &str) -> Table {
         match self.config.get(prefix) {

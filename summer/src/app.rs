@@ -3,8 +3,8 @@ use crate::config::env::Env;
 use crate::config::toml::TomlConfigRegistry;
 use crate::config::ConfigRegistry;
 use crate::event::{
-    AppBuiltEvent, ConfigEvent, ConfigSource, EventBus, EventPublisher, PluginsBuiltEvent,
-    ServicesInjectedEvent, ShutdownEvent, ShutdownPhase,
+    AppBuiltEvent, BuilderEventPublisher, ConfigEvent, ConfigSource, EventBus, EventPublisher,
+    PluginsBuiltEvent, ServicesInjectedEvent, ShutdownEvent, ShutdownPhase,
 };
 use crate::log::{BoxLayer, LogPlugin};
 use crate::plugin::component::ComponentRef;
@@ -30,7 +30,6 @@ use tracing_subscriber::Layer;
 type Registry<T> = DashMap<TypeId, T>;
 type PluginRegistry = DashMap<String, PluginRef>;
 type SchedulerFn<T> = dyn FnOnce(Arc<App>) -> Box<dyn Future<Output = Result<T>> + Send> + Send;
-
 /// A one-shot scheduler stored in [`AppBuilder`]; interior mutability makes the builder `Sync`.
 struct Scheduler<T> {
     inner: Mutex<Option<Box<SchedulerFn<T>>>>,
@@ -209,6 +208,11 @@ impl AppBuilder {
             TomlConfigRegistry::from_str(toml_content).expect("config content parse failed");
         self.config_source = ConfigSource::Inline;
         self
+    }
+
+    /// Merges a TOML document into the application configuration.
+    pub fn merge_config_str(&mut self, toml: &str) -> Result<()> {
+        self.config.merge_str(toml)
     }
 
     /// add [tracing_subscriber::layer]
@@ -527,7 +531,7 @@ mod tests {
             use std::sync::atomic::Ordering;
 
             let calls = self.calls.clone();
-            app.listen(move |_: PluginsBuiltEvent| {
+            app.listen(move |_: PluginsBuiltEvent, _app: &mut super::AppBuilder| {
                 let calls = calls.clone();
                 async move {
                     calls.fetch_add(1, Ordering::SeqCst);

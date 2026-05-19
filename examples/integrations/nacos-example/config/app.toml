@@ -1,0 +1,16 @@
+[nacos]
+server_addr = "127.0.0.1:8848"
+app_name = "nacos-example"
+enable_config = true
+enable_naming = true
+
+[nacos.bootstrap]
+data_id = "app.toml"
+group = "DEFAULT_GROUP"
+
+[nacos.registration]
+service_name = "nacos-example"
+
+[web]
+port = 8080
+graceful = true

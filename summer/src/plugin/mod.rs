@@ -50,9 +50,10 @@ pub trait Plugin: Any + Send + Sync {
     /// Configures the `App` to which this plugin is added.
     async fn build(&self, _app: &mut AppBuilder) {}
 
-    /// Configures the `App` to which this plugin is added.
-    /// The immediately plugin will not be added to the registry,
-    /// and the plugin cannot obtain components registered in the registry.
+    /// Configures the `App` before the main plugin build phase (for example logging or remote config hooks).
+    ///
+    /// Called when the plugin is added if [`Self::immediately`] returns `true`, and again for
+    /// built-in plugins such as [`crate::log::LogPlugin`] during startup.
     fn immediately_build(&self, _app: &mut AppBuilder) {}
 
     /// Configures a name for the [`Plugin`] which is primarily used for checking plugin
