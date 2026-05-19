@@ -18,12 +18,44 @@ use std::any::{Any, TypeId};
 use std::str::FromStr;
 use std::sync::LazyLock;
 use std::sync::RwLock;
-use std::{collections::HashSet, future::Future, path::Path, path::PathBuf, sync::Arc};
+use std::{
+    collections::HashSet,
+    future::Future,
+    path::Path,
+    path::PathBuf,
+    sync::{Arc, Mutex},
+};
 use tracing_subscriber::Layer;
 
 type Registry<T> = DashMap<TypeId, T>;
 type PluginRegistry = DashMap<String, PluginRef>;
-type Scheduler<T> = dyn FnOnce(Arc<App>) -> Box<dyn Future<Output = Result<T>> + Send>;
+type SchedulerFn<T> = dyn FnOnce(Arc<App>) -> Box<dyn Future<Output = Result<T>> + Send> + Send;
+
+/// A one-shot scheduler stored in [`AppBuilder`]; interior mutability makes the builder `Sync`.
+struct Scheduler<T> {
+    inner: Mutex<Option<Box<SchedulerFn<T>>>>,
+}
+
+impl<T> Scheduler<T> {
+    fn new<F>(scheduler: F) -> Self
+    where
+        F: FnOnce(Arc<App>) -> Box<dyn Future<Output = Result<T>> + Send> + Send + 'static,
+    {
+        Self {
+            inner: Mutex::new(Some(Box::new(scheduler))),
+        }
+    }
+
+    fn run(&self, app: Arc<App>) -> Box<dyn Future<Output = Result<T>> + Send> {
+        let scheduler = self
+            .inner
+            .lock()
+            .expect("scheduler lock poisoned")
+            .take()
+            .expect("scheduler already executed");
+        scheduler(app)
+    }
+}
 
 /// Running Applications
 #[derive(Default)]
@@ -52,8 +84,8 @@ pub struct AppBuilder {
     /// Source used to load the current configuration
     config_source: ConfigSource,
     /// task
-    schedulers: Vec<Box<Scheduler<String>>>,
-    shutdown_hooks: Vec<Box<Scheduler<String>>>,
+    schedulers: Vec<Scheduler<String>>,
+    shutdown_hooks: Vec<Scheduler<String>>,
 }
 
 impl App {
@@ -191,18 +223,18 @@ impl AppBuilder {
     /// Add a scheduled task
     pub fn add_scheduler<T>(&mut self, scheduler: T) -> &mut Self
     where
-        T: FnOnce(Arc<App>) -> Box<dyn Future<Output = Result<String>> + Send> + 'static,
+        T: FnOnce(Arc<App>) -> Box<dyn Future<Output = Result<String>> + Send> + Send + 'static,
     {
-        self.schedulers.push(Box::new(scheduler));
+        self.schedulers.push(Scheduler::new(scheduler));
         self
     }
 
     /// Add a shutdown hook
     pub fn add_shutdown_hook<T>(&mut self, hook: T) -> &mut Self
     where
-        T: FnOnce(Arc<App>) -> Box<dyn Future<Output = Result<String>> + Send> + 'static,
+        T: FnOnce(Arc<App>) -> Box<dyn Future<Output = Result<String>> + Send> + Send + 'static,
     {
-        self.shutdown_hooks.push(Box::new(hook));
+        self.shutdown_hooks.push(Scheduler::new(hook));
         self
     }
 
@@ -300,7 +332,7 @@ impl AppBuilder {
         let schedulers = std::mem::take(&mut self.schedulers);
         let mut handles = vec![];
         for task in schedulers {
-            let poll_future = task(app.clone());
+            let poll_future = task.run(app.clone());
             let poll_future = Box::into_pin(poll_future);
             handles.push(tokio::spawn(poll_future));
         }
@@ -319,7 +351,7 @@ impl AppBuilder {
 
         // FILO: The hooks added by the plugin built first should be executed later
         while let Some(hook) = self.shutdown_hooks.pop() {
-            let result = Box::into_pin(hook(app.clone())).await?;
+            let result = Box::into_pin(hook.run(app.clone())).await?;
             log::info!("shutdown result: {result}");
         }
         app.publish(ShutdownEvent {

@@ -11,6 +11,7 @@ use dashmap::DashMap;
 use std::{
     any::{Any, TypeId},
     future::Future,
+    net::SocketAddr,
     path::PathBuf,
     pin::Pin,
     sync::Arc,
@@ -209,6 +210,15 @@ pub struct ShutdownEvent {
 }
 
 impl Event for ShutdownEvent {}
+
+/// Published when the HTTP server is ready to accept requests.
+#[derive(Debug, Clone)]
+pub struct WebServerStartedEvent {
+    /// Bound socket address.
+    pub addr: SocketAddr,
+}
+
+impl Event for WebServerStartedEvent {}
 
 #[cfg(test)]
 mod tests {

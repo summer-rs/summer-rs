@@ -107,7 +107,7 @@ use summer::{
     app::{App, AppBuilder},
     config::ConfigRegistry,
     error::Result,
-    event::{Event, EventPublisher},
+    event::EventPublisher,
     plugin::Plugin,
 };
 
@@ -236,23 +236,7 @@ pub struct AppState {
 /// Web Plugin Definition
 pub struct WebPlugin;
 
-/// Published after the web server TCP listener has been bound.
-#[derive(Debug, Clone)]
-pub struct WebServerInitializedEvent {
-    /// Bound socket address.
-    pub addr: SocketAddr,
-}
-
-impl Event for WebServerInitializedEvent {}
-
-/// Published immediately before the axum server starts serving requests.
-#[derive(Debug, Clone)]
-pub struct WebServerStartedEvent {
-    /// Bound socket address.
-    pub addr: SocketAddr,
-}
-
-impl Event for WebServerStartedEvent {}
+pub use summer::event::WebServerStartedEvent;
 
 #[async_trait]
 impl Plugin for WebPlugin {
@@ -319,7 +303,6 @@ impl WebPlugin {
             .await
             .with_context(|| format!("bind tcp listener failed:{addr}"))?;
         tracing::info!("bind tcp listener: {addr}");
-        app.publish(WebServerInitializedEvent { addr }).await?;
 
         // 3. openapi
         #[cfg(feature = "openapi")]
