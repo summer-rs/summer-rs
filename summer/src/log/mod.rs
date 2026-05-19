@@ -1,11 +1,14 @@
 #![doc = include_str!("../../Log-Plugin.md")]
+mod bootstrap;
 mod config;
+
+pub use bootstrap::install_bootstrap_logger;
+pub(crate) use config::{LogLevel, LoggerConfig};
 
 use crate::app::AppBuilder;
 use crate::config::ConfigRegistry;
 use crate::plugin::Plugin;
-use config::{Format, LogLevel, LoggerConfig, TimeStyle, WithFields};
-use nu_ansi_term::Color;
+use config::{Format, TimeStyle, WithFields};
 use std::sync::OnceLock;
 use tracing_appender::non_blocking::WorkerGuard;
 use tracing_error::ErrorLayer;
@@ -31,20 +34,6 @@ impl Plugin for LogPlugin {
             .get_config::<LoggerConfig>()
             .expect("tracing plugin config load failed");
 
-        if config.enable {
-            let level = match config.level {
-                LogLevel::Off => Color::LightRed.paint("Disabled"),
-                LogLevel::Trace => Color::Purple.paint("TRACE"),
-                LogLevel::Debug => Color::Blue.paint("DEBUG"),
-                LogLevel::Info => Color::Green.paint("INFO "),
-                LogLevel::Warn => Color::Yellow.paint("WARN "),
-                LogLevel::Error => Color::Red.paint("ERROR"),
-            };
-            println!("     logger: {level}\n");
-        } else {
-            println!("     logger: {}\n", Color::LightRed.paint("Disabled"));
-        }
-
         if config.pretty_backtrace {
             std::env::set_var("RUST_BACKTRACE", "1");
             log::warn!(
@@ -60,11 +49,13 @@ impl Plugin for LogPlugin {
         // try_init() instead of init() to handle cases where the global subscriber
         // has already been set (e.g., in test environments with multiple App instances)
         // This is the correct approach as tracing subscriber is a process-wide singleton
-        let _ = tracing_subscriber::registry()
+        let initialized = tracing_subscriber::registry()
             .with(layers)
             .with(env_filter)
             .with(ErrorLayer::default())
-            .try_init();
+            .try_init()
+            .is_ok();
+        wire_log_to_tracing(initialized);
     }
 
     fn immediately(&self) -> bool {
@@ -74,6 +65,13 @@ impl Plugin for LogPlugin {
 
 // Keep nonblocking file appender work guard
 static NONBLOCKING_WORK_GUARD_KEEP: OnceLock<WorkerGuard> = OnceLock::new();
+
+/// Forwards [`log`] records to the active tracing subscriber (replaces the bootstrap logger).
+pub(crate) fn wire_log_to_tracing(tracing_subscriber_initialized: bool) {
+    if tracing_subscriber_initialized || tracing::dispatcher::has_been_set() {
+        let _ = tracing_log::LogTracer::init();
+    }
+}
 
 impl LoggerConfig {
     fn config_subscriber(&self, mut layers: Vec<BoxLayer>) -> Vec<BoxLayer> {

@@ -1,7 +1,7 @@
 use schemars::JsonSchema;
 use serde::Deserialize;
-use summer::config::Configurable;
 use std::net::{IpAddr, Ipv4Addr};
+use summer::config::Configurable;
 use tracing::Level;
 
 summer::submit_config_schema!("web", WebConfig);

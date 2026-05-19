@@ -1,5 +1,7 @@
 use nu_ansi_term::Color;
 
+use crate::config::ConfigRegistry;
+use crate::log::{LogLevel, LoggerConfig};
 use crate::{app::AppBuilder, config::env::Env};
 
 const BANNER: &str = r"
@@ -30,5 +32,22 @@ pub(crate) fn print_banner(app: &AppBuilder) {
         println!("compilation: {}", Color::LightRed.paint("Debug"));
     } else {
         println!("compilation: {}", Color::Green.paint("Release"));
+    }
+
+    let config = app
+        .get_config::<LoggerConfig>()
+        .expect("tracing plugin config load failed");
+    if config.enable {
+        let level = match config.level {
+            LogLevel::Off => Color::LightRed.paint("Disabled"),
+            LogLevel::Trace => Color::Purple.paint("TRACE"),
+            LogLevel::Debug => Color::Blue.paint("DEBUG"),
+            LogLevel::Info => Color::Green.paint("INFO "),
+            LogLevel::Warn => Color::Yellow.paint("WARN "),
+            LogLevel::Error => Color::Red.paint("ERROR"),
+        };
+        println!("     logger: {level}\n");
+    } else {
+        println!("     logger: {}\n", Color::LightRed.paint("Disabled"));
     }
 }

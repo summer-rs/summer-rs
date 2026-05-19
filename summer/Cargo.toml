@@ -19,6 +19,7 @@ nu-ansi-term = { workspace = true }
 tracing = { workspace = true, features = ["log"] }
 tracing-appender = { workspace = true }
 tracing-error = { workspace = true }
+tracing-log = { workspace = true }
 tracing-subscriber = { workspace = true, features = [
     "json",
     "env-filter",

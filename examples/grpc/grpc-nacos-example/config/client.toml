@@ -1,0 +1,8 @@
+[nacos]
+server_addr = "127.0.0.1:8848"
+app_name = "grpc-nacos-client"
+enable_naming = true
+
+[discovery]
+service_name = "grpc-nacos-example"
+group = "DEFAULT_GROUP"

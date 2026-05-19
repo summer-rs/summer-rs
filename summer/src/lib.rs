@@ -12,6 +12,8 @@ pub mod banner;
 pub mod config;
 /// summer-rs definition error
 pub mod error;
+/// Application event support
+pub mod event;
 /// summer-rs extractor
 pub mod extractor;
 /// The log plugin is a built-in plugin of summer-rs and is also the first plugin loaded when the application starts.
@@ -23,8 +25,8 @@ pub mod signal;
 
 pub use app::App;
 pub use async_trait::async_trait;
+pub use inventory::submit as submit_inventory;
 pub use summer_macros::auto_config;
 pub use summer_macros::component;
 pub use tracing;
 pub use tracing_error::SpanTrace;
-pub use inventory::submit as submit_inventory;

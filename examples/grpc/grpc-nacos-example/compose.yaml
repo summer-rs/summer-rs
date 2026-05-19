@@ -1,0 +1,10 @@
+services:
+  rnacos:
+    image: qingpan/rnacos:stable
+    ports:
+      - "8848:8848"
+      - "9848:9848"
+      - "10848:10848"
+    environment:
+      RNACOS_INIT_ADMIN_USERNAME: admin
+      RNACOS_INIT_ADMIN_PASSWORD: admin
