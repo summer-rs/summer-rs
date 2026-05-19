@@ -41,12 +41,8 @@ impl BuilderEventListener for NacosConfigEventListener {
         _event: Arc<dyn Any + Send + Sync>,
         app: &mut AppBuilder,
     ) -> Result<()> {
-        NacosPlugin::on_config_event(app).await.inspect_err(|e| {
-            tracing::error!(
-                error = %e,
-                "nacos: ConfigEvent handler failed (bootstrap fetch, merge, or client init)"
-            );
-        })
+        NacosPlugin::on_config_event(app).await;
+        Ok(())
     }
 }
 
@@ -75,16 +71,17 @@ impl AppEventListener for NacosWebRegistrationListener {
             )
             .await
             .context("nacos register instance")?;
+        tracing::info!(
+            service = %self.reg.service_name,
+            group = %self.reg.group,
+            ip = %instance.ip,
+            port = instance.port,
+            "registered instance to nacos"
+        );
         *self
             .registered
             .lock()
             .expect("registration lock poisoned") = Some(instance);
-        tracing::info!(
-            service = %self.reg.service_name,
-            group = %self.reg.group,
-            addr = %event.addr,
-            "registered instance to nacos"
-        );
         Ok(())
     }
 }
@@ -101,42 +98,77 @@ impl Plugin for NacosPlugin {
 }
 
 impl NacosPlugin {
-    async fn on_config_event(app: &mut AppBuilder) -> Result<()> {
-        let nacos = app.get_config::<NacosConfig>()?;
+    /// Best-effort: logs failures but does not block application startup.
+    async fn on_config_event(app: &mut AppBuilder) {
+        let nacos = match app.get_config::<NacosConfig>() {
+            Ok(nacos) => nacos,
+            Err(e) => {
+                tracing::error!(error = %e, "nacos: failed to load plugin config");
+                return;
+            }
+        };
 
         if nacos.enable_config {
-            let config_service = Self::build_config_service(&nacos).await?;
-            for item in &nacos.bootstrap {
-                let resp = config_service
-                    .get_config(item.data_id.clone(), item.group.clone())
-                    .await
-                    .with_context(|| {
-                        format!(
-                            "fetch nacos config data_id={} group={}",
-                            item.data_id, item.group
-                        )
-                    })?;
-                app.merge_config_str(resp.content())?;
-                tracing::info!(
-                    data_id = %item.data_id,
-                    group = %item.group,
-                    "merged nacos config into application registry"
-                );
+            match Self::build_config_service(&nacos).await {
+                Err(e) => tracing::error!(error = %e, "nacos: failed to build config service"),
+                Ok(config_service) => {
+                    for item in &nacos.bootstrap {
+                        let data_id = item.data_id.clone();
+                        let group = item.group.clone();
+                        let resp = match config_service
+                            .get_config(data_id.clone(), group.clone())
+                            .await
+                        {
+                            Ok(resp) => resp,
+                            Err(e) => {
+                                tracing::error!(
+                                    data_id = %data_id,
+                                    group = %group,
+                                    error = %e,
+                                    "nacos: bootstrap config fetch failed"
+                                );
+                                continue;
+                            }
+                        };
+                        if let Err(e) = app.merge_config_str(resp.content()) {
+                            tracing::error!(
+                                data_id = %data_id,
+                                group = %group,
+                                error = %e,
+                                "nacos: bootstrap config merge failed"
+                            );
+                            continue;
+                        }
+                        tracing::info!(
+                            data_id = %data_id,
+                            group = %group,
+                            "merged nacos config into application registry"
+                        );
+                    }
+                    app.add_component(config_service);
+                }
             }
-            app.add_component(config_service);
         }
 
-        let nacos = app.get_config::<NacosConfig>()?;
+        let nacos = match app.get_config::<NacosConfig>() {
+            Ok(nacos) => nacos,
+            Err(e) => {
+                tracing::error!(error = %e, "nacos: failed to reload config after bootstrap merge");
+                return;
+            }
+        };
 
         if nacos.enable_naming || nacos.registration.is_some() {
-            let naming_service = Self::build_naming_service(&nacos).await?;
-            if let Some(reg) = nacos.registration.clone() {
-                Self::wire_registration(app, naming_service.clone(), reg);
+            match Self::build_naming_service(&nacos).await {
+                Err(e) => tracing::error!(error = %e, "nacos: failed to build naming service"),
+                Ok(naming_service) => {
+                    if let Some(reg) = nacos.registration.clone() {
+                        Self::wire_registration(app, naming_service.clone(), reg);
+                    }
+                    app.add_component(naming_service);
+                }
             }
-            app.add_component(naming_service);
         }
-
-        Ok(())
     }
 
     fn client_props(config: &NacosConfig) -> ClientProps {
@@ -225,7 +257,7 @@ fn build_service_instance(
     let ip = reg
         .ip
         .clone()
-        .or_else(|| Some(bound.ip().to_string()))
+        .or_else(|| ip_from_bound(bound))
         .or_else(resolve_local_ip)
         .context("nacos registration requires ip (set nacos.registration.ip or run with summer-web)")?;
     let port = reg.port.unwrap_or(bound.port());
@@ -245,6 +277,16 @@ fn build_service_instance(
     Ok(instance)
 }
 
+/// Returns the bound address IP unless it is unspecified (`0.0.0.0` / `::`).
+fn ip_from_bound(bound: std::net::SocketAddr) -> Option<String> {
+    let ip = bound.ip();
+    if ip.is_unspecified() {
+        None
+    } else {
+        Some(ip.to_string())
+    }
+}
+
 #[cfg(feature = "naming")]
 fn resolve_local_ip() -> Option<String> {
     local_ip_address::local_ip()
@@ -258,4 +300,28 @@ fn resolve_local_ip() -> Option<String> {
 #[cfg(not(feature = "naming"))]
 fn resolve_local_ip() -> Option<String> {
     None
+}
+
+#[cfg(test)]
+mod tests {
+    use super::ip_from_bound;
+    use std::net::{IpAddr, Ipv4Addr, Ipv6Addr, SocketAddr};
+
+    #[test]
+    fn ip_from_bound_skips_unspecified_v4() {
+        let addr = SocketAddr::new(IpAddr::V4(Ipv4Addr::UNSPECIFIED), 8080);
+        assert_eq!(ip_from_bound(addr), None);
+    }
+
+    #[test]
+    fn ip_from_bound_skips_unspecified_v6() {
+        let addr = SocketAddr::new(IpAddr::V6(Ipv6Addr::UNSPECIFIED), 8080);
+        assert_eq!(ip_from_bound(addr), None);
+    }
+
+    #[test]
+    fn ip_from_bound_uses_concrete_ip() {
+        let addr = SocketAddr::new(IpAddr::V4(Ipv4Addr::new(10, 0, 0, 5)), 3000);
+        assert_eq!(ip_from_bound(addr).as_deref(), Some("10.0.0.5"));
+    }
 }

@@ -26,7 +26,7 @@ app_name = "my-app"
 enable_config = true
 enable_naming = true
 
-# Merged on ConfigEvent (order matters; later overrides earlier). Add NacosPlugin before WebPlugin.
+# Merged on ConfigEvent (order matters; later overrides earlier).
 [[nacos.bootstrap]]
 data_id = "app.toml"
 group = "DEFAULT_GROUP"

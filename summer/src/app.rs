@@ -381,6 +381,7 @@ impl AppBuilder {
 
 impl Default for AppBuilder {
     fn default() -> Self {
+        crate::log::install_bootstrap_logger();
         let env = Env::init();
         let config = TomlConfigRegistry::new(Path::new("./config/app.toml"), env)
             .expect("toml config load failed");
