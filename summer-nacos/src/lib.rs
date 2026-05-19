@@ -41,7 +41,12 @@ impl BuilderEventListener for NacosConfigEventListener {
         _event: Arc<dyn Any + Send + Sync>,
         app: &mut AppBuilder,
     ) -> Result<()> {
-        NacosPlugin::on_config_event(app).await
+        NacosPlugin::on_config_event(app).await.inspect_err(|e| {
+            tracing::error!(
+                error = %e,
+                "nacos: ConfigEvent handler failed (bootstrap fetch, merge, or client init)"
+            );
+        })
     }
 }
 
