@@ -18,7 +18,7 @@ use summer::async_trait;
 use summer::config::ConfigRegistry;
 use summer::event::{
     AppEventListener, AppEventSubscriber, BuilderEventListener, ConfigEvent, EventSubscriber,
-    WebServerStartedEvent,
+    ServerProtocol, ServerStartedEvent,
 };
 use summer::plugin::ComponentRegistry;
 use summer::plugin::MutableComponentRegistry;
@@ -32,6 +32,7 @@ pub type NacosNamingService = NamingService;
 
 pub struct NacosPlugin;
 
+/// Pulls remote config on [`ConfigEvent`] during app build (before LogPlugin).
 struct NacosConfigEventListener;
 
 #[async_trait]
@@ -46,23 +47,25 @@ impl BuilderEventListener for NacosConfigEventListener {
     }
 }
 
-struct NacosWebRegistrationListener {
+/// Registers the app to Nacos on each [`ServerStartedEvent`] (e.g. HTTP and gRPC).
+struct NacosRegistrationListener {
     naming: NamingService,
     reg: config::NacosRegistrationConfig,
-    registered: Arc<Mutex<Option<ServiceInstance>>>,
+    /// Instances registered in this process; all are deregistered on shutdown.
+    registered: Arc<Mutex<Vec<ServiceInstance>>>,
 }
 
 #[async_trait]
-impl AppEventListener for NacosWebRegistrationListener {
+impl AppEventListener for NacosRegistrationListener {
     async fn on_event(
         &self,
         event: Arc<dyn Any + Send + Sync>,
         _app: &summer::app::App,
     ) -> Result<()> {
         let event = event
-            .downcast::<WebServerStartedEvent>()
+            .downcast::<ServerStartedEvent>()
             .expect("event listener received unexpected event type");
-        let instance = build_service_instance(&self.reg, event.addr)?;
+        let instance = build_service_instance(&self.reg, event.addr, event.protocol)?;
         self.naming
             .batch_register_instance(
                 self.reg.service_name.clone(),
@@ -74,14 +77,16 @@ impl AppEventListener for NacosWebRegistrationListener {
         tracing::info!(
             service = %self.reg.service_name,
             group = %self.reg.group,
+            protocol = %event.protocol.as_str(),
             ip = %instance.ip,
             port = instance.port,
             "registered instance to nacos"
         );
-        *self
-            .registered
+        // One entry per protocol (summer-web / summer-grpc each publish ServerStartedEvent).
+        self.registered
             .lock()
-            .expect("registration lock poisoned") = Some(instance);
+            .expect("registration lock poisoned")
+            .push(instance);
         Ok(())
     }
 }
@@ -206,16 +211,17 @@ impl NacosPlugin {
             .map_err(Into::into)
     }
 
+    /// Subscribes to [`ServerStartedEvent`] and deregisters every instance recorded above on shutdown.
     fn wire_registration(
         app: &mut AppBuilder,
         naming: NamingService,
         reg: config::NacosRegistrationConfig,
     ) {
-        let registered = Arc::new(Mutex::new(None::<ServiceInstance>));
+        let registered = Arc::new(Mutex::new(Vec::<ServiceInstance>::new()));
         let registered_for_hook = registered.clone();
         let reg_for_hook = reg.clone();
 
-        app.listen_app_dyn::<WebServerStartedEvent>(Arc::new(NacosWebRegistrationListener {
+        app.listen_app_dyn::<ServerStartedEvent>(Arc::new(NacosRegistrationListener {
             naming,
             reg,
             registered,
@@ -225,41 +231,49 @@ impl NacosPlugin {
             let registered = registered_for_hook.clone();
             let reg = reg_for_hook.clone();
             Box::new(async move {
-                let Some(instance) = registered
+                // Drain so repeated shutdown does not double-deregister.
+                let instances = registered
                     .lock()
                     .expect("registration lock poisoned")
-                    .take()
-                else {
+                    .drain(..)
+                    .collect::<Vec<_>>();
+                if instances.is_empty() {
                     return Ok("nacos: no instance to deregister".to_string());
-                };
+                }
                 let naming = app.get_expect_component::<NamingService>();
-                naming
-                    .deregister_instance(
-                        reg.service_name.clone(),
-                        Some(reg.group.clone()),
-                        instance,
-                    )
-                    .await
-                    .context("nacos deregister instance")?;
+                let count = instances.len();
+                for instance in instances {
+                    naming
+                        .deregister_instance(
+                            reg.service_name.clone(),
+                            Some(reg.group.clone()),
+                            instance,
+                        )
+                        .await
+                        .context("nacos deregister instance")?;
+                }
                 Ok(format!(
-                    "nacos: deregistered {}@{}",
-                    reg.service_name, reg.group
+                    "nacos: deregistered {count} instance(s) of {}",
+                    reg.service_name
                 ))
             })
         });
     }
 }
 
+/// Builds a Nacos instance from config and the address reported by the server plugin.
 fn build_service_instance(
     reg: &config::NacosRegistrationConfig,
     bound: std::net::SocketAddr,
+    protocol: ServerProtocol,
 ) -> Result<ServiceInstance> {
     let ip = reg
         .ip
         .clone()
         .or_else(|| ip_from_bound(bound))
         .or_else(resolve_local_ip)
-        .context("nacos registration requires ip (set nacos.registration.ip or run with summer-web)")?;
+        .context("nacos registration requires ip (set nacos.registration.ip or run with summer-web/summer-grpc)")?;
+    // Omit `registration.port` when using multiple protocols so each event keeps its own port.
     let port = reg.port.unwrap_or(bound.port());
 
     let mut instance = ServiceInstance {
@@ -271,9 +285,12 @@ fn build_service_instance(
     if let Some(cluster) = &reg.cluster {
         instance.cluster_name = Some(cluster.clone());
     }
-    if !reg.metadata.is_empty() {
-        instance.metadata = reg.metadata.clone();
-    }
+    instance.metadata = reg.metadata.clone();
+    // Config metadata wins; otherwise tag the instance with http / grpc for discovery filters.
+    instance
+        .metadata
+        .entry("protocol".to_string())
+        .or_insert_with(|| protocol.as_str().to_string());
     Ok(instance)
 }
 
@@ -304,8 +321,10 @@ fn resolve_local_ip() -> Option<String> {
 
 #[cfg(test)]
 mod tests {
-    use super::ip_from_bound;
+    use super::{build_service_instance, ip_from_bound};
+    use crate::config::NacosRegistrationConfig;
     use std::net::{IpAddr, Ipv4Addr, Ipv6Addr, SocketAddr};
+    use summer::event::ServerProtocol;
 
     #[test]
     fn ip_from_bound_skips_unspecified_v4() {
@@ -323,5 +342,30 @@ mod tests {
     fn ip_from_bound_uses_concrete_ip() {
         let addr = SocketAddr::new(IpAddr::V4(Ipv4Addr::new(10, 0, 0, 5)), 3000);
         assert_eq!(ip_from_bound(addr).as_deref(), Some("10.0.0.5"));
+    }
+
+    #[test]
+    fn build_service_instance_sets_protocol_metadata() {
+        let reg = NacosRegistrationConfig {
+            service_name: "svc".to_string(),
+            ..Default::default()
+        };
+        let addr = SocketAddr::new(IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)), 9090);
+        let instance =
+            build_service_instance(&reg, addr, ServerProtocol::Grpc).expect("build instance");
+        assert_eq!(instance.metadata.get("protocol").map(String::as_str), Some("grpc"));
+    }
+
+    #[test]
+    fn build_service_instance_config_metadata_overrides_protocol() {
+        let mut reg = NacosRegistrationConfig {
+            service_name: "svc".to_string(),
+            ..Default::default()
+        };
+        reg.metadata.insert("protocol".into(), "custom".into());
+        let addr = SocketAddr::new(IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)), 8080);
+        let instance =
+            build_service_instance(&reg, addr, ServerProtocol::Http).expect("build instance");
+        assert_eq!(instance.metadata.get("protocol").map(String::as_str), Some("custom"));
     }
 }

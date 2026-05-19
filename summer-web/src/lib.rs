@@ -236,7 +236,7 @@ pub struct AppState {
 /// Web Plugin Definition
 pub struct WebPlugin;
 
-pub use summer::event::WebServerStartedEvent;
+pub use summer::event::{ServerProtocol, ServerStartedEvent};
 
 #[async_trait]
 impl Plugin for WebPlugin {
@@ -319,7 +319,12 @@ impl WebPlugin {
         };
 
         tracing::info!("axum server started");
-        app.publish(WebServerStartedEvent { addr }).await?;
+        // summer-nacos listens for this to register the HTTP endpoint (with grpc if both plugins run).
+        app.publish(ServerStartedEvent {
+            addr,
+            protocol: ServerProtocol::Http,
+        })
+        .await?;
         if config.connect_info {
             // with client connect info
             let service = router.into_make_service_with_connect_info::<SocketAddr>();

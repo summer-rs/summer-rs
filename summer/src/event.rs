@@ -373,14 +373,39 @@ pub struct ShutdownEvent {
 
 impl Event for ShutdownEvent {}
 
-/// Published when the HTTP server is ready to accept requests.
-#[derive(Debug, Clone)]
-pub struct WebServerStartedEvent {
-    /// Bound socket address.
-    pub addr: SocketAddr,
+/// Protocol of a server that has started listening.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub enum ServerProtocol {
+    /// HTTP server ([`summer-web`](https://docs.rs/summer-web)).
+    Http,
+    /// gRPC server ([`summer-grpc`](https://docs.rs/summer-grpc)).
+    Grpc,
 }
 
-impl Event for WebServerStartedEvent {}
+impl ServerProtocol {
+    /// Canonical metadata value for Nacos instance metadata (`protocol` key).
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::Http => "http",
+            Self::Grpc => "grpc",
+        }
+    }
+}
+
+/// Published when a server (HTTP, gRPC, …) is ready to accept requests.
+///
+/// Plugins such as [`summer-web`](https://docs.rs/summer-web) and
+/// [`summer-grpc`](https://docs.rs/summer-grpc) each publish once after bind.
+/// Listeners (e.g. service discovery) may run once per protocol in the same process.
+#[derive(Debug, Clone)]
+pub struct ServerStartedEvent {
+    /// Bound socket address (from the plugin config, often before `serve` blocks).
+    pub addr: SocketAddr,
+    /// Which protocol stack started; used for metadata and multi-port registration.
+    pub protocol: ServerProtocol,
+}
+
+impl Event for ServerStartedEvent {}
 
 #[cfg(test)]
 mod tests {

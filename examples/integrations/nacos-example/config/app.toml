@@ -10,7 +10,9 @@ group = "DEFAULT_GROUP"
 
 [nacos.registration]
 service_name = "nacos-example"
+metadata = { tag = "example" }
 
-[web]
-port = 8080
-graceful = true
+# You can put this configuration in the Nacos config center
+# [web]
+# port = 9080
+# graceful = true

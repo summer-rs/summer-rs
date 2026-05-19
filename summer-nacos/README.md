@@ -53,6 +53,6 @@ docker run --name rnacos -p 8848:8848 -p 9848:9848 -p 10848:10848 -d qingpan/rna
 | `NacosConfigService` | `enable_config = true` |
 | `NacosNamingService` | `enable_naming = true` or `registration` is set |
 
-With `summer-web`, set `registration` to auto-register on `WebServerStartedEvent` and deregister on shutdown.
+With `summer-web` and/or `summer-grpc`, set `registration` to auto-register on [`ServerStartedEvent`](https://docs.rs/summer/latest/summer/event/struct.ServerStartedEvent.html) (with `protocol` metadata) and deregister on shutdown.
 
 See [examples/integrations/nacos-example](../examples/integrations/nacos-example).

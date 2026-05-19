@@ -1,0 +1,11 @@
+[nacos]
+server_addr = "127.0.0.1:8848"
+app_name = "grpc-nacos-example"
+enable_naming = true
+
+[nacos.registration]
+service_name = "grpc-nacos-example"
+
+[grpc]
+port = 9090
+graceful = true

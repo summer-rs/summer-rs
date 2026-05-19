@@ -40,7 +40,7 @@ pub struct NacosConfig {
     /// TOML: use `[[nacos.bootstrap]]` for multiple entries, or `[nacos.bootstrap]` for one.
     #[serde(default, deserialize_with = "deserialize_bootstrap_list")]
     pub bootstrap: Vec<NacosBootstrapConfig>,
-    /// Register this instance to Nacos when the HTTP server starts (`WebServerStartedEvent`).
+    /// Register this instance to Nacos when a server starts ([`summer::event::ServerStartedEvent`]).
     #[serde(default)]
     pub registration: Option<NacosRegistrationConfig>,
 }
@@ -85,13 +85,15 @@ pub struct NacosRegistrationConfig {
     pub service_name: String,
     #[serde(default = "default_group")]
     pub group: String,
-    /// Instance IP. When omitted, uses the address from [`WebServerStartedEvent`] or local IP.
+    /// Instance IP. When omitted, uses the address from [`summer::event::ServerStartedEvent`] or local IP.
     pub ip: Option<String>,
-    /// Instance port. When omitted, uses the port from [`WebServerStartedEvent`].
+    /// Instance port. When omitted, uses the port from each [`summer::event::ServerStartedEvent`]
+    /// (recommended when both HTTP and gRPC register under the same service name).
     pub port: Option<u16>,
     #[serde(default)]
     pub weight: f64,
     pub cluster: Option<String>,
+    /// Extra instance metadata. A `protocol` key here overrides the value from [`ServerStartedEvent`].
     #[serde(default)]
     pub metadata: HashMap<String, String>,
 }
