@@ -349,7 +349,7 @@ impl AppBuilder {
         }
 
         app.publish(ShutdownEvent {
-            phase: ShutdownPhase::Starting,
+            phase: ShutdownPhase::BeforeHooks,
         })
         .await?;
 
@@ -359,7 +359,7 @@ impl AppBuilder {
             log::info!("shutdown result: {result}");
         }
         app.publish(ShutdownEvent {
-            phase: ShutdownPhase::Completed,
+            phase: ShutdownPhase::AfterHooks,
         })
         .await?;
         Ok(())

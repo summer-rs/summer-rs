@@ -359,9 +359,9 @@ impl Event for AppBuiltEvent {}
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum ShutdownPhase {
     /// Shutdown hooks are about to run.
-    Starting,
+    BeforeHooks,
     /// Shutdown hooks have completed.
-    Completed,
+    AfterHooks,
 }
 
 /// Published while the application is shutting down.
