@@ -8,7 +8,7 @@ Uses the official Rust client [`nacos-sdk`](https://crates.io/crates/nacos-sdk) 
 
 ```toml
 [dependencies]
-summer-nacos = { path = "../summer-nacos" }
+summer-nacos = { version = "<version>" }
 ```
 
 ```rust
