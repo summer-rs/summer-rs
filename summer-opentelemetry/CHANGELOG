@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.7.0
+
+- **changed**: bump to **0.7.0** and align the `summer` path dependency `version` pin to **0.7.0**.
+
 ## 0.5.0
 
 - **changed**: upgrade `spring` 0.4 to 0.5 ([#217])

@@ -28,7 +28,7 @@ default-members = ["summer", "summer-*"]
 exclude = ["examples/**"]
 
 [workspace.package]
-version = "0.6.0"
+version = "0.7.0"
 edition = "2021"
 license = "MIT"
 authors = ["holmofy"]
@@ -37,15 +37,15 @@ repository = "https://github.com/summer-rs/summer-rs"
 [workspace.dependencies]
 aide = "0.16.0-alpha.2"
 anyhow = "1.0"
-apalis = "1.0.0-rc.6"
-apalis-redis = "1.0.0-rc.6"
-apalis-amqp = "1.0.0-rc.6"
-apalis-postgres = { version = "1.0.0-rc.6", default-features = false }
-apalis-mysql = { version = "1.0.0-rc.6", default-features = false }
-apalis-sqlite = { version = "1.0.0-rc.6", default-features = false }
-apalis-workflow = "0.1.0-rc.6"
-apalis-cron = "1.0.0-rc.6"
-apalis-board = "1.0.0-rc.6"
+apalis = "1.0.0-rc.8"
+apalis-redis = "1.0.0-rc.8"
+apalis-amqp = "1.0.0-rc.8"
+apalis-postgres = { version = "1.0.0-rc.8", default-features = false }
+apalis-mysql = { version = "1.0.0-rc.8", default-features = false }
+apalis-sqlite = { version = "1.0.0-rc.8", default-features = false }
+apalis-workflow = "0.1.0-rc.8"
+apalis-cron = "1.0.0-rc.8"
+apalis-board = "1.0.0-rc.8"
 async-trait = "0.1"
 axum = "0.8"
 byte-unit = "5.1"
@@ -83,7 +83,7 @@ quote = "1.0"
 redis = "1.0"
 rmpv = "1.3"
 schemars = "1.1"
-sea-orm = "2.0.0-rc.37"
+sea-orm = "2.0.0-rc.38"
 sea-streamer = "0.5"
 serde = "1.0"
 serde_json = "1.0"

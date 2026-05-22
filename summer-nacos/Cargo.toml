@@ -1,7 +1,7 @@
 [package]
 name = "summer-nacos"
 description = "Integrate Nacos / r-nacos (config & naming) with summer-rs"
-version = "0.6.0"
+version = "0.7.0"
 keywords = ["nacos", "r-nacos", "config", "service-discovery", "summer"]
 edition.workspace = true
 license.workspace = true
@@ -14,7 +14,7 @@ config = []
 naming = ["dep:local-ip-address"]
 
 [dependencies]
-summer = { path = "../summer", version = "0.6.0" }
+summer = { path = "../summer", version = "0.7.0" }
 serde = { workspace = true, features = ["derive"] }
 anyhow = { workspace = true }
 tracing = { workspace = true, features = ["log"] }

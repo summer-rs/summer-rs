@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.7.0
+
+- **changed**: bump to **0.7.0** in lockstep with the summer-rs **0.7.0** workspace release.
+
 ## 0.6.0
 
 - **breaking**: removed `pubsub_listener` and all Sa-Token attribute macros (`sa_check_login`, `sa_check_role`, …, `sa_ignore`). They now live in the contrib crate [`summer-ext-macros`](https://crates.io/crates/summer-ext-macros) and are re-exported by `summer-pubsub` and `summer-sa-token`. Drop any direct `summer-macros` dependency that existed only for these macros; use `summer_pubsub::pubsub_listener` / `summer_sa_token::…` instead.
