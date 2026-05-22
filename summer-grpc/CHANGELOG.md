@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.7.0
+
+- **added**: after the gRPC TCP listener binds, publish `summer::event::ServerStartedEvent` on the app `EventBus` with `ServerProtocol::Grpc`, so plugins (e.g. Nacos naming) can react before `serve` runs.
+- **changed**: bump to **0.7.0** and align the `summer` path dependency `version` pin to **0.7.0**.
+
 ## 0.5.0
 
 - **changed**: upgrade `summer` 0.4 to 0.5 ([#217])

@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.7.0
+
+- **added**: `EventBus` for typed async pub/sub over app lifecycle and config events (supports Nacos and other integration plugins).
+- **changed**: bump to **0.7.0** and align the `summer-macros` path dependency `version` pin to **0.7.0** with the workspace release.
+
 ## 0.5.0
 
 - **changed**: Refactor component ([#216])

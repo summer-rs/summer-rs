@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.7.0
+
+- **added**: after the HTTP TCP listener binds and the Axum router is ready, publish `summer::event::ServerStartedEvent` on the app `EventBus` with `ServerProtocol::Http`, so plugins (e.g. Nacos naming) can react before `axum::serve` runs.
+- **changed**: bump to **0.7.0** and align path dependency `version` pins on `summer` / `summer-macros` to **0.7.0**.
+
 ## 0.5.0
 
 - **changed**: upgrade `summer` 0.4 to 0.5 ([#217])

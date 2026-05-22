@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.7.0
+
+- **changed**: bump to **0.7.0** and align path dependency `version` pins on `summer` / `summer-macros` to **0.7.0**.
+
 ## 0.5.0
 
 - **changed**: upgrade `summer` 0.4 to 0.5 ([#217])
