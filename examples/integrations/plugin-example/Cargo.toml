@@ -33,3 +33,6 @@ summer-sqlx = { path = "../../../summer-sqlx", features = ["postgres", "mysql", 
 summer-stream = { path = "../../../summer-stream", features = ["kafka", "redis", "file", "stdio", "json"] }
 # Enable all features for web
 summer-web = { path = "../../../summer-web", features = ["openapi", "openapi-redoc", "openapi-scalar", "openapi-swagger", "socket_io", "multipart", "ws"] }
+
+summer-opendal = { version = "0.5.0" }
+summer-sa-token = { version = "0.5.3" }
