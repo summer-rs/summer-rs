@@ -1,6 +1,14 @@
+use anyhow::Context;
 use hello_world::greeter_client::GreeterClient;
 use hello_world::HelloRequest;
-use summer::{auto_config, plugin::MutableComponentRegistry, App};
+use serde::Deserialize;
+use summer::{
+    auto_config,
+    component,
+    config::Configurable,
+    extractor::Config,
+    App,
+};
 use summer_web::{
     axum::response::IntoResponse,
     extractor::{Component, Path},
@@ -12,17 +20,25 @@ pub mod hello_world {
     tonic::include_proto!("helloworld");
 }
 
+#[derive(Clone, Configurable, Deserialize)]
+#[config_prefix = "greeter"]
+struct GreeterClientConfig {
+    endpoint: String,
+}
+
+#[component]
+async fn create_greeter_client(
+    Config(config): Config<GreeterClientConfig>,
+) -> Result<GreeterClient<Channel>, anyhow::Error> {
+    GreeterClient::connect(config.endpoint)
+        .await
+        .context("failed to connect server, please start server first")
+}
+
 #[auto_config(WebConfigurator)]
 #[tokio::main]
 async fn main() {
-    let client = GreeterClient::connect("http://127.0.0.1:9090")
-        .await
-        .expect("failed to connect server, please start server first");
-    App::new()
-        .add_plugin(WebPlugin)
-        .add_component(client)
-        .run()
-        .await
+    App::new().add_plugin(WebPlugin).run().await
 }
 
 #[get("/")]

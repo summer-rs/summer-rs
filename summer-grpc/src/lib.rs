@@ -12,6 +12,7 @@ use summer::{
     app::AppBuilder,
     config::ConfigRegistry,
     error::Result,
+    event::{EventPublisher, ServerProtocol, ServerStartedEvent},
     plugin::{component::ComponentRef, ComponentRegistry, MutableComponentRegistry, Plugin},
     signal, App,
 };
@@ -21,6 +22,7 @@ use tonic::{
     body::Body,
     server::NamedService,
     service::{Routes, RoutesBuilder},
+    transport::server::TcpIncoming,
     transport::Server,
 };
 use tower::Service;
@@ -122,19 +124,32 @@ impl GrpcPlugin {
         server = Self::apply_middleware(server);
 
         let addr = SocketAddr::new(config.binding, config.port);
+        let incoming = TcpIncoming::bind(addr)
+            .with_context(|| format!("bind tcp listener failed:{addr}"))?
+            .with_nodelay(Some(config.tcp_nodelay))
+            .with_keepalive(config.tcp_keepalive);
         tracing::info!("tonic grpc service bind tcp listener: {}", addr);
+        // Triggers Nacos registration for the gRPC port when summer-nacos is enabled.
+        app.publish(ServerStartedEvent {
+            addr,
+            protocol: ServerProtocol::Grpc,
+        })
+        .await?;
 
         let router = server.add_routes(routes);
         if config.graceful {
             router
-                .serve_with_shutdown(addr, signal::shutdown_signal("tonic grpc server"))
+                .serve_with_incoming_shutdown(
+                    incoming,
+                    signal::shutdown_signal("tonic grpc server"),
+                )
                 .await
-                .with_context(|| format!("bind tcp listener failed:{addr}"))?;
+                .with_context(|| format!("tonic grpc server failed:{addr}"))?;
         } else {
             router
-                .serve(addr)
+                .serve_with_incoming(incoming)
                 .await
-                .with_context(|| format!("bind tcp listener failed:{addr}"))?;
+                .with_context(|| format!("tonic grpc server failed:{addr}"))?;
         }
         Ok("tonic server schedule finished".to_string())
     }

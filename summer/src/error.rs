@@ -92,7 +92,7 @@ mod tests {
     fn test_io_error_conversion() {
         let io_error = io::Error::new(ErrorKind::PermissionDenied, "access denied");
         let app_error: AppError = io_error.into();
-        
+
         match app_error {
             AppError::IOError(e) => {
                 assert_eq!(e.kind(), ErrorKind::PermissionDenied);
@@ -105,7 +105,7 @@ mod tests {
     fn test_anyhow_error_conversion() {
         let anyhow_err = anyhow::anyhow!("something went wrong");
         let app_error: AppError = anyhow_err.into();
-        
+
         match app_error {
             AppError::OtherError(e) => {
                 assert!(e.to_string().contains("something went wrong"));
@@ -122,7 +122,7 @@ mod tests {
 
         let result = returns_error();
         assert!(result.is_err());
-        
+
         match result {
             Err(AppError::ComponentNotExist(name)) => {
                 assert_eq!(name, "TestComponent");
@@ -151,7 +151,7 @@ mod tests {
 
         let result = nested_error();
         assert!(result.is_err());
-        
+
         match result {
             Err(AppError::IOError(_)) => {
                 // Expected

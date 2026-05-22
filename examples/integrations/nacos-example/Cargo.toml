@@ -1,0 +1,13 @@
+[package]
+name = "nacos-example"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[dependencies]
+summer = { path = "../../../summer" }
+summer-nacos = { path = "../../../summer-nacos" }
+summer-web = { path = "../../../summer-web" }
+anyhow = { workspace = true }
+tokio = { workspace = true, features = ["macros", "rt-multi-thread"] }

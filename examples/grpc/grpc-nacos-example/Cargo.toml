@@ -1,0 +1,32 @@
+[package]
+name = "grpc-nacos-example"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[lib]
+name = "grpc_nacos_example"
+path = "src/lib.rs"
+
+[[bin]]
+name = "server"
+path = "src/bin/server.rs"
+
+[[bin]]
+name = "client"
+path = "src/bin/client.rs"
+
+[dependencies]
+summer = { path = "../../../summer" }
+summer-grpc = { path = "../../../summer-grpc" }
+summer-nacos = { path = "../../../summer-nacos" }
+anyhow = { workspace = true }
+serde = { workspace = true, features = ["derive"] }
+tokio = { workspace = true, features = ["macros", "rt-multi-thread", "sync"] }
+tonic = { workspace = true }
+tonic-prost = { workspace = true }
+prost = { workspace = true }
+
+[build-dependencies]
+tonic-prost-build = { workspace = true }

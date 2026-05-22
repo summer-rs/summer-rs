@@ -1,0 +1,31 @@
+[package]
+name = "summer-nacos"
+description = "Integrate Nacos / r-nacos (config & naming) with summer-rs"
+version = "0.6.0"
+keywords = ["nacos", "r-nacos", "config", "service-discovery", "summer"]
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+
+[features]
+default = ["config", "naming"]
+config = []
+naming = ["dep:local-ip-address"]
+
+[dependencies]
+summer = { path = "../summer", version = "0.6.0" }
+serde = { workspace = true, features = ["derive"] }
+anyhow = { workspace = true }
+tracing = { workspace = true, features = ["log"] }
+schemars = { workspace = true }
+nacos-sdk = { workspace = true, default-features = false, features = [
+    "config",
+    "naming",
+    "auth-by-http",
+] }
+local-ip-address = { workspace = true, optional = true }
+
+[dev-dependencies]
+summer-web = { path = "../summer-web" }
+tokio = { workspace = true, features = ["macros", "rt-multi-thread"] }

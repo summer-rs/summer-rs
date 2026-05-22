@@ -6,10 +6,10 @@ use crate::config::{
 use crate::Router;
 use anyhow::Context;
 use axum::http::StatusCode;
-use summer::error::Result;
 use std::path::PathBuf;
 use std::str::FromStr;
 use std::time::Duration;
+use summer::error::Result;
 use tower_http::trace::DefaultMakeSpan;
 use tower_http::trace::DefaultOnRequest;
 use tower_http::trace::DefaultOnResponse;
@@ -28,8 +28,10 @@ pub use tower_http::*;
 
 pub(crate) fn apply_middleware(mut router: Router, middleware: Middlewares) -> Router {
     // Always apply URI capture middleware first (for Problem Details)
-    router = router.layer(axum::middleware::from_fn(crate::problem_details::capture_request_uri_middleware));
-    
+    router = router.layer(axum::middleware::from_fn(
+        crate::problem_details::capture_request_uri_middleware,
+    ));
+
     if Some(EnableMiddleware { enable: true }) == middleware.catch_panic {
         router = router.layer(CatchPanicLayer::new());
     }
@@ -50,7 +52,10 @@ pub(crate) fn apply_middleware(mut router: Router, middleware: Middlewares) -> R
     }
     if let Some(TimeoutRequestMiddleware { enable, timeout }) = middleware.timeout_request {
         if enable {
-            router = router.layer(TimeoutLayer::with_status_code(StatusCode::REQUEST_TIMEOUT, Duration::from_millis(timeout)));
+            router = router.layer(TimeoutLayer::with_status_code(
+                StatusCode::REQUEST_TIMEOUT,
+                Duration::from_millis(timeout),
+            ));
         }
     }
     if let Some(LimitPayloadMiddleware { enable, body_limit }) = middleware.limit_payload {
@@ -163,13 +168,13 @@ fn build_cors_middleware(cors: &CorsMiddleware) -> Result<CorsLayer> {
 
 #[cfg(test)]
 mod tests {
+    use crate::WebConfigurator;
     use axum::body::Bytes;
     use axum::http::{Request, StatusCode};
     use axum::routing::post;
-    use summer::App;
     use summer::plugin::ComponentRegistry;
+    use summer::App;
     use tower::ServiceExt;
-    use crate::WebConfigurator;
 
     async fn upload_handler(body: Bytes) -> String {
         format!("Received {} bytes", body.len())
