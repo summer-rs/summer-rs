@@ -1,0 +1,25 @@
+[package]
+name = "summer-xxl-job"
+description = "Integrate xxl-job / ratch-job executor with summer-rs framework"
+version = "0.6.0"
+categories = ["asynchronous"]
+keywords = ["xxl-job", "ratch-job", "scheduler", "summer"]
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+
+[features]
+default = []
+rustls-tls = ["xxljob-sdk-rs/rustls-tls"]
+native-tls = ["xxljob-sdk-rs/native-tls"]
+
+[dependencies]
+summer = { path = "../summer", version = "0.6.0" }
+xxljob-sdk-rs = { workspace = true }
+async-trait = { workspace = true }
+anyhow = { workspace = true }
+serde = { workspace = true, features = ["derive"] }
+schemars = { workspace = true }
+tracing = { workspace = true, features = ["log"] }
+tokio = { workspace = true }

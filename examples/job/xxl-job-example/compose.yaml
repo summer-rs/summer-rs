@@ -1,0 +1,7 @@
+# Optional: spin up a ratch-job admin for local testing.
+# Run `docker compose up -d` in this directory before `cargo run`.
+services:
+  ratchjob:
+    image: qingpan/ratchjob:latest
+    ports:
+      - "8080:8080"
