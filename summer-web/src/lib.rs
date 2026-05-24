@@ -3,6 +3,8 @@
 #![doc(html_favicon_url = "https://summer-rs.github.io/favicon.ico")]
 #![doc(html_logo_url = "https://summer-rs.github.io/logo.svg")]
 
+extern crate self as summer_web;
+
 /// summer-web config
 pub mod config;
 /// summer-web defined error
@@ -16,11 +18,29 @@ pub mod middleware;
 pub mod openapi;
 /// RFC 7807 Problem Details for HTTP APIs
 pub mod problem_details;
+#[cfg(any(feature = "garde", feature = "validator"))]
+pub mod validation;
 
+#[cfg(feature = "garde")]
+pub use summer_macros::GardeSchema;
 pub use summer_macros::ProblemDetails;
+#[cfg(feature = "validator")]
+pub use summer_macros::ValidatorContext;
+#[cfg(feature = "validator")]
+pub use summer_macros::ValidatorSchema;
+#[cfg(feature = "validator")]
+pub use validation::validator::ValidatorContextType;
 
 #[cfg(feature = "socket_io")]
 pub use {rmpv, socketioxide};
+
+#[cfg(feature = "axum-valid")]
+pub mod axum_valid {
+    #[cfg(feature = "garde")]
+    pub use ::axum_valid::Garde;
+    #[cfg(feature = "validator")]
+    pub use ::axum_valid::Valid;
+}
 
 pub use axum;
 pub use summer::async_trait;

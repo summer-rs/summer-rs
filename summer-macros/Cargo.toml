@@ -14,6 +14,9 @@ proc-macro = true
 
 [features]
 socket_io = ["summer-web/socket_io"]
+garde = []
+validator = []
+sa-token = []
 
 [dependencies]
 proc-macro2 = { workspace = true }
