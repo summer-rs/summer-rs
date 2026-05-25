@@ -1,0 +1,13 @@
+[package]
+name = "xxl-job-example"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[dependencies]
+summer = { path = "../../../summer" }
+summer-xxl-job = { path = "../../../summer-xxl-job" }
+anyhow = { workspace = true }
+tokio = { workspace = true }
+tracing = { workspace = true }

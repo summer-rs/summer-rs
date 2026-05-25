@@ -15,6 +15,7 @@ members = [
     "summer-opentelemetry",
     "summer-apalis",
     "summer-nacos",
+    "summer-xxl-job",
     "examples/getting-started/*",
     "examples/web/*",
     "examples/grpc/*",
@@ -116,3 +117,4 @@ tracing-subscriber = "0.3"
 uuid = "1"
 nacos-sdk = { version = "0.8", default-features = false }
 local-ip-address = "0.6"
+xxljob-sdk-rs = "0.1"
