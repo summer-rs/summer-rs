@@ -15,7 +15,7 @@ rustls-tls = ["xxljob-sdk-rs/rustls-tls"]
 native-tls = ["xxljob-sdk-rs/native-tls"]
 
 [dependencies]
-summer = { path = "../summer", version = "0.7.0" }
+summer = { path = "../summer", version = "0.7" }
 xxljob-sdk-rs = { workspace = true }
 async-trait = { workspace = true }
 anyhow = { workspace = true }
