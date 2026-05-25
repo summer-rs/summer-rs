@@ -1,7 +1,7 @@
 [package]
 name = "summer-stream"
 description = "Integrate sea-streamer with summer-rs"
-version = "0.7.0"
+version = "0.7.1"
 categories = ["concurrency"]
 keywords = ["stream-processing", "stream", "redis-stream", "kafka", "summer"]
 edition.workspace = true
@@ -10,8 +10,8 @@ authors.workspace = true
 repository.workspace = true
 
 [dependencies]
-summer = { path = "../summer", version = "0.7.0" }
-summer-macros = { path = "../summer-macros", version = "0.7.0" }
+summer = { path = "../summer", version = "0.7" }
+summer-macros = { path = "../summer-macros", version = "0.7" }
 sea-streamer = { workspace = true }
 serde = { workspace = true, features = ["derive"] }
 serde_json = { workspace = true, optional = true }
