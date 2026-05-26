@@ -25,7 +25,9 @@ use summer::app::{App, AppBuilder};
 use summer::async_trait;
 use summer::config::ConfigRegistry;
 use summer::error::Result as SummerResult;
+use summer::event::{EventSubscriber, ServicesInjectedEvent};
 use summer::plugin::component::ComponentRef;
+use summer::plugin::service::Service;
 use summer::plugin::ComponentRegistry;
 use summer::plugin::MutableComponentRegistry;
 use summer::{plugin::Plugin, signal};
@@ -47,6 +49,55 @@ impl XxlHandlerRegistry {
 
 impl Deref for XxlHandlerRegistry {
     type Target = Vec<(Arc<String>, JobHandler)>;
+
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+
+/// Factory closure that builds an async [`AsyncJobHandler`] from the
+/// component / config registry. Used for handlers registered via
+/// [`XxlJobConfigurator::add_xxl_async_service`].
+pub type AsyncServiceFactory =
+    Arc<dyn Fn(&AppBuilder) -> SummerResult<Arc<dyn AsyncJobHandler>> + Send + Sync>;
+
+/// Factory closure that builds a sync [`SyncJobHandler`] from the
+/// component / config registry. Used for handlers registered via
+/// [`XxlJobConfigurator::add_xxl_sync_service`].
+pub type SyncServiceFactory =
+    Arc<dyn Fn(&AppBuilder) -> SummerResult<Arc<dyn SyncJobHandler>> + Send + Sync>;
+
+/// Lazy job-handler factory; instantiated after Summer's service
+/// dependency-injection phase so the handler can pull components / configs
+/// out of the registry.
+#[derive(Clone)]
+pub enum LazyJobFactory {
+    Async(AsyncServiceFactory),
+    Sync(SyncServiceFactory),
+}
+
+/// Internal component collecting [`Service`]-based handlers that need DI
+/// resolution. It is drained by [`XxlJobPlugin`] after
+/// [`ServicesInjectedEvent`] is published.
+#[derive(Clone, Default)]
+pub struct XxlLazyHandlerRegistry(Vec<(Arc<String>, LazyJobFactory)>);
+
+impl XxlLazyHandlerRegistry {
+    pub fn new() -> Self {
+        Self::default()
+    }
+
+    fn push(&mut self, name: Arc<String>, factory: LazyJobFactory) {
+        self.0.push((name, factory));
+    }
+
+    fn take_all(&mut self) -> Vec<(Arc<String>, LazyJobFactory)> {
+        std::mem::take(&mut self.0)
+    }
+}
+
+impl Deref for XxlLazyHandlerRegistry {
+    type Target = Vec<(Arc<String>, LazyJobFactory)>;
 
     fn deref(&self) -> &Self::Target {
         &self.0
@@ -78,6 +129,42 @@ pub trait XxlJobConfigurator {
     {
         self.add_xxl_handler(name, JobHandler::Sync(Arc::new(handler)))
     }
+
+    /// Stage a [`Service`]-derived handler factory under the given `name`.
+    /// The actual handler instance is constructed after Summer finishes its
+    /// dependency-injection phase, so it may freely use `#[inject(component)]`
+    /// / `#[inject(config)]` fields.
+    fn add_xxl_lazy_handler(
+        &mut self,
+        name: impl Into<String>,
+        factory: LazyJobFactory,
+    ) -> &mut Self;
+
+    /// Register an async handler implemented as a [`Service`]. The handler
+    /// is built via `H::build(app)` after services are injected.
+    fn add_xxl_async_service<H>(&mut self, name: impl Into<String>) -> &mut Self
+    where
+        H: AsyncJobHandler + Service,
+    {
+        let factory: AsyncServiceFactory = Arc::new(|app: &AppBuilder| {
+            let svc = H::build(app)?;
+            Ok(Arc::new(svc) as Arc<dyn AsyncJobHandler>)
+        });
+        self.add_xxl_lazy_handler(name, LazyJobFactory::Async(factory))
+    }
+
+    /// Register a sync handler implemented as a [`Service`]. The handler
+    /// is built via `H::build(app)` after services are injected.
+    fn add_xxl_sync_service<H>(&mut self, name: impl Into<String>) -> &mut Self
+    where
+        H: SyncJobHandler + Service,
+    {
+        let factory: SyncServiceFactory = Arc::new(|app: &AppBuilder| {
+            let svc = H::build(app)?;
+            Ok(Arc::new(svc) as Arc<dyn SyncJobHandler>)
+        });
+        self.add_xxl_lazy_handler(name, LazyJobFactory::Sync(factory))
+    }
 }
 
 impl XxlJobConfigurator for AppBuilder {
@@ -95,6 +182,26 @@ impl XxlJobConfigurator for AppBuilder {
         } else {
             let mut reg = XxlHandlerRegistry::new();
             reg.push(name, handler);
+            self.add_component(reg)
+        }
+    }
+
+    fn add_xxl_lazy_handler(
+        &mut self,
+        name: impl Into<String>,
+        factory: LazyJobFactory,
+    ) -> &mut Self {
+        let name = Arc::new(name.into());
+        if let Some(reg) = self.get_component_ref::<XxlLazyHandlerRegistry>() {
+            unsafe {
+                let raw_ptr = ComponentRef::into_raw(reg);
+                let reg = &mut *(raw_ptr as *mut XxlLazyHandlerRegistry);
+                reg.push(name, factory);
+            }
+            self
+        } else {
+            let mut reg = XxlLazyHandlerRegistry::new();
+            reg.push(name, factory);
             self.add_component(reg)
         }
     }
@@ -124,12 +231,55 @@ impl Plugin for XxlJobPlugin {
                     "registered xxl-job executor handler"
                 );
             }
-        } else {
+        } else if !app.has_component::<XxlLazyHandlerRegistry>() {
             tracing::warn!("xxl-job plugin: no executor handler registered via add_xxl_handler");
         }
 
         // Expose the client as a Summer component (clone is cheap; it's an Arc internally).
-        app.add_component(XxlClientHandle(client));
+        app.add_component(XxlClientHandle(client.clone()));
+
+        // Drain Service-based handlers AFTER summer's DI phase finishes,
+        // so `#[inject(component)]` / `#[inject(config)]` fields are
+        // resolvable when each handler is constructed.
+        let lazy_client = client;
+        app.listen::<ServicesInjectedEvent, _, _>(move |_evt, app: &mut AppBuilder| {
+            // The listener future must be `'static`, so resolve everything
+            // synchronously here against `&mut AppBuilder` and return a ready future.
+            let entries: Vec<(Arc<String>, LazyJobFactory)> =
+                if let Some(reg) = app.get_component_ref::<XxlLazyHandlerRegistry>() {
+                    unsafe {
+                        let raw_ptr = ComponentRef::into_raw(reg);
+                        let reg = &mut *(raw_ptr as *mut XxlLazyHandlerRegistry);
+                        reg.take_all()
+                    }
+                } else {
+                    Vec::new()
+                };
+
+            let mut outcome: SummerResult<()> = Ok(());
+            for (name, factory) in entries {
+                let display_name = name.clone();
+                let built = match factory {
+                    LazyJobFactory::Async(f) => f(app).map(JobHandler::Async),
+                    LazyJobFactory::Sync(f) => f(app).map(JobHandler::Sync),
+                };
+                let handler = match built {
+                    Ok(h) => h,
+                    Err(e) => {
+                        outcome = Err(e);
+                        break;
+                    }
+                };
+                lazy_client.register(name, handler).unwrap_or_else(|e| {
+                    panic!("register xxl service handler {display_name} failed: {e}")
+                });
+                tracing::info!(
+                    handler = %display_name,
+                    "registered xxl-job executor service handler"
+                );
+            }
+            async move { outcome }
+        });
 
         // Block summer's run loop on ctrl_c / SIGTERM so the SDK's embedded
         // executor HTTP server keeps serving admin callbacks.

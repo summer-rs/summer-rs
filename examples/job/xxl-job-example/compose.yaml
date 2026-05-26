@@ -4,4 +4,10 @@ services:
   ratchjob:
     image: qingpan/ratchjob:latest
     ports:
-      - "8080:8080"
+      - "8725:8725"  # http
+      - "8825:8825"  # admin
+      - "8925:8925"  # grpc
+    environment:
+      - RATCH_HTTP_API_PORT=8725
+      - RATCH_XXL_DEFAULT_ACCESS_TOKEN=default_token
+      - DEFAULT_XXL_JOB_ADMIN_PREFIX_PATH=/xxl-job-admin

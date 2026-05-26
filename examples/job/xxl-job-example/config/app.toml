@@ -1,5 +1,8 @@
 [xxl-job]
-admin_addresses = "http://127.0.0.1:8080/xxl-job-admin"
+admin_addresses = "http://127.0.0.1:8725/xxl-job-admin"
 app_name = "summer-xxl-executor"
 access_token = "default_token"
 log_path = "logs/xxl-job"
+
+[demo-job]
+greeting = "hello from DI handler"

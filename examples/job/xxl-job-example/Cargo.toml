@@ -11,3 +11,5 @@ summer-xxl-job = { path = "../../../summer-xxl-job" }
 anyhow = { workspace = true }
 tokio = { workspace = true }
 tracing = { workspace = true }
+schemars = { workspace = true }
+serde = { workspace = true }
