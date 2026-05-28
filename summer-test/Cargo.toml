@@ -1,0 +1,33 @@
+[package]
+name = "summer-test"
+description = "Testing utilities for summer-rs (axum-test based MockWebPlugin)"
+version = "0.7.1"
+categories = ["development-tools::testing"]
+keywords = ["test", "e2e", "axum", "summer"]
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+
+[features]
+default = ["web"]
+web = ["dep:axum-test", "dep:summer-web"]
+
+[dependencies]
+summer = { path = "../summer", version = "0.7" }
+summer-web = { path = "../summer-web", version = "0.7", optional = true }
+axum = { workspace = true }
+axum-test = { workspace = true, optional = true }
+tokio = { workspace = true, features = ["full"] }
+async-trait = { workspace = true }
+tracing = { workspace = true }
+anyhow = { workspace = true }
+
+[dev-dependencies]
+serde_json = { workspace = true }
+tokio = { workspace = true, features = ["full", "macros"] }
+anyhow = { workspace = true }
+summer-macros = { path = "../summer-macros", version = "0.7" }
+summer-postgres = { path = "../summer-postgres", version = "0.7" }
+summer-redis = { path = "../summer-redis", version = "0.7" }
+testcontainers-modules = { version = "0.14", features = ["postgres", "redis"] }

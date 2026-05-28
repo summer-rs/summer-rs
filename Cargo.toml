@@ -16,6 +16,7 @@ members = [
     "summer-apalis",
     "summer-nacos",
     "summer-xxl-job",
+    "summer-test",
     "examples/getting-started/*",
     "examples/web/*",
     "examples/grpc/*",
@@ -49,6 +50,7 @@ apalis-cron = "1.0.0-rc.8"
 apalis-board = "1.0.0-rc.8"
 async-trait = "0.1"
 axum = "0.8"
+axum-test = "20"
 byte-unit = "5.1"
 chrono = "0.4"
 dashmap = "6.1"

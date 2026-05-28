@@ -23,15 +23,15 @@ pub struct WebConfig {
 #[derive(Debug, Clone, JsonSchema, Deserialize)]
 pub struct ServerConfig {
     #[serde(default = "default_binding")]
-    pub(crate) binding: IpAddr,
+    pub binding: IpAddr,
     #[serde(default = "default_port")]
-    pub(crate) port: u16,
+    pub port: u16,
     #[serde(default)]
-    pub(crate) connect_info: bool,
+    pub connect_info: bool,
     #[serde(default = "default_true")]
-    pub(crate) graceful: bool,
+    pub graceful: bool,
     #[serde(default)]
-    pub(crate) global_prefix: String,
+    pub global_prefix: String,
 }
 
 #[cfg(feature = "openapi")]
