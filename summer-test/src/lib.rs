@@ -10,19 +10,19 @@
 //!   [`summer_web::finalize_router`]) so handlers, middlewares, layers and
 //!   OpenAPI behave identically to runtime — but the resulting router is
 //!   wrapped in an in-memory [`axum_test::TestServer`] instead of binding a TCP
-//!   listener, and **no scheduler is registered** so `App::build()` returns
+//!   listener, and **no scheduler is registered** so `App::new().build()` returns
 //!   immediately.
 //! * The [`MockServer`] handle is stored as a normal component on the built
 //!   [`summer::App`] and dereferences to [`axum_test::TestServer`], enabling a
 //!   one-liner E2E flow:
 //!
 //! ```no_run
-//! # use summer::app::{App, AppBuilder};
+//! # use summer::app::App;
 //! # use summer::plugin::ComponentRegistry;
 //! # use summer_web::{Router, WebConfigurator};
 //! # use summer_test::{MockWebPlugin, MockServer};
 //! # async fn run() -> summer::error::Result<()> {
-//! AppBuilder::default()
+//! App::new()
 //!     .add_plugin(MockWebPlugin)
 //!     .add_router(Router::new())
 //!     .build()

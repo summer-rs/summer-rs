@@ -3,7 +3,7 @@
 //! Validates the chained API contract documented in the crate root:
 //!
 //! ```text
-//! AppBuilder::default()
+//! App::new()
 //!     .add_plugin(MockWebPlugin)
 //!     .add_router(api)
 //!     .build().await?
@@ -14,11 +14,11 @@
 //!
 //! Database-backed cases (`*_with_postgres_*`, `*_with_redis_*`) spin up a
 //! container via `testcontainers` and inject the connection string through
-//! [`AppBuilder::use_config_str`], so they are gated behind `#[ignore]` and
+//! `.use_config_str`, so they are gated behind `#[ignore]` and
 //! only run with `cargo test -- --ignored` on a host with a working Docker
 //! daemon.
 
-use summer::app::AppBuilder;
+use summer::app::App;
 use summer::error::Result;
 use summer::plugin::ComponentRegistry;
 use summer_macros::get;
@@ -44,7 +44,7 @@ async fn typed_ping() -> &'static str {
 
 #[tokio::test]
 async fn mock_web_plugin_serves_get() -> Result<()> {
-    AppBuilder::default()
+    App::new()
         .add_plugin(MockWebPlugin)
         .add_router(Router::new().route("/ping", routing::get(ping)))
         .build()
@@ -59,7 +59,7 @@ async fn mock_web_plugin_serves_get() -> Result<()> {
 
 #[tokio::test]
 async fn mock_web_plugin_serves_post_echo() -> Result<()> {
-    let response = AppBuilder::default()
+    let response = App::new()
         .add_plugin(MockWebPlugin)
         .add_router(Router::new().route("/echo", routing::post(echo)))
         .build()
@@ -76,7 +76,7 @@ async fn mock_web_plugin_serves_post_echo() -> Result<()> {
 
 #[tokio::test]
 async fn mock_web_plugin_returns_404_for_unknown_route() -> Result<()> {
-    AppBuilder::default()
+    App::new()
         .add_plugin(MockWebPlugin)
         .add_router(Router::new().route("/ping", routing::get(ping)))
         .build()
@@ -91,7 +91,7 @@ async fn mock_web_plugin_returns_404_for_unknown_route() -> Result<()> {
 
 #[tokio::test]
 async fn mock_web_plugin_serves_typed_get_macro() -> Result<()> {
-    let response = AppBuilder::default()
+    let response = App::new()
         .add_plugin(MockWebPlugin)
         .add_router(summer_web::handler::auto_router())
         .build()
@@ -116,7 +116,6 @@ async fn pg_version(Component(pg): Component<summer_postgres::Postgres>) -> Stri
 }
 
 #[tokio::test]
-#[ignore = "requires a running Docker daemon for testcontainers"]
 async fn mock_web_plugin_with_postgres_container() -> Result<()> {
     use summer_postgres::PgPlugin;
     use testcontainers_modules::postgres::Postgres as PgImage;
@@ -138,7 +137,7 @@ connect = "postgres://postgres:postgres@127.0.0.1:{port}/postgres"
 "#
     );
 
-    let response = AppBuilder::default()
+    let response = App::new()
         .use_config_str(&toml)
         .add_plugin(PgPlugin)
         .add_plugin(MockWebPlugin)
@@ -173,7 +172,6 @@ async fn redis_roundtrip(mut redis: Component<summer_redis::Redis>) -> String {
 }
 
 #[tokio::test]
-#[ignore = "requires a running Docker daemon for testcontainers"]
 async fn mock_web_plugin_with_redis_container() -> Result<()> {
     use summer_redis::RedisPlugin;
     use testcontainers_modules::redis::Redis as RedisImage;
@@ -195,7 +193,7 @@ uri = "redis://127.0.0.1:{port}/"
 "#
     );
 
-    let response = AppBuilder::default()
+    let response = App::new()
         .use_config_str(&toml)
         .add_plugin(RedisPlugin)
         .add_plugin(MockWebPlugin)

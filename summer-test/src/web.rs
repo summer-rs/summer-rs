@@ -58,7 +58,7 @@ impl Deref for MockServer {
 
     fn deref(&self) -> &Self::Target {
         self.inner.get().expect(
-            "MockServer is not initialized yet; ensure AppBuilder::build() has completed before \
+            "MockServer is not initialized yet; ensure App::new()...build() has completed before \
              dereferencing it",
         )
     }
@@ -71,7 +71,7 @@ impl Deref for MockServer {
 ///    perform the same router merge / middleware / Socket.IO / OpenAPI setup
 ///    as production.
 /// 2. Registers a pending [`MockServer`] component immediately so it can be
-///    retrieved right after [`AppBuilder::build`].
+///    retrieved right after `App::new().build().await`.
 /// 3. Subscribes to [`AppBuiltEvent`]: once the `Arc<App>` is available, calls
 ///    [`summer_web::finalize_router`] (router layers, OpenAPI finish,
 ///    [`summer_web::AppState`] extension, global prefix nesting) and wraps the
@@ -80,7 +80,7 @@ impl Deref for MockServer {
 /// 4. Publishes a synthetic [`ServerStartedEvent`] (addr `127.0.0.1:0`,
 ///    protocol `Http`) so listeners (e.g. `summer-nacos`) keep their
 ///    invariants. **No scheduler is registered**, hence
-///    [`AppBuilder::build`] returns immediately without entering a serve loop.
+///    `App::new().build()` returns immediately without entering a serve loop.
 ///
 /// `name()` returns `"summer_web::WebPlugin"` so other plugins that depend on
 /// the production web plugin name (via [`Plugin::dependencies`]) continue to
