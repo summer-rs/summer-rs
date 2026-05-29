@@ -13,10 +13,8 @@
 //! ```
 //!
 //! Database-backed cases (`*_with_postgres_*`, `*_with_redis_*`) spin up a
-//! container via `testcontainers` and inject the connection string through
-//! `.use_config_str`, so they are gated behind `#[ignore]` and
-//! only run with `cargo test -- --ignored` on a host with a working Docker
-//! daemon.
+//! container via `testcontainers`, inject the connection string through
+//! `.use_config_str`, and require a working Docker daemon.
 
 use summer::app::App;
 use summer::error::Result;
