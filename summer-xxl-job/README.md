@@ -6,8 +6,6 @@ application can act as an **executor** of an xxl-job-admin or
 [ratch-job](https://github.com/ratch-job/ratch-job) compatible scheduling
 server.
 
-[简体中文](./README.zh.md)
-
 ## Configuration
 
 ```toml

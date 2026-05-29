@@ -5,8 +5,6 @@
 xxl-job-admin / [ratch-job](https://github.com/ratch-job/ratch-job)
 等兼容服务端的**执行器**接入分布式任务调度。
 
-[English](./README.md)
-
 ## 配置
 
 ```toml
