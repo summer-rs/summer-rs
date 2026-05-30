@@ -15,7 +15,10 @@ summer::submit_config_schema!("socket_io", SocketIOConfig);
 pub struct WebConfig {
     #[serde(flatten)]
     pub(crate) server: ServerConfig,
+    /// Omitted in TOML when all fields use their defaults (common in tests where
+    /// `summer-web/openapi` is pulled in transitively, e.g. via `summer-macros`).
     #[cfg(feature = "openapi")]
+    #[serde(default)]
     pub(crate) openapi: OpenApiConfig,
     pub(crate) middlewares: Option<Middlewares>,
 }
@@ -41,6 +44,16 @@ pub struct OpenApiConfig {
     pub(crate) doc_prefix: String,
     #[serde(default)]
     pub(crate) info: aide::openapi::Info,
+}
+
+#[cfg(feature = "openapi")]
+impl Default for OpenApiConfig {
+    fn default() -> Self {
+        Self {
+            doc_prefix: default_doc_prefix(),
+            info: aide::openapi::Info::default(),
+        }
+    }
 }
 
 /// Normalize a URL prefix: ensure it starts with '/' and does not end with '/'.
