@@ -206,6 +206,7 @@ The `#[component]` macro eliminates boilerplate code - no need to manually imple
 
 * [Raline](https://github.com/ralinejs/raline)
 * [AutoWDS](https://github.com/AutoWDS/autowds-backend)
+* [summerrs-admin](https://github.com/ouywm/summerrs-admin)
 
 ## Contribution
 
