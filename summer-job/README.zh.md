@@ -72,7 +72,7 @@ async fn cron_job(Component(db): Component<ConnectPool>) {
 
 ## 读取配置
 
-你可以用[`Config`](https://docs.rs/summer-job/latest/summer_job/extractor/struct.Config.html)抽取toml中的配置。用法上和[`summer-web`](https://summer-rs.github.io/zh/docs/plugins/summer-web/#du-qu-pei-zhi)完全一致。
+你可以用[`Config`](https://docs.rs/summer/latest/summer/extractor/struct.Config.html)抽取toml中的配置。用法上和[`summer-web`](https://summer-rs.github.io/zh/docs/plugins/summer-web/#du-qu-pei-zhi)完全一致。
 
 ```rust
 #[derive(Debug, Configurable, Deserialize)]

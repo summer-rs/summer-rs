@@ -68,7 +68,7 @@ View the complete example code [stream-file-example](https://github.com/summer-r
 
 ## Read configuration
 
-You can use [`Config`](https://docs.rs/summer-stream/latest/summer_stream/extractor/struct.Config.html) to extract the configuration in toml. The usage is exactly the same as [`summer-web`](https://summer-rs.github.io/zh/docs/plugins/summer-web/#du-qu-pei-zhi).
+You can use [`Config`](https://docs.rs/summer/latest/summer/extractor/struct.Config.html) to extract the configuration in toml. The usage is exactly the same as [`summer-web`](https://summer-rs.github.io/zh/docs/plugins/summer-web/#du-qu-pei-zhi).
 
 ```rust
 #[derive(Debug, Configurable, Deserialize)]

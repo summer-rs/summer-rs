@@ -53,14 +53,14 @@ You can also use the `auto_config` macro to implement automatic configuration. T
 
 ## Extract the Component registered by the plugin
 
-The `SqlxPlugin` plugin above automatically registers a Sqlx connection pool component for us. We can use `Component` to extract this connection pool from App. It should be noted that although the implementation principles of `summer-job`'s [`Component`](https://docs.rs/summer-job/latest/summer_job/extractor/struct.Component.html) and `summer-web`'s [`Component`](https://docs.rs/summer-web/latest/summer_web/extractor/struct.Component.html) are similar, these two extractors belong to different crates.
+The `SqlxPlugin` plugin above automatically registers a Sqlx connection pool component for us. We can use [`Component`](https://docs.rs/summer/latest/summer/extractor/struct.Component.html) to extract this connection pool from App.
 
 ```rust
 use summer_sqlx::{
     sqlx::{self, Row}, ConnectPool
 };
 use summer_job::cron;
-use summer_job::extractor::Component;
+use summer::extractor::Component;
 
 #[cron("1/10 * * * * *")]
 async fn cron_job(Component(db): Component<ConnectPool>) {
@@ -76,7 +76,7 @@ async fn cron_job(Component(db): Component<ConnectPool>) {
 
 ## Read configuration
 
-You can use [`Config`](https://docs.rs/summer-job/latest/summer_job/extractor/struct.Config.html) to extract the configuration in toml. The usage is exactly the same as [`summer-web`](https://summer-rs.github.io/zh/docs/plugins/summer-web/#du-qu-pei-zhi).
+You can use [`Config`](https://docs.rs/summer/latest/summer/extractor/struct.Config.html) to extract the configuration in toml. The usage is exactly the same as [`summer-web`](https://summer-rs.github.io/zh/docs/plugins/summer-web/#du-qu-pei-zhi).
 
 
 ```rust
