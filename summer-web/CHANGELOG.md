@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.7.3
+
+- **changed**: in `enable_openapi()`, downgrade `aide::Error::OperationExists` from `error` to `warn` log level.
+
 ## 0.7.0
 
 - **added**: after the HTTP TCP listener binds and the Axum router is ready, publish `summer::event::ServerStartedEvent` on the app `EventBus` with `ServerProtocol::Http`, so plugins (e.g. Nacos naming) can react before `axum::serve` runs.

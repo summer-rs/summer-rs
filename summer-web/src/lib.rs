@@ -381,7 +381,11 @@ impl WebPlugin {
 #[cfg(feature = "openapi")]
 pub fn enable_openapi() {
     aide::generate::on_error(|error| {
-        tracing::error!("{error}");
+        if matches!(error, aide::Error::OperationExists(..)) {
+            tracing::warn!("{error}");
+        } else {
+            tracing::error!("{error}");
+        }
     });
     aide::generate::extract_schemas(false);
 }
