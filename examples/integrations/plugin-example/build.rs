@@ -10,6 +10,8 @@ pub fn main() {
     let _ = summer_sqlx::SqlxPlugin;
     let _ = summer_stream::StreamPlugin;
     let _ = summer_web::WebPlugin;
+    let _ = summer_nacos::NacosPlugin;
+    let _ = summer_xxl_job::XxlJobPlugin;
 
     let _ = summer_opendal::OpenDALPlugin;
     let _ = summer_sa_token::SaTokenPlugin;
