@@ -12,6 +12,10 @@ pub struct ResilienceConfig {
     /// Named retry policies.
     #[serde(default)]
     pub retry: RetryPoliciesConfig,
+
+    /// Named circuit breaker policies.
+    #[serde(default)]
+    pub circuit_breaker: CircuitBreakerPoliciesConfig,
 }
 
 /// Collection of named retry policy instances.
@@ -20,6 +24,35 @@ pub struct RetryPoliciesConfig {
     /// Policies keyed by the name used in `#[retry(name = "...")]`.
     #[serde(default)]
     pub instances: HashMap<String, RetryConfig>,
+}
+
+/// Collection of named circuit breaker policy instances.
+#[derive(Debug, Default, Clone, JsonSchema, Deserialize)]
+pub struct CircuitBreakerPoliciesConfig {
+    /// Policies keyed by the name used in `#[circuit_breaker(name = "...")]`.
+    #[serde(default)]
+    pub instances: HashMap<String, CircuitBreakerConfig>,
+}
+
+/// Configuration for one circuit breaker policy.
+#[derive(Debug, Clone, JsonSchema, Deserialize)]
+pub struct CircuitBreakerConfig {
+    /// Consecutive failures required to open the circuit.
+    #[serde(default = "default_failure_threshold")]
+    pub failure_threshold: u32,
+
+    /// Time spent open before a call can probe the dependency, in milliseconds.
+    #[serde(default = "default_wait_duration_in_open_state")]
+    pub wait_duration_in_open_state: u64,
+}
+
+impl Default for CircuitBreakerConfig {
+    fn default() -> Self {
+        Self {
+            failure_threshold: default_failure_threshold(),
+            wait_duration_in_open_state: default_wait_duration_in_open_state(),
+        }
+    }
 }
 
 /// Configuration for one retry policy.
@@ -81,4 +114,12 @@ const fn default_exponential_backoff_multiplier() -> f64 {
 
 const fn default_randomized_wait_factor() -> f64 {
     0.5
+}
+
+const fn default_failure_threshold() -> u32 {
+    5
+}
+
+const fn default_wait_duration_in_open_state() -> u64 {
+    60_000
 }

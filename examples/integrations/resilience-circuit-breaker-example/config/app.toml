@@ -1,0 +1,7 @@
+[web]
+binding = "127.0.0.1"
+port = 18082
+
+[resilience.circuit_breaker.instances.fx-quotes]
+failure_threshold = 2
+wait_duration_in_open_state = 100

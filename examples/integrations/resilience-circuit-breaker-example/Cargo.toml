@@ -1,0 +1,15 @@
+[package]
+name = "resilience-circuit-breaker-example"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[dependencies]
+summer = { path = "../../../summer" }
+summer-resilience = { path = "../../../summer-resilience" }
+summer-web = { path = "../../../summer-web" }
+reqwest = { workspace = true }
+serde = { workspace = true, features = ["derive"] }
+thiserror = { workspace = true }
+tokio = { workspace = true, features = ["macros", "rt-multi-thread", "time"] }

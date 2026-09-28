@@ -4,6 +4,7 @@
 
 mod auto;
 mod cache;
+mod circuit_breaker;
 mod component;
 mod config;
 mod problem_details;
@@ -692,6 +693,14 @@ pub fn cache(args: TokenStream, input: TokenStream) -> TokenStream {
 #[proc_macro_attribute]
 pub fn retry(args: TokenStream, input: TokenStream) -> TokenStream {
     retry::retry(args, input)
+}
+
+/// Guards an asynchronous function with a named `summer-resilience` circuit breaker.
+///
+/// The function's error type must implement `From<CallNotPermitted>`.
+#[proc_macro_attribute]
+pub fn circuit_breaker(args: TokenStream, input: TokenStream) -> TokenStream {
+    circuit_breaker::circuit_breaker(args, input)
 }
 
 #[cfg(feature = "socket_io")]

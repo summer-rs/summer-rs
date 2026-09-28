@@ -11,6 +11,7 @@ repository.workspace = true
 
 [dependencies]
 backoff = { workspace = true }
+failsafe = { workspace = true }
 schemars = { workspace = true }
 serde = { workspace = true, features = ["derive"] }
 summer = { path = "../summer", version = "0.7" }
