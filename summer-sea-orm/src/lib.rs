@@ -53,7 +53,7 @@ impl SeaOrmPlugin {
 
         Ok(Database::connect(opt)
             .await
-            .with_context(|| format!("sea-orm connection failed:{}", &config.uri))?)
+            .with_context(|| format!("sea-orm connection failed:{}", config.uri))?)
     }
 
     async fn close_db_connection(app: Arc<App>) -> Result<String> {

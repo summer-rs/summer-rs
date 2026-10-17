@@ -12,6 +12,7 @@ mod job;
 mod middlewares;
 mod nest;
 mod route;
+mod retry;
 #[cfg(feature = "socket_io")]
 mod socketioxide;
 mod stream;
@@ -681,6 +682,16 @@ pub fn derive_problem_details(input: TokenStream) -> TokenStream {
 #[proc_macro_attribute]
 pub fn cache(args: TokenStream, input: TokenStream) -> TokenStream {
     cache::cache(args, input)
+}
+
+/// Retries an asynchronous function according to a named `summer-resilience` policy.
+///
+/// ```plain
+/// #[retry(name = "inventory", retry_if = is_transient)]
+/// ```
+#[proc_macro_attribute]
+pub fn retry(args: TokenStream, input: TokenStream) -> TokenStream {
+    retry::retry(args, input)
 }
 
 #[cfg(feature = "socket_io")]

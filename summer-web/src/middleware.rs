@@ -61,7 +61,7 @@ pub(crate) fn apply_middleware(mut router: Router, middleware: Middlewares) -> R
     if let Some(LimitPayloadMiddleware { enable, body_limit }) = middleware.limit_payload {
         if enable {
             let limit = byte_unit::Byte::from_str(&body_limit)
-                .unwrap_or_else(|_| panic!("parse limit payload str failed: {}", &body_limit));
+                .unwrap_or_else(|_| panic!("parse limit payload str failed: {}", body_limit));
 
             let limit = limit.as_u64() as usize;
             // Override axum's default 2MB body limit for extractors (Multipart, Json, etc.)

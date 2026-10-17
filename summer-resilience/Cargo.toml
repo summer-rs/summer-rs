@@ -1,0 +1,23 @@
+[package]
+name = "summer-resilience"
+description = "Resilience policies for summer-rs applications"
+version.workspace = true
+categories = ["asynchronous"]
+keywords = ["resilience", "retry", "summer"]
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+
+[dependencies]
+backoff = { workspace = true }
+schemars = { workspace = true }
+serde = { workspace = true, features = ["derive"] }
+summer = { path = "../summer", version = "0.7" }
+summer-macros = { path = "../summer-macros", version = "0.7" }
+thiserror = { workspace = true }
+tokio = { workspace = true, features = ["time"] }
+tracing = { workspace = true }
+
+[dev-dependencies]
+tokio = { workspace = true, features = ["macros", "rt-multi-thread"] }

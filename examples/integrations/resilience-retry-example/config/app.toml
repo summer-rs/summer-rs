@@ -1,0 +1,10 @@
+[web]
+binding = "127.0.0.1"
+port = 18081
+
+[resilience.retry.instances.fx-quotes]
+max_attempts = 3
+wait_duration = 100
+enable_exponential_backoff = true
+exponential_backoff_multiplier = 2.0
+exponential_max_wait_duration = 500

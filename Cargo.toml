@@ -13,6 +13,7 @@ members = [
     "summer-stream",
     "summer-mail",
     "summer-opentelemetry",
+    "summer-resilience",
     "summer-apalis",
     "summer-nacos",
     "summer-xxl-job",
@@ -52,6 +53,7 @@ apalis-board = "1.0.0"
 async-trait = "0.1"
 axum = "0.8"
 axum-test = "20"
+backoff = "0.4"
 byte-unit = "5.1"
 chrono = "0.4"
 dashmap = "6.1"
@@ -82,6 +84,7 @@ prometheus-client = "0.24"
 prost = "0.14"
 quote = "1.0"
 redis = "1.0"
+reqwest = { version = "0.12", default-features = false, features = ["json"] }
 rmpv = "1.3"
 schemars = "1.1"
 sea-orm = "2.0"
