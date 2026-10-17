@@ -12,15 +12,13 @@ pub use apalis;
 pub use apalis_amqp;
 #[cfg(feature = "board")]
 pub use apalis_board;
-#[cfg(feature = "sql-mysql")]
-pub use apalis_mysql;
 #[cfg(feature = "sql-postgres")]
 pub use apalis_postgres;
 #[cfg(feature = "redis")]
 pub use apalis_redis;
 #[cfg(feature = "sql-sqlite")]
 pub use apalis_sqlite;
-#[cfg(any(feature = "sql-postgres", feature = "sql-sqlite", feature = "sql-mysql"))]
+#[cfg(any(feature = "sql-postgres", feature = "sql-sqlite"))]
 pub use summer_sqlx;
 
 pub struct ApalisPlugin;
@@ -47,7 +45,7 @@ impl Plugin for ApalisPlugin {
     }
 
     #[cfg(all(
-        any(feature = "sql-postgres", feature = "sql-sqlite", feature = "sql-mysql"),
+        any(feature = "sql-postgres", feature = "sql-sqlite"),
         not(feature = "redis")
     ))]
     fn dependencies(&self) -> Vec<&str> {

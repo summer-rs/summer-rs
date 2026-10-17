@@ -27,8 +27,8 @@ with-bigdecimal = ["bigdecimal", "sqlx?/bigdecimal"]
 with-uuid = ["uuid", "sqlx?/uuid"]
 with-time = ["time", "sqlx?/time"]
 runtime-tokio = ["sqlx?/runtime-tokio"]
-runtime-tokio-native-tls = ["sqlx?/runtime-tokio-native-tls", "runtime-tokio"]
-runtime-tokio-rustls = ["sqlx?/runtime-tokio-rustls", "runtime-tokio"]
+runtime-tokio-native-tls = ["sqlx?/runtime-tokio", "sqlx?/tls-native-tls", "runtime-tokio"]
+runtime-tokio-rustls = ["sqlx?/runtime-tokio", "sqlx?/tls-rustls", "runtime-tokio"]
 
 [dependencies]
 summer = { path = "../summer", version = "0.7" }
