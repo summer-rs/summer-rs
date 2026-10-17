@@ -15,7 +15,7 @@ schemars = { workspace = true }
 summer = { path = "../../../summer" }
 # generate plugin config schema with all features enabled
 # Enable all features for apalis
-summer-apalis = { path = "../../../summer-apalis", features = ["redis", "amqp", "sql-postgres", "sql-sqlite", "sql-mysql", "workflow", "board", "board-web"] }
+summer-apalis = { path = "../../../summer-apalis", features = ["redis", "amqp", "sql-postgres", "sql-sqlite", "workflow", "board", "board-web"] } # 暂不含 sql-mysql
 summer-grpc = { path = "../../../summer-grpc" }
 # Enable all features for job
 summer-job = { path = "../../../summer-job", features = ["postgres_storage", "nats_storage"] }

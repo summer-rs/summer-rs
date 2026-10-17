@@ -45,7 +45,7 @@ fn long_running_task_register(app: &mut AppBuilder, monitor: Monitor) -> Monitor
     app.add_layer(line_sub.layer());
 
     let api = ApiBuilder::new(Router::new())
-        .register(storage.clone())
+        .register("long_running", storage.clone())
         .build();
     let router = Router::new()
         .nest("/api/v1", api)
