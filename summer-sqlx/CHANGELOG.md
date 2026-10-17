@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.7.2
+
+- **changed**: upgrade `sqlx` 0.8 to **0.9** and update the `runtime-tokio-*` feature definitions for the new runtime/tls feature layout. ([#254])
+
+[#254]: https://github.com/summer-rs/summer-rs/pull/254
+
 ## 0.7.0
 
 - **changed**: bump to **0.7.0** and align the `summer` path dependency `version` pin to **0.7.0**.

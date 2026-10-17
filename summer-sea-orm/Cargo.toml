@@ -1,7 +1,7 @@
 [package]
 name = "summer-sea-orm"
 description = "Integration of summer-rs framework and sea-orm"
-version = "0.7.1"
+version = "0.7.2"
 categories = ["database"]
 keywords = ["orm", "sql-database", "summer"]
 edition.workspace = true

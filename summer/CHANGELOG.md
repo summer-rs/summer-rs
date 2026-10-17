@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.7.2
+
+- **fixed**: rename banner to "summer". ([#250])
+
+[#250]: https://github.com/summer-rs/summer-rs/pull/250
+
 ## 0.7.0
 
 - **added**: `EventBus` for typed async pub/sub over app lifecycle and config events (supports Nacos and other integration plugins).

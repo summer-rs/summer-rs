@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.7.2
+
+- **changed**: upgrade `sea-orm` 2.0.0-rc.38 to **2.0** (stable) via the workspace dependency pin. ([#254])
+- **fixed**: warning from Clippy on current stable. ([#248])
+
+[#254]: https://github.com/summer-rs/summer-rs/pull/254
+[#248]: https://github.com/summer-rs/summer-rs/pull/248
+
 ## 0.7.0
 
 - **changed**: bump to **0.7.0** (stable, aligned with the workspace; supersedes **0.6.0-rc.1**) and align path dependency `version` pins on `summer` / `summer-web` to **0.7.0**.
