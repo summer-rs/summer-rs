@@ -1,7 +1,7 @@
 [package]
 name = "summer-apalis"
 description = "Integration of rust application framework summer-rs and apalis"
-version = "0.7.2"
+version = "0.7.3"
 categories = ["date-and-time"]
 keywords = ["cron-scheduler", "task-scheduling", "cron-job", "summer"]
 edition.workspace = true
@@ -15,7 +15,7 @@ redis = ["apalis-redis", "summer-redis"]
 amqp = ["apalis-amqp"]
 sql-postgres = ["apalis-postgres", "summer-sqlx"]
 sql-sqlite = ["apalis-sqlite", "summer-sqlx"]
-# sql-mysql = ["apalis-mysql", "summer-sqlx"] # 暂不支持 MySQL:见根 Cargo.toml 中 apalis-mysql 注释
+sql-mysql = ["apalis-mysql", "summer-sqlx"]
 workflow = ["apalis-workflow"]
 board = ["apalis-board"]
 board-web = ["apalis-board/web"]
@@ -30,7 +30,7 @@ apalis-redis = { workspace = true, optional = true }
 apalis-amqp = { workspace = true, optional = true }
 apalis-postgres = { workspace = true, optional = true, features = ["tokio-comp", "migrate"] }
 apalis-sqlite = { workspace = true, optional = true, features = ["tokio-comp", "migrate", "json"] }
-# apalis-mysql = { workspace = true, optional = true, features = ["time", "tokio-comp", "migrate", "chrono"] } # 暂不支持 MySQL
+apalis-mysql = { workspace = true, optional = true, features = ["tokio-comp", "migrate"] }
 apalis-workflow = { workspace = true, optional = true }
 apalis-board = { workspace = true, optional = true, features = ["axum", "ui"] }
 summer-redis = { path = "../summer-redis", version = "0.7", optional = true }

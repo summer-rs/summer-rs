@@ -38,18 +38,17 @@ authors = ["holmofy"]
 repository = "https://github.com/summer-rs/summer-rs"
 
 [workspace.dependencies]
-aide = "0.16.0-alpha.2"
+aide = "0.16.0-alpha.4"
 anyhow = "1.0"
-apalis = "1.0.0"
-apalis-redis = "1.0.0"
-apalis-amqp = "1.0.0"
-apalis-postgres = { version = "1.0.0", default-features = false }
-# 暂不支持 MySQL:apalis-mysql 最新仅 1.0.0-rc.8(仅适配 apalis-core rc.9 / sqlx 0.8),与 apalis 1.0.0 族不兼容
-# apalis-mysql = { version = "1.0.0-rc.8", default-features = false }
-apalis-sqlite = { version = "1.0.0", default-features = false }
-apalis-workflow = "1.0.0"
-apalis-cron = "1.0.0"
-apalis-board = "1.0.0"
+apalis = "1.2.0"
+apalis-redis = "1.1"
+apalis-amqp = "1.1"
+apalis-postgres = { version = "1.1", default-features = false }
+apalis-mysql = { version = "1.1", default-features = false }
+apalis-sqlite = { version = "1.1", default-features = false }
+apalis-workflow = "1.2"
+apalis-cron = "1.1"
+apalis-board = "1.2"
 async-trait = "0.1"
 axum = "0.8"
 axum-test = "20"

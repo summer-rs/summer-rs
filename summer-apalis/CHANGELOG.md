@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.7.3
+
+- **changed**: upgrade the `apalis` family to 1.1/1.2 (`apalis` / `apalis-workflow` / `apalis-board` to 1.2, `apalis-redis` / `apalis-amqp` / `apalis-postgres` / `apalis-sqlite` / `apalis-cron` to 1.1).
+- **added**: re-enable the `sql-mysql` feature via `apalis-mysql` 1.1, now compatible with the upgraded `apalis`.
+
 ## 0.7.2
 
 - **changed**: upgrade `apalis` 1.0.0-rc.8 to **1.0.0** (stable) and adapt to the new registry API. ([#254])
